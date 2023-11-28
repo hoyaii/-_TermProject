@@ -28,7 +28,7 @@ module.exports = class Restaurant extends Sequelize.Model {
             timestamps: false,
             underscored: false,
             modelName: 'Restaurant',
-            tableName: 'restaurants',
+            tableName: 'Restaurant',
             paranoid: false,
             charset: 'utf8',
             collate: 'utf8_general_ci',
@@ -36,7 +36,10 @@ module.exports = class Restaurant extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Restaurant.hasMany(db.Menu, { foreignKey: 'restaurant_id', sourceKey: 'restaurant_id' });
         db.Restaurant.belongsTo(db.User, { foreignKey: 'owner_id', targetKey: 'user_id' });
+
+        db.Restaurant.hasMany(db.Menu, { foreignKey: 'restaurant_id', sourceKey: 'restaurant_id' });
+        db.Restaurant.hasMany(db.Orders, { foreignKey: 'restaurant_id', sourceKey: 'restaurant_id' });
+        db.Restaurant.hasMany(db.Delivery, { foreignKey: 'restaurant_id', sourceKey: 'restaurant_id' });
     }
 };

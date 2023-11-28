@@ -29,7 +29,10 @@ Orders.associate(sequelize.models);
 Delivery.associate(sequelize.models);
 
 module.exports = {
-    User: sequelize.models.User,
-    Review: sequelize.models.Review,
+    Delivery: sequelize.models.Delivery,
+    Menu: sequelize.models.Menu,
+    Orders: sequelize.models.Orders,
     Restaurant: sequelize.models.Restaurant,
+    Review: sequelize.models.Review,
+    User: sequelize.models.User,
 };

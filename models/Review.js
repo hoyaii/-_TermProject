@@ -25,7 +25,7 @@ module.exports = class Review extends Sequelize.Model {
             timestamps: false,
             underscored: false,
             modelName: 'Review',
-            tableName: 'reviews',
+            tableName: 'Review',
             paranoid: false,
             charset: 'utf8',
             collate: 'utf8_general_ci',
@@ -33,6 +33,7 @@ module.exports = class Review extends Sequelize.Model {
     }
 
     static associate(db) {
-
+        db.Review.belongsTo(db.User, { foreignKey: 'customer_id', targetKey: 'user_id' });
+        db.Review.belongsTo(db.Orders, { foreignKey: 'order_id', targetKey: 'order_id' }); //
     }
 };

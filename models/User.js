@@ -45,7 +45,7 @@ module.exports = class User extends Sequelize.Model {
             timestamps: false,
             underscored: false,
             modelName: 'User',
-            tableName: 'users',
+            tableName: 'User',
             paranoid: false,
             charset: 'utf8',
             collate: 'utf8_general_ci',
@@ -53,6 +53,9 @@ module.exports = class User extends Sequelize.Model {
     }
 
     static associate(db) {
-        
+        db.User.hasMany(db.Review, { foreignKey: 'customer_id', sourceKey: 'user_id' });
+        db.User.hasMany(db.Orders, { foreignKey: 'customer_id', sourceKey: 'user_id' });
+        db.User.hasMany(db.Delivery, { foreignKey: 'delivery_person_id', sourceKey: 'user_id' });
+        db.User.hasMany(db.Restaurant, { foreignKey: 'owner_id', sourceKey: 'user_id' });
     }
 };

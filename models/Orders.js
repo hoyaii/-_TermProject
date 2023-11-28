@@ -31,7 +31,7 @@ module.exports = class Orders extends Sequelize.Model {
             timestamps: false,
             underscored: false,
             modelName: 'Orders',
-            tableName: 'orders',
+            tableName: 'Orders',
             paranoid: false,
             charset: 'utf8',
             collate: 'utf8_general_ci',
@@ -43,5 +43,7 @@ module.exports = class Orders extends Sequelize.Model {
         db.Orders.belongsTo(db.Menu, { foreignKey: 'menu_id', targetKey: 'menu_id' });
         db.Orders.belongsTo(db.Restaurant, { foreignKey: 'restaurant_id', targetKey: 'restaurant_id' });
         db.Orders.belongsTo(db.Delivery, { foreignKey: 'delivery_id', targetKey: 'delivery_id' });
+
+        db.Orders.hasMany(db.Review, { foreignKey: 'order_id', sourceKey: 'order_id' })
     }
 };

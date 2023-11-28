@@ -25,7 +25,7 @@ module.exports = class Delivery extends Sequelize.Model {
             timestamps: false,
             underscored: false,
             modelName: 'Delivery',
-            tableName: 'deliveries',
+            tableName: 'Delivery',
             paranoid: false,
             charset: 'utf8',
             collate: 'utf8_general_ci',
@@ -33,8 +33,9 @@ module.exports = class Delivery extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Delivery.belongsTo(db.User, { foreignKey: 'delivery_person_id', targetKey: 'user_id' });
-        db.Delivery.hasOne(db.Orders, { foreignKey: 'delivery_id', sourceKey: 'delivery_id' });
         db.Delivery.belongsTo(db.Restaurant, { foreignKey: 'restaurant_id', targetKey: 'restaurant_id' });
+        db.Delivery.belongsTo(db.User, { foreignKey: 'delivery_person_id', targetKey: 'user_id' });
+
+        db.Delivery.hasOne(db.Orders, { foreignKey: 'delivery_id', sourceKey: 'delivery_id' });
     }
 };
