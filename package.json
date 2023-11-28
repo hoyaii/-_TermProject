@@ -1,0 +1,11 @@
+{
+  "name": "pnu_delivery",
+  "version": "1.0.0",
+  "description": "배달의 민족의 pnu 버젼입니다!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LeeHanHong",
+  "license": "ISC"
+}
