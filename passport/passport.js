@@ -1,5 +1,5 @@
 const passport = require('passport');
-const local = require('./localStrategy');
+const local = require('./localStrategy'); // 수정 필요
 const User = require('../models/user');
 
 module.exports = () => {
