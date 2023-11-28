@@ -1,6 +1,6 @@
 const express = require('express');
 const { isLoggedIn } = require('./middlewares');
-const { createRestaurant, getRestaurant, createMenu } = require('../controllers/restaurant');
+const { createRestaurant, getRestaurant, createMenu } = require('../controller/restaurants');
 
 const router = express.Router();
 
