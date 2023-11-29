@@ -1,5 +1,5 @@
 const express = require('express');
-const { isLoggedIn } = require('./middlewares');
+const { isLoggedIn } = require('../middlewares');
 const { getUser, updateUser, deleteUser } = require('../controller/user');
 
 const router = express.Router();
@@ -14,4 +14,3 @@ router.put('/:userId', isLoggedIn, updateUser);
 router.delete('/:userId', isLoggedIn, deleteUser);
 
 module.exports = router;
-

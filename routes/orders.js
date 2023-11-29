@@ -1,5 +1,5 @@
 const express = require('express');
-const { isLoggedIn } = require('./middlewares');
+const { isLoggedIn } = require('../middlewares');
 const { createOrder, updateOrder, getDeliveryOrders } = require('../controller/orders');
 
 const router = express.Router();
