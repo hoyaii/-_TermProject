@@ -1,9 +1,9 @@
-<!-- customer_main.html -->
+<!-- restaurant_owner_main.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Customer Main</title>
+  <title>Restaurant Owner Main</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -69,40 +69,41 @@
   </style>
 </head>
 <body>
-<div class="login-container">
-
-  <div class="main-container">
-    <h2>Customer Main</h2>
-    <form id="search-form">
-      <label for="restaurant">음식점 검색:</label>
-      <input type="text" id="restaurant" name="restaurant" required>
-      <button type="submit">검색</button>
-    </form>
-
-    <div class="button-container">
-      <button id="order-btn">주문</button>
-      <button id="status-btn">배달 상태 확인</button>
-      <button id="review-btn">리뷰 작성</button>
-      <button id="logout-btn">로그아웃</button>
-    </div>
+<div class="main-container">
+  <h2>Restaurant Owner Main</h2>
+  <div class="button-container">
+    <button id="register-btn">음식점 정보 등록</button>
+    <button id="update-btn">음식점 정보 업데이트</button>
+    <button id="menu-btn">메뉴 관리</button>
+    <button id="cooking-btn">조리 완료 처리</button>
+    <button id="order-btn">주문 요청/내역 조회</button>
+    <button id="review-btn">리뷰 확인</button>
+    <button id="logout-btn">로그아웃</button>
   </div>
 </div>
 <script>
-  document.getElementById('search-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    // 음식점 검색 처리 로직
+  document.getElementById('register-btn').addEventListener('click', () => {
+    // 음식점 정보 등록 처리 로직
+  });
+
+  document.getElementById('update-btn').addEventListener('click', () => {
+    // 음식점 정보 업데이트 처리 로직
+  });
+
+  document.getElementById('menu-btn').addEventListener('click', () => {
+    // 메뉴 관리 처리 로직
+  });
+
+  document.getElementById('cooking-btn').addEventListener('click', () => {
+    // 조리 완료 처리 로직
   });
 
   document.getElementById('order-btn').addEventListener('click', () => {
-    // 주문 처리 로직
-  });
-
-  document.getElementById('status-btn').addEventListener('click', () => {
-    // 배달 상태 확인 로직
+    // 주문 요청/내역 조회 처리 로직
   });
 
   document.getElementById('review-btn').addEventListener('click', () => {
-    // 리뷰 작성 로직
+    // 리뷰 확인 처리 로직
   });
 
   document.getElementById('logout-btn').addEventListener('click', () => {
