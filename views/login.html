@@ -61,6 +61,7 @@
 
         <button type="submit">로그인</button>
     </form>
+    <button id="join-btn">회원 가입</button> <!-- 회원 가입 버튼 추가 -->
 </div>
 <script>
     document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -83,6 +84,10 @@
         } else {
             alert('로그인 실패');
         }
+    });
+
+    document.getElementById('join-btn').addEventListener('click', () => {
+        location.href = '/join.html';
     });
 </script>
 </body>

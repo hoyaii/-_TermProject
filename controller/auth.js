@@ -5,7 +5,7 @@ const User = require('../models/user');
 exports.signup = async (req, res, next) => {
     const { email, name, password } = req.body;
     try {
-        const exUser = await User.find({ where: { email } });
+        const exUser = await User.findOne({ where: { email } });
         if (exUser) {
             req.flash('signupError', '이미 존재하는 이메일입니다.');
             return res.redirect('/signup');
