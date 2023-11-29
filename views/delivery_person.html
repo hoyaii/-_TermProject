@@ -72,7 +72,10 @@
     e.preventDefault();
 
     const serviceArea = document.getElementById('serviceArea').value;
-
+    ystem.out.println("1. 음식점 검색과 주문");
+    System.out.println("2. 배달 상태 확인");
+    System.out.println("3. 리뷰 작성");
+    System.out.println("4. 로그아웃");
     const response = await fetch('/delivery_person_info', {  // 이 API 경로는 실제 서버 설정에 따라 변경되어야 합니다.
       method: 'POST',
       headers: {
