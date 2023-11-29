@@ -1,0 +1,112 @@
+<!-- customer_main.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Main</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .main-container {
+      width: 350px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .main-container h2 {
+      text-align: center;
+      color: #007BFF;
+    }
+
+    .main-container label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .main-container input,
+    .main-container select,
+    .main-container button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    .main-container button {
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    .main-container button:hover {
+      background-color: #0056b3;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button-container button {
+      flex: 1 1 auto;
+      margin-top: 10px;
+      min-width: 120px;
+    }
+
+    #search-form button {
+      margin-top: 15px;
+      margin-bottom: 50px;
+    }
+
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <h2>Customer Main</h2>
+  <div class="main-container">
+    <form id="search-form">
+      <label for="restaurant">음식점 검색:</label>
+      <input type="text" id="restaurant" name="restaurant" required>
+      <button type="submit">검색</button>
+    </form>
+
+    <div class="button-container">
+      <button id="order-btn">주문</button>
+      <button id="status-btn">배달 상태 확인</button>
+      <button id="review-btn">리뷰 작성</button>
+      <button id="logout-btn">로그아웃</button>
+    </div>
+  </div>
+</div>
+<script>
+  document.getElementById('search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    // 음식점 검색 처리 로직
+  });
+
+  document.getElementById('order-btn').addEventListener('click', () => {
+    // 주문 처리 로직
+  });
+
+  document.getElementById('status-btn').addEventListener('click', () => {
+    // 배달 상태 확인 로직
+  });
+
+  document.getElementById('review-btn').addEventListener('click', () => {
+    // 리뷰 작성 로직
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    // 로그아웃 처리 로직
+  });
+</script>
+</body>
+</html>
