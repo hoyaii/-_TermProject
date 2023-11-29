@@ -9,7 +9,7 @@ const passport = require('passport');
 
 dotenv.config(); // 환경 변수를 로드합니다.
 const authRouter = require('./routes/auth'); // 인증 관련 라우터
-const userRouter = require('./routes/users'); // 사용자 관련 라우터
+const userRouter = require('./routes/user'); // 사용자 관련 라우터
 const restaurantRouter = require('./routes/restaurants'); // 음식점 관련 라우터
 const orderRouter = require('./routes/orders'); // 주문 관련 라우터
 const reviewRouter = require('./routes/reviews'); // 리뷰 관련 라우터
@@ -43,7 +43,7 @@ app.use(passport.session()); // 체크
 
 // 라우팅 설정
 app.use('/auth', authRouter);
-app.use('/users', userRouter);
+app.use('/user', userRouter);
 app.use('/restaurants', restaurantRouter);
 app.use('/orders', orderRouter);
 app.use('/reviews', reviewRouter);
