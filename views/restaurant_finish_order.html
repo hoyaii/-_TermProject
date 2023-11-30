@@ -21,6 +21,8 @@
       border-radius: 4px;
       background-color: white;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+      box-sizing: border-box; /* padding, border를 포함한 크기 지정 */
     }
 
     h2 {
@@ -46,13 +48,7 @@
     }
 
     .order-item {
-      display: flex;
-      align-items: center;
       margin-bottom: 5px;
-    }
-
-    .order-item input {
-      margin-right: 5px;
     }
 
     button {
@@ -111,6 +107,11 @@
 
   const orderData = [
     { orderId: 1, itemName: 'Item1', restaurantId: '1' },
+    { orderId: 2, itemName: 'Item2', restaurantId: '1' },
+    { orderId: 3, itemName: 'Item3', restaurantId: '1' },
+    { orderId: 4, itemName: 'Item4', restaurantId: '1' },
+    { orderId: 5, itemName: 'Item5', restaurantId: '1' },
+    { orderId: 6, itemName: 'Item6', restaurantId: '1' },
     { orderId: 2, itemName: 'Item2', restaurantId: '2' },
     // Add more order data as needed
   ];
@@ -166,7 +167,7 @@
     createOrderList(filteredOrders);
 
     const orderListContainer = document.querySelector('.order-list');
-    orderListContainer.style.display = 'flex';
+    orderListContainer.style.display = 'block';
   }
 
   function finishCooking() {
@@ -182,7 +183,7 @@
 
   function updateOrderStatus(orderId, status) {
     // Implement logic to handle order status update in the database
-    alert(`주문 상태를 업데이트합니다.\n(orderId: ${orderId}, status: ${status})`);
+    alert(`주문 상태를 업데이트합니다.\n(주문 번호: ${orderId})`);
   }
 
 
