@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Delivery History</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 600px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    .delivery-history-container {
+      margin-top: 20px;
+    }
+
+    .delivery-details {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>Delivery History</h2>
+
+  <div class="delivery-history-container" id="delivery-history-container">
+    <!-- Delivery history will be dynamically added here -->
+  </div>
+</div>
+
+<script>
+  const deliveryHistoryContainer = document.getElementById('delivery-history-container');
+
+  // Sample data - Replace this with your actual delivery history data
+  const deliveryHistoryData = [
+    { orderId: 1, restaurantName: 'Restaurant1', menuName: 'Menu1', orderTime: '2023-12-01T12:30:00', deliveryAddress: 'Address1' },
+    { orderId: 2, restaurantName: 'Restaurant2', menuName: 'Menu2', orderTime: '2023-12-01T13:45:00', deliveryAddress: 'Address2' },
+    // Add more delivery history data as needed
+  ];
+
+  // Function to dynamically create delivery history details
+  function createDeliveryHistory(deliveryHistoryData) {
+    deliveryHistoryData.forEach(history => {
+      const deliveryDetails = document.createElement('div');
+      deliveryDetails.classList.add('delivery-details');
+
+      deliveryDetails.innerHTML = `
+        <p>주문 ID: ${history.orderId} | 가게 이름: ${history.restaurantName} | 메뉴 이름: ${history.menuName} | 주문 시간: ${history.orderTime} | 배달 주소: ${history.deliveryAddress}</p>
+      `;
+
+      deliveryHistoryContainer.appendChild(deliveryDetails);
+    });
+  }
+
+  // Call the function to create delivery history with the sample data
+  createDeliveryHistory(deliveryHistoryData);
+</script>
+</body>
+</html>
