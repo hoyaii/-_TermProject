@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Finish Delivery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 400px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>Finish Delivery</h2>
+  <form id="finish-delivery-form">
+    <label>완료한 배달 선택</label>
+    <!-- Dynamic creation of checkboxes based on the number of completed deliveries -->
+    <div id="checkbox-container">
+      <!-- Checkboxes will be dynamically added here -->
+    </div>
+    <button type="button" onclick="finishDelivery()">완료 처리</button>
+  </form>
+</div>
+
+<script>
+  const finishDeliveryForm = document.getElementById('finish-delivery-form');
+  const checkboxContainer = document.getElementById('checkbox-container');
+
+  // Sample data - Replace this with your actual completed delivery data
+  const completedDeliveryData = [
+    { deliveryId: 1, location: 'Location1', deliveryTime: '2023-12-01T12:30:00' },
+    { deliveryId: 2, location: 'Location2', deliveryTime: '2023-12-01T13:45:00' },
+    // Add more completed delivery data as needed
+  ];
+
+  // Function to dynamically create checkboxes based on completed delivery data
+  function createCheckboxes(completedDeliveryData) {
+    completedDeliveryData.forEach(delivery => {
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `delivery${delivery.deliveryId}`;
+      checkbox.name = 'deliveryId';
+      checkbox.value = delivery.deliveryId;
+
+      const label = document.createElement('label');
+      label.for = `delivery${delivery.deliveryId}`;
+      label.textContent = `배달${delivery.deliveryId} - ${delivery.location} | ${delivery.deliveryTime}`;
+
+      const checkboxDiv = document.createElement('div');
+      checkboxDiv.classList.add('checkbox-container');
+      checkboxDiv.appendChild(checkbox);
+      checkboxDiv.appendChild(label);
+
+      checkboxContainer.appendChild(checkboxDiv);
+    });
+  }
+
+  // Call the function to create checkboxes with the sample data
+  createCheckboxes(completedDeliveryData);
+
+  // Function to handle finishing delivery
+  function finishDelivery() {
+    // Get the selected completed delivery ID
+    const selectedDeliveryId = Array.from(document.querySelectorAll('input[name="deliveryId"]:checked'))
+            .map(checkbox => checkbox.value)[0]; // Assuming only one checkbox can be selected
+
+    if (!selectedDeliveryId) {
+      alert('완료한 배달을 선택하세요.');
+      return;
+    }
+
+    // Assume you have functions for the logic below
+    const orderId = getOrderIdByDeliveryId(selectedDeliveryId, 'cooked');
+    updateDeliveryStatus('finished', selectedDeliveryId);
+    updateOrderStatus('finished', orderId);
+    updateUserStatus('free');
+
+    alert('배달 완료 처리가 되었습니다.');
+  }
+</script>
+</body>
+</html>
