@@ -1,0 +1,175 @@
+<!-- delivery_and_review_page.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Delivery Status and Review</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 400px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .delivery-status-container {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .review-container {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .review-input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>Delivery Status and Review</h2>
+  <form id="delivery-form">
+    <label>확인하고 싶은 주문 선택</label>
+    <!-- Dynamic creation of checkboxes based on the number of orders -->
+    <div id="checkbox-container">
+      <!-- Checkboxes will be dynamically added here -->
+    </div>
+    <button type="button" onclick="showReviewForm()">확인</button>
+  </form>
+
+  <!-- Section to display the delivery status -->
+  <div class="delivery-status-container" id="status-container">
+    <hr>
+    <h3>배달 상태</h3>
+    <p class="delivery-status" id="delivery-status"></p>
+  </div>
+
+  <!-- Section for writing a review -->
+  <div class="review-container" id="review-container">
+    <hr>
+    <h3>리뷰 작성</h3>
+    <form id="review-form">
+      <label>리뷰의 별점을 입력해 주세요 (1~5):</label>
+      <input type="number" id="rating" name="rating" min="1" max="5" class="review-input" required>
+
+      <label>리뷰 내용을 입력해 주세요:</label>
+      <textarea id="comment" name="comment" class="review-input" required></textarea>
+
+      <button type="submit">작성 완료</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const checkboxContainer = document.getElementById('checkbox-container');
+  const reviewContainer = document.getElementById('review-container');
+
+  // Sample data - Replace this with your actual order data
+  const orderData = [
+    { orderId: 1, menuName: 'Menu1', orderTime: '2023-12-01T12:30:00' },
+    { orderId: 2, menuName: 'Menu2', orderTime: '2023-12-01T13:45:00' },
+    // Add more order data as needed
+  ];
+
+  // Function to dynamically create checkboxes based on order data
+  function createCheckboxes(orderData) {
+    orderData.forEach(order => {
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `order${order.orderId}`;
+      checkbox.name = 'orderId';
+      checkbox.value = order.orderId;
+
+      const label = document.createElement('label');
+      label.for = `order${order.orderId}`;
+      label.textContent = `주문${order.orderId} - ${order.menuName} | ${order.orderTime}`;
+
+      const checkboxDiv = document.createElement('div');
+      checkboxDiv.classList.add('checkbox-container');
+      checkboxDiv.appendChild(checkbox);
+      checkboxDiv.appendChild(label);
+
+      checkboxContainer.appendChild(checkboxDiv);
+    });
+  }
+
+  // Call the function to create checkboxes with the sample data
+  createCheckboxes(orderData);
+
+  // Function to show the review form
+  function showReviewForm() {
+    // Get the selected order IDs
+    const selectedOrderIds = Array.from(document.querySelectorAll('input[name="orderId"]:checked'))
+            .map(checkbox => checkbox.value);
+
+    // Show the review form
+    reviewContainer.style.display = 'block';
+  }
+
+  // Handle the review form submission
+  const reviewForm = document.getElementById('review-form');
+  reviewForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const rating = document.getElementById('rating').value;
+    const comment = document.getElementById('comment').value;
+
+    // Assume you have a function named submitReviewService
+    // that handles the submission of reviews
+    submitReviewService(selectedOrderIds, rating, comment);
+
+    // Optional: You can add logic to handle the response or redirect the user.
+  });
+</script>
+</body>
+</html>
