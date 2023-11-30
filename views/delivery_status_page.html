@@ -1,0 +1,149 @@
+<!-- delivery_status_page.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Delivery Status</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 400px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .delivery-status-container {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .delivery-status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>Delivery Status</h2>
+  <form id="delivery-form">
+    <label>확인하고 싶은 주문 선택</label>
+
+    <!-- Dynamic creation of checkboxes based on the number of orders -->
+    <div id="checkbox-container">
+      <!-- Checkboxes will be dynamically added here -->
+    </div>
+
+    <button type="submit">확인</button>
+  </form>
+
+  <!-- Section to display the delivery status -->
+  <div class="delivery-status-container" id="status-container">
+    <hr>
+    <h3>배달 상태</h3>
+    <p class="delivery-status" id="delivery-status"></p>
+  </div>
+</div>
+
+<script>
+  const deliveryForm = document.getElementById('delivery-form');
+  const statusContainer = document.getElementById('status-container');
+  const deliveryStatus = document.getElementById('delivery-status');
+  const checkboxContainer = document.getElementById('checkbox-container');
+
+  // Sample data - Replace this with your actual order data
+  const orderData = [
+    { orderId: 1, menuName: 'Menu1', orderTime: '2023-12-01T12:30:00' },
+    { orderId: 2, menuName: 'Menu2', orderTime: '2023-12-01T13:45:00' },
+    // Add more order data as needed
+  ];
+
+  // Function to dynamically create checkboxes based on order data
+  function createCheckboxes(orderData) {
+    orderData.forEach(order => {
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `order${order.orderId}`;
+      checkbox.name = 'orderId';
+      checkbox.value = order.orderId;
+
+      const label = document.createElement('label');
+      label.for = `order${order.orderId}`;
+      label.textContent = `주문${order.orderId} - ${order.menuName} | ${order.orderTime}`;
+
+      const checkboxDiv = document.createElement('div');
+      checkboxDiv.classList.add('checkbox-container');
+      checkboxDiv.appendChild(checkbox);
+      checkboxDiv.appendChild(label);
+
+      checkboxContainer.appendChild(checkboxDiv);
+    });
+  }
+
+  // Call the function to create checkboxes with the sample data
+  createCheckboxes(orderData);
+
+  // Handle the form submission
+  deliveryForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Get the selected order IDs
+    const selectedOrderIds = Array.from(document.querySelectorAll('input[name="orderId"]:checked'))
+            .map(checkbox => checkbox.value);
+
+    // Assume you have a function named getDeliveryStatusService
+    // that returns the delivery status based on the selected order ID(s)
+    const deliveryStatusResult = getDeliveryStatusService(selectedOrderIds);
+
+    // Display the delivery status
+    statusContainer.style.display = 'block';
+    deliveryStatus.textContent = `선택한 주문의 배달 상태는 ${deliveryStatusResult}입니다.`;
+  });
+</script>
+</body>
+</html>
