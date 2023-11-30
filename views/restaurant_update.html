@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Restaurant Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 400px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>Update Restaurant Info</h2>
+  <form id="update-restaurant-form">
+    <label for="restaurantId">업데이트할 음식점 선택</label>
+    <select id="restaurantId" name="restaurantId" required>
+      <!-- Restaurant options will be dynamically added here -->
+    </select>
+
+    <label for="newName">새로운 음식점 이름</label>
+    <input type="text" id="newName" name="newName" required>
+
+    <label for="newAddress">새로운 음식점 위치</label>
+    <input type="text" id="newAddress" name="newAddress" required>
+
+    <label for="newCuisineType">새로운 음식점 카테고리</label>
+    <select id="newCuisineType" name="newCuisineType" required>
+      <option value="양식">양식</option>
+      <option value="한식">한식</option>
+      <option value="일식">일식</option>
+      <option value="중식">중식</option>
+      <option value="패스트푸드">패스트푸드</option>
+      <option value="기타">기타</option>
+    </select>
+
+    <label for="newServiceArea">새로운 배달 서비스 지역</label>
+    <select id="newServiceArea" name="newServiceArea" required>
+      <option value="서울">서울</option>
+      <option value="부산">부산</option>
+      <option value="대구">대구</option>
+      <option value="대전">대전</option>
+      <option value="광주">광주</option>
+      <option value="울산">울산</option>
+    </select>
+
+    <button type="button" onclick="updateRestaurantInfo()">업데이트</button>
+  </form>
+</div>
+
+<script>
+  // Sample data - Replace this with your actual restaurant data
+  const restaurantData = [
+    { restaurantId: 1, name: 'Restaurant1' },
+    { restaurantId: 2, name: 'Restaurant2' },
+    // Add more restaurant data as needed
+  ];
+
+  // Function to dynamically create restaurant options
+  function createRestaurantOptions(restaurantData) {
+    const restaurantSelect = document.getElementById('restaurantId');
+
+    restaurantData.forEach(restaurant => {
+      const option = document.createElement('option');
+      option.value = restaurant.restaurantId;
+      option.textContent = restaurant.name;
+
+      restaurantSelect.appendChild(option);
+    });
+  }
+
+  // Call the function to create restaurant options with the sample data
+  createRestaurantOptions(restaurantData);
+
+  function updateRestaurantInfo() {
+    const restaurantId = document.getElementById('restaurantId').value;
+    const newName = document.getElementById('newName').value;
+    const newAddress = document.getElementById('newAddress').value;
+    const newCuisineType = document.getElementById('newCuisineType').value;
+    const newServiceArea = document.getElementById('newServiceArea').value;
+
+    if (!newName || !newAddress) {
+      alert('새로운 음식점 이름과 위치를 모두 입력하세요.');
+      return;
+    }
+
+    // Assume you have a function named updateRestaurantInfoService
+    // that handles the update logic
+    const updateSuccess = updateRestaurantInfoService(restaurantId, newName, newAddress, newCuisineType, newServiceArea);
+
+    if (updateSuccess) {
+      alert('음식점 정보가 성공적으로 업데이트되었습니다.');
+    } else {
+      alert('음식점 정보 업데이트에 실패하였습니다.');
+    }
+  }
+</script>
+</body>
+</html>
