@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 400px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    .order-list {
+      display: none;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .order-item input {
+      margin-right: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 10px;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>Order Management</h2>
+  <form id="select-restaurant-form">
+    <label for="restaurantId">주문완료를 처리할 식당 선택</label>
+    <select id="restaurantId" name="restaurantId" onchange="showOrderList()" required>
+    <!-- Restaurant options will be dynamically added here -->
+    </select>
+
+    <div class="order-list">
+      <!-- Order list will be dynamically added here -->
+    </div>
+
+    <button type="button" onclick="showOrderList()">선택</button>
+  </form>
+
+  <!-- Hidden form for updating an existing menu -->
+  <div id="select-order-form" class="hidden">
+    <div class="order-list">
+      <!-- Order list will be dynamically added here -->
+    </div>
+    <button type="button" onclick="finishCooking()">완료</button>
+  </div>
+</div>
+
+
+<script>
+  // Sample data - Replace this with your actual restaurant and order data
+  const restaurantData = [
+    { restaurantId: 1, name: 'Restaurant1' },
+    { restaurantId: 2, name: 'Restaurant2' },
+    // Add more restaurant data as needed
+  ];
+
+  const orderData = [
+    { orderId: 1, itemName: 'Item1', restaurantId: '1' },
+    { orderId: 2, itemName: 'Item2', restaurantId: '2' },
+    // Add more order data as needed
+  ];
+
+  // Function to dynamically create restaurant options
+  function createRestaurantOptions(restaurantData) {
+    const restaurantSelect = document.getElementById('restaurantId');
+
+    restaurantData.forEach(restaurant => {
+      const option = document.createElement('option');
+      option.value = restaurant.restaurantId;
+      option.textContent = restaurant.name;
+
+      restaurantSelect.appendChild(option);
+    });
+  }
+
+  // Function to dynamically create order list
+  function createOrderList(orderData) {
+    const orderListContainer = document.querySelector('.order-list');
+    orderListContainer.innerHTML = '';
+
+    orderData.forEach(order => {
+      const orderItem = document.createElement('div');
+      orderItem.classList.add('order-item');
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.name = 'orderCheckbox';
+      checkbox.value = order.orderId;
+
+      const label = document.createElement('label');
+      label.textContent = order.itemName;
+
+      orderItem.appendChild(checkbox);
+      orderItem.appendChild(label);
+
+      orderListContainer.appendChild(orderItem);
+    });
+  }
+
+  // Call the function to create restaurant options with the sample data
+  createRestaurantOptions(restaurantData);
+
+  function showOrderList() {
+    const selectButton = document.querySelector('#select-restaurant-form button[type="button"]');
+    selectButton.style.display = 'none';
+
+    document.getElementById("select-order-form").classList.remove('hidden');
+
+    const selectedRestaurantId = document.getElementById('restaurantId').value;
+    const filteredOrders = orderData.filter(order => order.restaurantId === selectedRestaurantId);  // 수정된 부분: 형 변환 제거
+    createOrderList(filteredOrders);
+
+    const orderListContainer = document.querySelector('.order-list');
+    orderListContainer.style.display = 'flex';
+  }
+
+  function finishCooking() {
+    const selectedOrderId = document.querySelector('input[name="orderCheckbox"]:checked');
+
+    if (selectedOrderId) {
+      const orderId = selectedOrderId.value;
+      updateOrderStatus(orderId, "cooked");
+    } else {
+      alert('주문을 선택해주세요.');
+    }
+  }
+
+  function updateOrderStatus(orderId, status) {
+    // Implement logic to handle order status update in the database
+    alert(`주문 상태를 업데이트합니다.\n(orderId: ${orderId}, status: ${status})`);
+  }
+
+
+</script>
+</body>
+</html>
