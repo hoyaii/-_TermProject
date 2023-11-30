@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Register Restaurant</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 400px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>Register Restaurant</h2>
+  <form id="register-restaurant-form">
+    <label for="name">음식점 이름</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="address">음식점 위치</label>
+    <input type="text" id="address" name="address" required>
+
+    <label for="cuisineType">음식점 카테고리</label>
+    <select id="cuisineType" name="cuisineType" required>
+      <option value="양식">양식</option>
+      <option value="한식">한식</option>
+      <option value="일식">일식</option>
+      <option value="중식">중식</option>
+      <option value="패스트푸드">패스트푸드</option>
+      <option value="기타">기타</option>
+    </select>
+
+    <label for="serviceArea">배달 서비스 지역</label>
+    <select id="serviceArea" name="serviceArea" required>
+      <option value="서울">서울</option>
+      <option value="부산">부산</option>
+      <option value="대구">대구</option>
+      <option value="대전">대전</option>
+      <option value="광주">광주</option>
+      <option value="울산">울산</option>
+    </select>
+
+    <button type="button" onclick="registerRestaurant()">등록</button>
+  </form>
+</div>
+
+<script>
+  function registerRestaurant() {
+    const name = document.getElementById('name').value;
+    const address = document.getElementById('address').value;
+    const cuisineType = document.getElementById('cuisineType').value;
+    const serviceArea = document.getElementById('serviceArea').value;
+
+    if (!name || !address) {
+      alert('음식점 이름과 위치를 모두 입력하세요.');
+      return;
+    }
+
+    // Assume you have a function named registerRestaurantService
+    // that handles the registration logic
+    const registerSuccess = registerRestaurantService(name, address, cuisineType, serviceArea);
+
+    if (registerSuccess) {
+      alert('음식점 정보가 성공적으로 등록되었습니다.');
+    } else {
+      alert('음식점 정보 등록에 실패하였습니다.');
+    }
+  }
+</script>
+</body>
+</html>
