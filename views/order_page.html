@@ -1,0 +1,102 @@
+<!-- order_page.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Food</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 350px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    /* Style for the checkbox container */
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>Order Food</h2>
+  <form id="order-form">
+    <label>주문할 메뉴 선택</label>
+
+    <!-- Display each menu option with checkboxes -->
+    <div class="checkbox-container">
+      <input type="checkbox" id="menu1" name="menuId" value="1">
+      <label for="menu1">메뉴1 - 10.0원</label>
+    </div>
+
+    <div class="checkbox-container">
+      <input type="checkbox" id="menu2" name="menuId" value="2">
+      <label for="menu2">메뉴2 - 15.0원</label>
+    </div>
+
+    <!-- Add more menu options as needed -->
+
+    <button type="submit">주문</button>
+  </form>
+</div>
+
+<script>
+  const orderForm = document.getElementById('order-form');
+
+  // Handle the form submission
+  orderForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Get the selected menu IDs
+    const selectedMenuIds = Array.from(document.querySelectorAll('input[name="menuId"]:checked'))
+            .map(checkbox => checkbox.value);
+
+    // Add your logic for what to do with the selected menu IDs here
+    console.log('Selected Menu IDs:', selectedMenuIds);
+  });
+</script>
+</body>
+</html>
+
