@@ -33,7 +33,19 @@
     }
 
     .delivery-details {
+      padding: 10px;
       margin-top: 10px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      background-color: #f8f8f8;
+    }
+
+    .delivery-details p {
+      margin: 0;
+    }
+
+    .delivery-details p:not(:last-child) {
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -63,7 +75,11 @@
       deliveryDetails.classList.add('delivery-details');
 
       deliveryDetails.innerHTML = `
-        <p>주문 ID: ${history.orderId} | 가게 이름: ${history.restaurantName} | 메뉴 이름: ${history.menuName} | 주문 시간: ${history.orderTime} | 배달 주소: ${history.deliveryAddress}</p>
+        <p><strong>주문 ID:</strong> ${history.orderId}</p>
+        <p><strong>가게 이름:</strong> ${history.restaurantName}</p>
+        <p><strong>메뉴 이름:</strong> ${history.menuName}</p>
+        <p><strong>주문 시간:</strong> ${history.orderTime}</p>
+        <p><strong>배달 주소:</strong> ${history.deliveryAddress}</p>
       `;
 
       deliveryHistoryContainer.appendChild(deliveryDetails);
@@ -75,3 +91,4 @@
 </script>
 </body>
 </html>
+

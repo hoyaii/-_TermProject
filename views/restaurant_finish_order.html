@@ -48,7 +48,12 @@
     }
 
     .order-item {
-      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .order-item label {
+      margin-left: -340px;
     }
 
     button {
@@ -142,6 +147,14 @@
       checkbox.type = 'checkbox';
       checkbox.name = 'orderCheckbox';
       checkbox.value = order.orderId;
+
+      // Add an event listener to the checkbox
+      checkbox.addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('input[name="orderCheckbox"]');
+        checkboxes.forEach(box => {
+          if (box !== this) box.checked = false;
+        });
+      });
 
       const label = document.createElement('label');
       label.textContent = order.itemName;

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 400px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box; /* padding, border를 포함한 크기 지정 */
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    .order-list {
+      display: none;
+    }
+    .order-item label {
+      margin-left: -340px;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 10px;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>음식점 검색</h2>
+  <form id="search-form">
+    <label for="serviceArea">지역 선택:</label>
+    <select id="serviceArea" name="serviceArea" required>
+      <option value="서울">서울</option>
+      <option value="부산">부산</option>
+      <option value="대구">대구</option>
+      <option value="대전">대전</option>
+      <option value="광주">광주</option>
+      <option value="울산">울산</option>
+    </select>
+
+    <label for="type">음식 종류 선택:</label>
+    <select id="type" name="type">
+      <option value="">선택 안함</option>
+      <option value="양식">양식</option>
+      <option value="한식">한식</option>
+      <option value="일식">일식</option>
+      <option value="중식">중식</option>
+      <option value="패스트푸드">패스트푸드</option>
+      <option value="기타">기타</option>
+    </select>
+
+    <label for="name">음식점 이름 입력 (옵션):</label>
+    <input id="name" name="name">
+
+    <button type="button" onclick="searchRestaurants()">검색</button>
+
+    <div class="restaurant-list hidden">
+      <!-- 음식점 목록이 동적으로 추가됩니다 -->
+    </div>
+
+    <button class="hidden" type="button" onclick="checkMenu()">메뉴 확인</button>
+  </form>
+</div>
+
+<script>
+  function searchRestaurants() {
+    // 여기에 음식점 검색을 처리하는 로직을 추가하십시오.
+    // 아래 코드는 예시이며 실제 데이터와 로직에 맞게 변경하십시오.
+    const restaurantData = [
+      { restaurantId: 1, name: 'Restaurant1', serviceArea: '서울', type: '한식' },
+      { restaurantId: 2, name: 'Restaurant2', serviceArea: '부산', type: '양식' },
+      { restaurantId: 3, name: 'Restaurant3', serviceArea: '서울', type: '한식' },
+      { restaurantId: 4, name: 'Restaurant4', serviceArea: '서울', type: '한식' },
+      { restaurantId: 5, name: 'Restaurant5', serviceArea: '서울', type: '한식' },
+      //...
+    ];
+
+    const serviceArea = document.getElementById('serviceArea').value;
+    const type = document.getElementById('type').value;
+    const name = document.getElementById('name').value;
+
+    const filteredRestaurants = restaurantData.filter((restaurant) => {
+      return (restaurant.serviceArea === serviceArea) &&
+              (!type || restaurant.type === type) &&
+              (!name || restaurant.name.includes(name));
+    });
+
+    const restaurantList = document.querySelector('.restaurant-list');
+    restaurantList.innerHTML = '';
+
+    filteredRestaurants.forEach((restaurant) => {
+      const restaurantItem = document.createElement('div');
+      restaurantItem.classList.add('order-item');
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'radio';
+      checkbox.name = 'restaurantCheckbox';
+      checkbox.value = restaurant.restaurantId;
+
+      const label = document.createElement('label');
+      label.textContent = restaurant.name;
+
+      restaurantItem.appendChild(checkbox);
+      restaurantItem.appendChild(label);
+      restaurantList.appendChild(restaurantItem);
+    });
+
+
+    // 검색 결과가 있다면 '메뉴 확인' 버튼을 보이게 합니다.
+    if (filteredRestaurants.length > 0) {
+      document.querySelector('.restaurant-list').classList.remove('hidden');
+      document.querySelector('#search-form button.hidden').classList.remove('hidden');
+    }
+  }
+
+  function checkMenu() {
+    const selectedRestaurantId = document.querySelector('input[name="restaurantCheckbox"]:checked');
+
+    if (selectedRestaurantId) {
+      location.href = `customer_order.html?restaurantId=${selectedRestaurantId.value}`;
+    } else {
+      alert('음식점을 선택해주세요.');
+    }
+  }
+</script>
+</body>
+</html>
+

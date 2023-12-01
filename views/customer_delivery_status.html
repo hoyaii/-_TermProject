@@ -1,9 +1,8 @@
-<!-- delivery_status_page.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Delivery Status</title>
+  <title>Delivery Status Check Service</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -17,7 +16,8 @@
     }
 
     .main-container {
-      width: 400px;
+      width: 50%; /* Change this line to adjust the width */
+      max-width: 1000px; /* Optional: Set a maximum width */
       padding: 20px;
       border-radius: 4px;
       background-color: white;
@@ -37,6 +37,7 @@
     .checkbox-container {
       display: flex;
       align-items: center;
+      margin-top: 5px;
     }
 
     input[type="checkbox"] {
@@ -51,55 +52,33 @@
       background-color: #007BFF;
       color: white;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     button:hover {
       background-color: #0056b3;
     }
-
-    .delivery-status-container {
-      display: none;
-      margin-top: 20px;
-    }
-
-    .delivery-status {
-      margin-top: 10px;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
 <div class="main-container">
-  <h2>Delivery Status</h2>
-  <form id="delivery-form">
+  <h2>배달 상태 확인 서비스</h2>
+  <form id="delivery-status-form">
     <label>확인하고 싶은 주문 선택</label>
-
-    <!-- Dynamic creation of checkboxes based on the number of orders -->
     <div id="checkbox-container">
       <!-- Checkboxes will be dynamically added here -->
     </div>
-
-    <button type="submit">확인</button>
+    <button type="button" onclick="checkDeliveryStatus()">확인</button>
   </form>
-
-  <!-- Section to display the delivery status -->
-  <div class="delivery-status-container" id="status-container">
-    <hr>
-    <h3>배달 상태</h3>
-    <p class="delivery-status" id="delivery-status"></p>
-  </div>
 </div>
 
 <script>
-  const deliveryForm = document.getElementById('delivery-form');
-  const statusContainer = document.getElementById('status-container');
-  const deliveryStatus = document.getElementById('delivery-status');
   const checkboxContainer = document.getElementById('checkbox-container');
 
   // Sample data - Replace this with your actual order data
   const orderData = [
-    { orderId: 1, menuName: 'Menu1', orderTime: '2023-12-01T12:30:00' },
-    { orderId: 2, menuName: 'Menu2', orderTime: '2023-12-01T13:45:00' },
+    { orderId: 1, menuName: 'Menu1', orderTime: '2023-12-01T10:00:00' },
+    { orderId: 2, menuName: 'Menu2', orderTime: '2023-12-01T12:00:00' },
     // Add more order data as needed
   ];
 
@@ -114,7 +93,7 @@
 
       const label = document.createElement('label');
       label.for = `order${order.orderId}`;
-      label.textContent = `주문${order.orderId} - ${order.menuName} | ${order.orderTime}`;
+      label.textContent = `주문 ID: ${order.orderId} | 메뉴명: ${order.menuName} | 주문 시간: ${order.orderTime}`;
 
       const checkboxDiv = document.createElement('div');
       checkboxDiv.classList.add('checkbox-container');
@@ -125,25 +104,35 @@
     });
   }
 
-  // Call the function to create checkboxes with the sample data
+  // Call the function to create checkboxes with the order data
   createCheckboxes(orderData);
 
-  // Handle the form submission
-  deliveryForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-
+  // Function to handle checking delivery status
+  function checkDeliveryStatus() {
     // Get the selected order IDs
     const selectedOrderIds = Array.from(document.querySelectorAll('input[name="orderId"]:checked'))
             .map(checkbox => checkbox.value);
 
-    // Assume you have a function named getDeliveryStatusService
-    // that returns the delivery status based on the selected order ID(s)
-    const deliveryStatusResult = getDeliveryStatusService(selectedOrderIds);
+    // 체크 박스가 선택되지 않았을 때는 함수를 종료합니다.
+    if (selectedOrderIds.length === 0) {
+      alert('확인하고 싶은 주문을 선택하세요.');
+      return;
+    }
 
-    // Display the delivery status
-    statusContainer.style.display = 'block';
-    deliveryStatus.textContent = `선택한 주문의 배달 상태는 ${deliveryStatusResult}입니다.`;
-  });
+    // 체크 박스가 두 개 이상 선택되었을 때는 함수를 종료합니다.
+    if (selectedOrderIds.length > 1) {
+      alert('하나의 주문만 선택해주세요.');
+      return;
+    }
+
+    // 체크 박스가 한 개 선택되었을 때만 아래 코드가 실행됩니다.
+    const selectedOrderId = selectedOrderIds[0];
+
+    // Assume you have a function to get the delivery status by order ID
+    const deliveryStatus = getDeliveryStatusByOrderId(selectedOrderId);
+
+    alert(`해당 주문의 배달 상태는 ${deliveryStatus}입니다!`);
+  }
 </script>
 </body>
 </html>

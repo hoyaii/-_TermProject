@@ -7,18 +7,21 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
     }
 
     .login-container {
-      width: 300px;
+      width: 350px;
       margin: 0 auto;
       padding: 20px;
-      border: 1px solid #ddd;
       border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
     .login-container h2 {
       text-align: center;
+      color: #000000;
     }
 
     .login-container label {
@@ -32,15 +35,20 @@
       box-sizing: border-box;
     }
 
-    .login-container button {
-      display: block;
+    input,
+    select,
+    button {
       width: 100%;
       padding: 10px;
-      margin-top: 20px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+    }
+
+    .login-container button {
       background-color: #007BFF;
       color: white;
-      border: none;
-      border-radius: 4px;
       cursor: pointer;
     }
 
@@ -64,7 +72,7 @@
       <option value="울산">울산</option>
     </select>
 
-    <button type="submit">정보 입력 완료</button>
+    <button type="submit">입력 완료</button>
   </form>
 </div>
 <script>

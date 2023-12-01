@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Finish Delivery</title>
+  <title>Order Service</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -36,6 +36,7 @@
     .checkbox-container {
       display: flex;
       align-items: center;
+      margin-top: 5px;
     }
 
     input[type="checkbox"] {
@@ -50,6 +51,7 @@
       background-color: #007BFF;
       color: white;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     button:hover {
@@ -59,40 +61,38 @@
 </head>
 <body>
 <div class="main-container">
-  <h2>Finish Delivery</h2>
-  <form id="finish-delivery-form">
-    <label>완료한 배달 선택</label>
-    <!-- Dynamic creation of checkboxes based on the number of completed deliveries -->
+  <h2>Order Service</h2>
+  <form id="order-form">
+    <label>주문하실 메뉴 선택</label>
     <div id="checkbox-container">
       <!-- Checkboxes will be dynamically added here -->
     </div>
-    <button type="button" onclick="finishDelivery()">완료 처리</button>
+    <button type="button" onclick="submitOrder()">주문</button>
   </form>
 </div>
 
 <script>
-  const finishDeliveryForm = document.getElementById('finish-delivery-form');
   const checkboxContainer = document.getElementById('checkbox-container');
 
-  // Sample data - Replace this with your actual completed delivery data
-  const completedDeliveryData = [
-    { deliveryId: 1, location: 'Location1', deliveryTime: '2023-12-01T12:30:00' },
-    { deliveryId: 2, location: 'Location2', deliveryTime: '2023-12-01T13:45:00' },
-    // Add more completed delivery data as needed
+  // Sample data - Replace this with your actual menu data
+  const menuData = [
+    { menuId: 1, menuName: 'Menu1', price: 10000 },
+    { menuId: 2, menuName: 'Menu2', price: 12000 },
+    // Add more menu data as needed
   ];
 
-  // Function to dynamically create checkboxes based on completed delivery data
-  function createCheckboxes(completedDeliveryData) {
-    completedDeliveryData.forEach(delivery => {
+  // Function to dynamically create checkboxes based on menu data
+  function createCheckboxes(menuData) {
+    menuData.forEach(menu => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
-      checkbox.id = `delivery${delivery.deliveryId}`;
-      checkbox.name = 'deliveryId';
-      checkbox.value = delivery.deliveryId;
+      checkbox.id = `menu${menu.menuId}`;
+      checkbox.name = 'menuId';
+      checkbox.value = menu.menuId;
 
       const label = document.createElement('label');
-      label.for = `delivery${delivery.deliveryId}`;
-      label.textContent = `배달${delivery.deliveryId} - ${delivery.location} | ${delivery.deliveryTime}`;
+      label.for = `menu${menu.menuId}`;
+      label.textContent = `메뉴 ID: ${menu.menuId} | 메뉴 이름: ${menu.menuName} | 가격: ${menu.price}원`;
 
       const checkboxDiv = document.createElement('div');
       checkboxDiv.classList.add('checkbox-container');
@@ -104,27 +104,46 @@
   }
 
   // Call the function to create checkboxes with the sample data
-  createCheckboxes(completedDeliveryData);
+  createCheckboxes(menuData);
 
-  // Function to handle finishing delivery
-  function finishDelivery() {
-    // Get the selected completed delivery ID
-    const selectedDeliveryId = Array.from(document.querySelectorAll('input[name="deliveryId"]:checked'))
-            .map(checkbox => checkbox.value)[0]; // Assuming only one checkbox can be selected
+  // Function to handle submitting order
+  function submitOrder() {
+    // Get the selected menu IDs
+    const selectedMenuIds = Array.from(document.querySelectorAll('input[name="menuId"]:checked'))
+            .map(checkbox => checkbox.value);
 
-    if (!selectedDeliveryId) {
-      alert('완료한 배달을 선택하세요.');
+    // 체크 박스가 선택되지 않았을 때는 함수를 종료합니다.
+    if (selectedMenuIds.length === 0) {
+      alert('주문하실 메뉴를 선택하세요.');
       return;
     }
 
-    // Assume you have functions for the logic below
-    const orderId = getOrderIdByDeliveryId(selectedDeliveryId, 'cooked');
-    updateDeliveryStatus('finished', selectedDeliveryId);
-    updateOrderStatus('finished', orderId);
-    updateUserStatus('free');
+    // 체크 박스가 두 개 이상 선택되었을 때는 함수를 종료합니다.
+    if (selectedMenuIds.length > 1) {
+      alert('하나의 메뉴만 선택해주세요.');
+      return;
+    }
 
-    alert('배달 완료 처리가 되었습니다.');
+    // 체크 박스가 한 개 선택되었을 때만 아래 코드가 실행됩니다.
+    const selectedMenuId = selectedMenuIds[0];
+
+    // Assume you have functions for the logic below
+    const address = getUserAddress(userId);
+    const deliveryId = requestDeliveryService(restaurantId, address); // 배달 요청 -> 배달 기사 없으면 실패
+    if (deliveryId == 0) {
+      alert('주문에 실패하였습니다.');
+      return;
+    }
+
+    const orderSuccess = createOrder(deliveryId, restaurantId, selectedMenuId); // 주문 생성
+    if (!orderSuccess) {
+      alert('주문에 실패하였습니다.');
+      return;
+    }
+
+    alert('주문이 성공적으로 요청되었습니다.');
   }
 </script>
 </body>
 </html>
+

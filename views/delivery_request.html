@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Manage Delivery Requests</title>
+  <title>Manage Delivery Request Service</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,7 +16,8 @@
     }
 
     .main-container {
-      width: 400px;
+      width: 50%; /* Change this line to adjust the width */
+      max-width: 1000px; /* Optional: Set a maximum width */
       padding: 20px;
       border-radius: 4px;
       background-color: white;
@@ -36,6 +37,7 @@
     .checkbox-container {
       display: flex;
       align-items: center;
+      margin-top: 5px;
     }
 
     input[type="checkbox"] {
@@ -50,6 +52,7 @@
       background-color: #007BFF;
       color: white;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     button:hover {
@@ -59,25 +62,23 @@
 </head>
 <body>
 <div class="main-container">
-  <h2>Manage Delivery Requests</h2>
+  <h2>주문 수락하기</h2>
   <form id="delivery-request-form">
     <label>수락하고 싶은 배달 요청 선택</label>
-    <!-- Dynamic creation of checkboxes based on the number of delivery requests -->
     <div id="checkbox-container">
       <!-- Checkboxes will be dynamically added here -->
     </div>
-    <button type="button" onclick="acceptDeliveryRequest()">수락하기</button>
+    <button type="button" onclick="acceptDeliveryRequest()">수락</button>
   </form>
 </div>
 
 <script>
-  const deliveryRequestForm = document.getElementById('delivery-request-form');
   const checkboxContainer = document.getElementById('checkbox-container');
 
   // Sample data - Replace this with your actual delivery request data
   const deliveryRequestData = [
-    { deliveryId: 1, location: 'Location1', deliveryTime: '2023-12-01T12:30:00' },
-    { deliveryId: 2, location: 'Location2', deliveryTime: '2023-12-01T13:45:00' },
+    { deliveryId: 1, restaurantAddress: 'Restaurant1 Address', deliveryAddress: 'Delivery1 Address' },
+    { deliveryId: 2, restaurantAddress: 'Restaurant2 Address', deliveryAddress: 'Delivery2 Address' },
     // Add more delivery request data as needed
   ];
 
@@ -92,7 +93,7 @@
 
       const label = document.createElement('label');
       label.for = `delivery${request.deliveryId}`;
-      label.textContent = `배달${request.deliveryId} - ${request.location} | ${request.deliveryTime}`;
+      label.textContent = `id: ${request.deliveryId} | 가게 주소: ${request.restaurantAddress} | 배달할 주소: ${request.deliveryAddress}`;
 
       const checkboxDiv = document.createElement('div');
       checkboxDiv.classList.add('checkbox-container');
@@ -108,14 +109,24 @@
 
   // Function to handle accepting delivery request
   function acceptDeliveryRequest() {
-    // Get the selected delivery request ID
-    const selectedDeliveryId = Array.from(document.querySelectorAll('input[name="deliveryId"]:checked'))
-            .map(checkbox => checkbox.value)[0]; // Assuming only one checkbox can be selected
+    // Get the selected delivery IDs
+    const selectedDeliveryIds = Array.from(document.querySelectorAll('input[name="deliveryId"]:checked'))
+            .map(checkbox => checkbox.value);
 
-    if (!selectedDeliveryId) {
-      alert('배달 요청을 선택하세요.');
+    // 체크 박스가 선택되지 않았을 때는 함수를 종료합니다.
+    if (selectedDeliveryIds.length === 0) {
+      alert('수락하고 싶은 배달 요청을 선택하세요.');
       return;
     }
+
+    // 체크 박스가 두 개 이상 선택되었을 때는 함수를 종료합니다.
+    if (selectedDeliveryIds.length > 1) {
+      alert('하나의 배달 요청만 선택해주세요.');
+      return;
+    }
+
+    // 체크 박스가 한 개 선택되었을 때만 아래 코드가 실행됩니다.
+    const selectedDeliveryId = selectedDeliveryIds[0];
 
     // Assume you have functions for the logic below
     const orderId = getOrderIdByDeliveryId(selectedDeliveryId, 'notMatched');

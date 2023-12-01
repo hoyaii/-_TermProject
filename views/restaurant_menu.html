@@ -63,7 +63,7 @@
 </head>
 <body>
 <div class="main-container">
-  <h2>Menu Management</h2>
+  <h2>메뉴 관리</h2>
   <form id="menu-management-form">
     <label for="restaurantId">메뉴를 관리할 식당 선택</label>
     <select id="restaurantId" name="restaurantId" required>
@@ -185,10 +185,25 @@
   }
 
   function registerMenu() {
+    const menuName = document.getElementById('menuName').value;
+    const menuPrice = document.getElementById('menuPrice').value;
+
+    if (!menuName || !menuPrice) {
+      alert('모든 정보를 입력해주세요.');
+      return;
+    }
+
     //
   }
 
   function updateMenu() {
+    const newMenuName = document.getElementById('newMenuName').value;
+    const newMenuPrice = document.getElementById('newMenuPrice').value;
+
+    if (!newMenuName || !newMenuPrice) {
+      alert('모든 정보를 입력해주세요.');
+      return;
+    }
     //
   }
 

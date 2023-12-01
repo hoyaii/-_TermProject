@@ -152,8 +152,23 @@
     const selectedOrderIds = Array.from(document.querySelectorAll('input[name="orderId"]:checked'))
             .map(checkbox => checkbox.value);
 
+    // 체크 박스가 선택되지 않았을 때는 함수를 종료합니다.
+    if (selectedOrderIds.length === 0) {
+      alert('주문을 선택해주세요.');
+      return;
+    }
+
+    // 체크 박스가 두 개 이상 선택되었을 때는 함수를 종료합니다.
+    if (selectedOrderIds.length > 1) {
+      alert('하나의 주문만 선택해주세요.');
+      return;
+    }
+
     // Show the review form
     reviewContainer.style.display = 'block';
+
+    // '확인' 버튼을 숨깁니다.
+    document.querySelector('#delivery-form button').style.display = 'none';
   }
 
   // Handle the review form submission
