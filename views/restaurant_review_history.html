@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Review History</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 400px;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #000000;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    .review-history {
+      display: none;
+    }
+
+    .review-item {
+      margin-bottom: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 10px;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <h2>Review History</h2>
+  <form id="select-restaurant-form">
+    <label for="restaurantId">리뷰를 조회할 식당 선택</label>
+    <select id="restaurantId" name="restaurantId" required>
+      <!-- Restaurant options will be dynamically added here -->
+    </select>
+
+    <div class="review-history">
+      <!-- Review history will be dynamically added here -->
+    </div>
+
+    <button type="button" onclick="showReviewHistory()">선택</button>
+  </form>
+</div>
+
+<script>
+  // Sample data - Replace this with your actual restaurant and order data
+  const restaurantData = [
+    { restaurantId: 1, name: 'Restaurant1' },
+    { restaurantId: 2, name: 'Restaurant2' },
+    // Add more restaurant data as needed
+  ];
+
+  const reviewHistoryData = [
+    { orderId: 1, orderStatus: 'cooked', menuName: 'Menu1', orderTime: '2023-11-30T10:00:00', restaurantId: 1, comment: 'Great!' },
+    { orderId: 2, orderStatus: 'cooked', menuName: 'Menu2', orderTime: '2023-11-30T11:00:00', restaurantId: 1, comment: 'Good' },
+    // Add more review history data as needed
+  ];
+
+  // Function to dynamically create restaurant options
+  function createRestaurantOptions(restaurantData) {
+    const restaurantSelect = document.getElementById('restaurantId');
+
+    restaurantData.forEach(restaurant => {
+      const option = document.createElement('option');
+      option.value = restaurant.restaurantId;
+      option.textContent = restaurant.name;
+
+      restaurantSelect.appendChild(option);
+    });
+  }
+
+  // Function to dynamically create review history
+  function createReviewHistory(reviewHistoryData) {
+    const reviewHistoryContainer = document.querySelector('.review-history');
+    reviewHistoryContainer.innerHTML = '';
+
+    reviewHistoryData.forEach(review => {
+      const reviewItem = document.createElement('div');
+      reviewItem.classList.add('review-item');
+
+      const label = document.createElement('label');
+      label.textContent = `주문 ID: ${review.orderId} | 메뉴명: ${review.menuName} | 리뷰: ${review.comment}`;
+
+      reviewItem.appendChild(label);
+
+      reviewHistoryContainer.appendChild(reviewItem);
+    });
+  }
+
+  // Call the function to create restaurant options with the sample data
+  createRestaurantOptions(restaurantData);
+
+  function showReviewHistory() {
+    const selectedRestaurantId = document.getElementById('restaurantId').value;
+    const filteredReviews = reviewHistoryData.filter(review => review.restaurantId.toString() === selectedRestaurantId);
+    createReviewHistory(filteredReviews);
+
+    const reviewHistoryContainer = document.querySelector('.review-history');
+    reviewHistoryContainer.style.display = 'block';
+  }
+</script>
+</body>
+</html>
