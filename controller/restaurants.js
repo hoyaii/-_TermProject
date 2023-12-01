@@ -73,3 +73,22 @@ exports.getReviewHistory = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.updateRestaurant = async (req, res, next) => {
+    const restaurantId = req.params.restaurantId;
+    const { name, address, cuisineType, serviceArea } = req.body;
+    const sql = "UPDATE Restaurant SET name = ?, address = ?, cuisine_type = ?, service_area = ? WHERE restaurant_id = ?";
+
+    try {
+        const [affectedRows] = await pool.query(sql, [name, address, cuisineType, serviceArea, restaurantId]);
+
+        if (affectedRows > 0) {
+            res.sendStatus(200); // Send 'OK' status if the update was successful
+        } else {
+            res.sendStatus(404); // Send 'Not Found' status if no rows were affected (i.e., the restaurant does not exist)
+        }
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};

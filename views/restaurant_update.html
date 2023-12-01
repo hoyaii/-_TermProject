@@ -59,7 +59,7 @@
 <body>
 <div class="main-container">
   <h2>음식점 정보 수정</h2>
-  <form id="update-restaurant-form" action="/update/restaurant" method="post">
+  <form id="update-restaurant-form">
     <label for="restaurantId">업데이트할 음식점 선택</label>
     <select id="restaurantId" name="restaurantId" required>
       <!-- Restaurant options will be dynamically added here -->
@@ -130,12 +130,36 @@
   // Call the function to create restaurant options with the sample data
   createRestaurantOptions(restaurantData);
 
-  document.getElementById('update-btn').addEventListener('click', function(event) {
+  document.getElementById('update-restaurant-form').addEventListener('submit', async function(event) {
     event.preventDefault();
-    document.getElementById('update-restaurant-form').submit();
-    setTimeout(function() {
-      window.location.href = 'main.html';
-    }, 500);
+
+    const restaurantId = document.getElementById('restaurantId').value;
+    const name = document.getElementById('newName').value;
+    const address = document.getElementById('newAddress').value;
+    const cuisineType = document.getElementById('newCuisineType').value;
+    const serviceArea = document.getElementById('newServiceArea').value;
+
+    try {
+      const response = await fetch(`/restaurants/${restaurantId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, address, cuisineType, serviceArea }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      setTimeout(function() {
+        window.location.href = 'restaurant_main.html';
+      }, 500);
+
+      // Do something with the response (e.g., refresh the page, show a success message, etc.)
+    } catch (error) {
+      console.error('Error:', error);
+    }
   });
 </script>
 </body>
