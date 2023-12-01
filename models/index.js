@@ -1,38 +1,16 @@
-const Sequelize = require('sequelize');
-const User = require('./User');
-const Menu = require('./Menu');
-const Review = require('./Review');
-const Restaurant = require('./Restaurant');
-const Orders = require('./Orders');
-const Delivery = require('./Delivery');
+const mysql = require('mysql2');
+const env = process.env.NODE_ENV || 'development';
+const config = require(process.cwd() + '/config/config.json')[env];
 
-const sequelize = new Sequelize('dbTermProject', 'root', '0623', {
-    host: 'localhost',
-    dialect: 'mysql',
-    logging: false,
-});
+const pool = mysql.createPool({
+    host: config.host,
+    user: config.username,
+    password: config.password,
+    database: config.database,
+    waitForConnections: true,
+    connectionLimit: 10,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0
+}).promise();
 
-// 모델 초기화
-User.init(sequelize);
-Menu.init(sequelize);
-Review.init(sequelize);
-Restaurant.init(sequelize);
-Orders.init(sequelize);
-Delivery.init(sequelize);
-
-// 모델 간 관계 설정
-User.associate(sequelize.models);
-Menu.associate(sequelize.models);
-Review.associate(sequelize.models);
-Restaurant.associate(sequelize.models);
-Orders.associate(sequelize.models);
-Delivery.associate(sequelize.models);
-
-module.exports = {
-    Delivery: sequelize.models.Delivery,
-    Menu: sequelize.models.Menu,
-    Orders: sequelize.models.Orders,
-    Restaurant: sequelize.models.Restaurant,
-    Review: sequelize.models.Review,
-    User: sequelize.models.User,
-};
+module.exports = pool;

@@ -1,0 +1,20 @@
+{
+  "development": {
+    "username": "root",
+    "password": "0623",
+    "database": "dbTermProject",
+    "host": "10.125.34.50"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1"
+  }
+}
