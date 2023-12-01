@@ -66,7 +66,7 @@
   <h2>메뉴 관리</h2>
   <form id="menu-management-form">
     <label for="restaurantId">메뉴를 관리할 식당 선택</label>
-    <select id="restaurantId" name="restaurantId" required>
+    <select id="restaurantId" name="restaurantId" required onchange="fetchMenuData(this.value)">
       <!-- Restaurant options will be dynamically added here -->
     </select>
 
@@ -114,18 +114,23 @@
 </div>
 
 <script>
-  // Sample data - Replace this with your actual restaurant and menu data
-  const restaurantData = [
-    { restaurantId: 1, name: 'Restaurant1' },
-    { restaurantId: 2, name: 'Restaurant2' },
-    // Add more restaurant data as needed
-  ];
+  async function fetchRestaurantData() {
+    try {
+      const response = await fetch('/restaurants', {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const restaurantData = await response.json();
+      createRestaurantOptions(restaurantData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
-  const menuData = [
-    { menuId: 1, name: 'Menu1', price: 10.99 },
-    { menuId: 2, name: 'Menu2', price: 15.99 },
-    // Add more menu data as needed
-  ];
+  // Fetch restaurant data when the page loads
+  window.onload = fetchRestaurantData;
 
   // Function to dynamically create restaurant options
   function createRestaurantOptions(restaurantData) {
@@ -140,9 +145,31 @@
     });
   }
 
+  async function fetchMenuData(restaurantId) {
+    try {
+      const response = await fetch(`/restaurants/${restaurantId}/menus`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const menuData = await response.json();
+      createMenuOptions(menuData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
   // Function to dynamically create menu options
+  function createMenuOptions(menuData) {
+    createUpdateMenuOptions(menuData);
+    createDeleteMenuOptions(menuData);
+  }
+
   function createUpdateMenuOptions(menuData) {
     const menuSelect = document.getElementById('updateMenuList');
+
+    menuSelect.innerHTML = '';
 
     menuData.forEach(menu => {
       const option = document.createElement('option');
@@ -168,12 +195,6 @@
     });
   }
 
-  // Call the function to create restaurant options with the sample data
-  createRestaurantOptions(restaurantData);
-  // Call the function to create menu options with the sample data
-  createUpdateMenuOptions(menuData);
-  createDeleteMenuOptions(menuData);
-
   function showForm(formId) {
     // Hide all forms
     document.getElementById('addMenuForm').classList.add('hidden');
@@ -184,33 +205,83 @@
     document.getElementById(formId).classList.remove('hidden');
   }
 
-  function registerMenu() {
+  async function registerMenu() {
     const menuName = document.getElementById('menuName').value;
     const menuPrice = document.getElementById('menuPrice').value;
+    const restaurantId = document.getElementById('restaurantId').value;
 
     if (!menuName || !menuPrice) {
       alert('모든 정보를 입력해주세요.');
       return;
     }
 
-    //
+    try {
+      const response = await fetch(`/restaurants/${restaurantId}/menus`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: menuName, price: menuPrice }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      alert('메뉴가 성공적으로 등록되었습니다.');
+      await fetchMenuData(restaurantId);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
-  function updateMenu() {
+  async function updateMenu() {
     const newMenuName = document.getElementById('newMenuName').value;
     const newMenuPrice = document.getElementById('newMenuPrice').value;
+    const menuId = document.getElementById('updateMenuList').value;
+    const restaurantId = document.getElementById('restaurantId').value;
 
     if (!newMenuName || !newMenuPrice) {
       alert('모든 정보를 입력해주세요.');
       return;
     }
-    //
+
+    try {
+      const response = await fetch(`/restaurants/menus/${menuId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newMenuName, price: newMenuPrice }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      alert('메뉴가 성공적으로 수정되었습니다.');
+      await fetchMenuData(restaurantId);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
-  function deleteMenu(menuId) {
-    //
-  }
+  async function deleteMenu() {
+    const menuId = document.getElementById('deleteMenuList').value;
+    const restaurantId = document.getElementById('restaurantId').value;
 
+    try {
+      const response = await fetch(`/restaurants/menus/${menuId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      alert('메뉴가 성공적으로 삭제되었습니다.');
+      await fetchMenuData(restaurantId);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 </script>
 </body>
 </html>

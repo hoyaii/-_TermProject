@@ -21,35 +21,6 @@ exports.createRestaurant = async (req, res, next) => {
 
 exports.getRestaurant = async (req, res, next) => {
     try {
-        const restaurant = await Restaurant.findOne({
-            where: { id: req.params.restaurantId },
-        });
-        if (!restaurant) {
-            return res.status(404).send('Restaurant not found');
-        }
-        res.json(restaurant);
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-};
-
-exports.createMenu = async (req, res, next) => {
-    try {
-        const newMenu = await Menu.create({
-            name: req.body.name,
-            price: req.body.price,
-            restaurantId: req.params.restaurantId,
-        });
-        res.json(newMenu);
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-};
-
-exports.getRestaurants = async (req, res, next) => {
-    try {
         const [rows] = await pool.execute('SELECT restaurant_id AS restaurantId, name FROM Restaurant WHERE owner_id = ?', [req.user.id]);
         res.json(rows);
     } catch (err) {
@@ -57,6 +28,57 @@ exports.getRestaurants = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.createMenu = async (req, res, next) => {
+    const restaurantId = req.params.restaurantId;
+    const { name, price } = req.body;
+    const sql = "INSERT INTO Menu (name, price, restaurant_id) VALUES (?, ?, ?)";
+    try {
+        await pool.query(sql, [name, price, restaurantId]);
+        res.status(201).send('Menu created successfully');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+
+exports.getMenu = async (req, res, next) => {
+    const restaurantId = req.params.restaurantId;
+    const sql = "SELECT menu_id, name, price FROM Menu WHERE restaurant_id = ?";
+    try {
+        const [menuData] = await pool.query(sql, [restaurantId]);
+        res.json(menuData);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+
+exports.updateMenu = async (req, res, next) => {
+    const menuId = req.params.menuId;
+    const { name, price } = req.body;
+    const sql = "UPDATE Menu SET name = ?, price = ? WHERE menu_id = ?";
+    try {
+        await pool.query(sql, [name, price, menuId]);
+        res.send('Menu updated successfully');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+
+exports.deleteMenu = async (req, res, next) => {
+    const menuId = req.params.menuId;
+    const sql = "DELETE FROM Menu WHERE menu_id = ?";
+    try {
+        await pool.query(sql, [menuId]);
+        res.send('Menu deleted successfully');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+
 
 exports.getReviewHistory = async (req, res, next) => {
     const restaurantId = req.params.restaurantId;
