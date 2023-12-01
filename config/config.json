@@ -3,7 +3,7 @@
     "username": "root",
     "password": "0623",
     "database": "dbTermProject",
-    "host": "10.125.34.50"
+    "host": "localhost"
   },
   "test": {
     "username": "root",

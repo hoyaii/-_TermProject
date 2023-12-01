@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 
 dotenv.config(); // 환경 변수를 로드합니다.
+const db = require('./models');
 const authRouter = require('./routes/auth'); // 인증 관련 라우터
 const userRouter = require('./routes/user'); // 사용자 관련 라우터
 const restaurantRouter = require('./routes/restaurants'); // 음식점 관련 라우터

@@ -59,7 +59,7 @@
 <body>
 <div class="main-container">
   <h2>음식점 정보 수정</h2>
-  <form id="update-restaurant-form">
+  <form id="update-restaurant-form" action="/update/restaurant" method="post">
     <label for="restaurantId">업데이트할 음식점 선택</label>
     <select id="restaurantId" name="restaurantId" required>
       <!-- Restaurant options will be dynamically added here -->
@@ -91,17 +91,28 @@
       <option value="울산">울산</option>
     </select>
 
-    <button type="button" onclick="updateRestaurantInfo()">업데이트</button>
+    <button id="update-btn" type="submit">업데이트</button>
   </form>
 </div>
 
 <script>
   // Sample data - Replace this with your actual restaurant data
-  const restaurantData = [
-    { restaurantId: 1, name: 'Restaurant1' },
-    { restaurantId: 2, name: 'Restaurant2' },
-    // Add more restaurant data as needed
-  ];
+  async function fetchRestaurantData() {
+    try {
+      const response = await fetch('/restaurant', {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const restaurantData = await response.json();
+      createRestaurantOptions(restaurantData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  // Fetch restaurant data when the page loads
+  window.onload = fetchRestaurantData;
 
   // Function to dynamically create restaurant options
   function createRestaurantOptions(restaurantData) {
@@ -119,28 +130,13 @@
   // Call the function to create restaurant options with the sample data
   createRestaurantOptions(restaurantData);
 
-  function updateRestaurantInfo() {
-    const restaurantId = document.getElementById('restaurantId').value;
-    const newName = document.getElementById('newName').value;
-    const newAddress = document.getElementById('newAddress').value;
-    const newCuisineType = document.getElementById('newCuisineType').value;
-    const newServiceArea = document.getElementById('newServiceArea').value;
-
-    if (!newName || !newAddress) {
-      alert('새로운 음식점 이름과 위치를 모두 입력하세요.');
-      return;
-    }
-
-    // Assume you have a function named updateRestaurantInfoService
-    // that handles the update logic
-    const updateSuccess = updateRestaurantInfoService(restaurantId, newName, newAddress, newCuisineType, newServiceArea);
-
-    if (updateSuccess) {
-      alert('음식점 정보가 성공적으로 업데이트되었습니다.');
-    } else {
-      alert('음식점 정보 업데이트에 실패하였습니다.');
-    }
-  }
+  document.getElementById('update-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    document.getElementById('update-restaurant-form').submit();
+    setTimeout(function() {
+      window.location.href = 'main.html';
+    }, 500);
+  });
 </script>
 </body>
 </html>

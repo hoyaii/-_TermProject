@@ -39,26 +39,29 @@
       border: 1px solid #ddd;
     }
 
-    .main-container button {
-      background-color: #007BFF;
-      color: white;
-      cursor: pointer;
-    }
-
-    .main-container button:hover {
-      background-color: #0056b3;
-    }
-
     .button-container {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    .button-container button {
-      flex: 1 1 auto;
+    .main-container a {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      text-decoration: none;
+      color: white;
+      background-color: #007BFF;
+      text-align: center;
+      cursor: pointer;
       margin-top: 10px;
-      min-width: 120px;
+    }
+
+    .main-container a:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
@@ -66,10 +69,10 @@
 <div class="main-container">
   <h2>Customer Main</h2>
   <div class="button-container">
-    <button id="search-btn">음식점 검색/주문</button>
-    <button id="status-btn">배달 상태 확인</button>
-    <button id="review-btn">리뷰 작성</button>
-    <button id="logout-btn">로그아웃</button>
+    <a id="search-btn" href="/search">음식점 검색/주문</a>
+    <a id="status-btn" href="/status">배달 상태 확인</a>
+    <a id="review-btn" href="/review">리뷰 작성</a>
+    <a id="logout-btn" href="/auth/logout">로그아웃</a>
   </div>
 </div>
 

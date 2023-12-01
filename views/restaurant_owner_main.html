@@ -29,23 +29,22 @@
       margin-top: 10px;
     }
 
-    .main-container input,
-    .main-container select,
-    .main-container button {
+    .main-container a {
+      display: block;
       width: 100%;
       padding: 10px;
       box-sizing: border-box;
       border-radius: 4px;
       border: 1px solid #ddd;
-    }
-
-    .main-container button {
-      background-color: #007BFF;
+      text-decoration: none;
       color: white;
+      background-color: #007BFF;
+      text-align: center;
       cursor: pointer;
+      margin-top: 10px;
     }
 
-    .main-container button:hover {
+    .main-container a:hover {
       background-color: #0056b3;
     }
 
@@ -55,13 +54,13 @@
       flex-wrap: wrap;
     }
 
-    .button-container button {
+    .button-container a {
       flex: 1 1 auto;
       margin-top: 10px;
       min-width: 120px;
     }
 
-    #search-form button {
+    #search-form a {
       margin-top: 15px;
       margin-bottom: 50px;
     }
@@ -72,13 +71,13 @@
 <div class="main-container">
   <h2>Restaurant Owner</h2>
   <div class="button-container">
-    <button id="register-btn">음식점 정보 등록</button>
-    <button id="update-btn">음식점 정보 업데이트</button>
-    <button id="menu-btn">메뉴 관리</button>
-    <button id="cooking-btn">조리 완료 처리</button>
-    <button id="order-btn">주문 요청/내역 조회</button>
-    <button id="review-btn">리뷰 확인</button>
-    <button id="logout-btn">로그아웃</button>
+    <a id="register-btn" href="/register">음식점 정보 등록</a>
+    <a id="update-btn" href="/update">음식점 정보 업데이트</a>
+    <a id="menu-btn" href="/menu">메뉴 관리</a>
+    <a id="cooking-btn" href="/cooking">조리 완료 처리</a>
+    <a id="order-btn" href="/order">주문 요청/내역 조회</a>
+    <a id="review-btn" href="/review">리뷰 확인</a>
+    <a id="logout-btn" href="/auth/logout">로그아웃</a>
   </div>
 </div>
 <script>

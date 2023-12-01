@@ -1,46 +1,36 @@
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const User = require('../models/user');
+const db = require(process.cwd() + '/models');
 
-exports.signup = async (req, res, next) => {
-    const { email, name, password } = req.body;
+exports.join = async (req, res, next) => {
+    const {email, nick, password} = req.body;
     try {
-        const exUser = await User.findOne({ where: { email } });
-        if (exUser) {
-            req.flash('signupError', '이미 존재하는 이메일입니다.');
-            return res.redirect('/signup');
+        const [rows] = await db.execute('SELECT * FROM users WHERE email=?', [email]);
+        if (rows.length > 0) {
+            return res.redirect('/join?error=exist');
         }
-
         const hash = await bcrypt.hash(password, 12);
-
-        await User.create({
-            email,
-            name,
-            password: hash,
-        });
+        await db.execute('INSERT INTO users (email, nick, password) VALUES (?, ?, ?)', [email, nick, hash]);
         return res.redirect('/');
-    } catch (error) {
-        console.error(error);
-        return next(error);
+    } catch (err) {
+        console.error(err);
+        return next(err);
     }
 };
 
 exports.login = (req, res, next) => {
-    passport.authenticate('local', (authError, user, info) => {
-        if (authError) {
-            console.error(authError);
-            return next(authError);
+    passport.authenticate('local', (authErr, user, info) => {
+        if (authErr) {
+            console.error(authErr);
+            return next(authErr);
         }
-
         if (!user) {
-            req.flash('loginError', info.message);
-            return res.redirect('/');
+            return res.redirect(`/?loginError=${info.message}`);
         }
-
-        return req.login(user, (loginError) => {
-            if (loginError) {
-                console.error(loginError);
-                return next(loginError);
+        return req.login(user, (loginErr) => {
+            if (loginErr) {
+                console.error(loginErr);
+                return next(loginErr);
             }
             return res.redirect('/');
         });
@@ -48,7 +38,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.logout = (req, res) => {
-    req.logout();
-    req.session.destroy();
-    res.redirect('/');
+    req.logout(() => {
+        res.redirect('/');
+    });
 };
