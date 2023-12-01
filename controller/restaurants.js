@@ -59,21 +59,23 @@ exports.getRestaurants = async (req, res, next) => {
 };
 
 exports.getReviewHistory = async (req, res, next) => {
+    const restaurantId = req.params.restaurantId;
+    const orderHistorySql = "SELECT order_id, status, menu_id, order_time FROM Orders WHERE menu_id IN (SELECT menu_id FROM Menu WHERE restaurant_id = ?)";
+    const menuNameSql = "SELECT name FROM Menu WHERE menu_id = ?";
+
     try {
-        const restaurantId = req.params.restaurantId;
-        const [orders] = await pool.execute('SELECT order_id, menu_id FROM Orders WHERE menu_id IN (SELECT menu_id FROM Menu WHERE restaurant_id = ?)', [restaurantId]);
+        const [orderHistoryResults] = await pool.query(orderHistorySql, [restaurantId]);
+        const orderHistoryData = await Promise.all(orderHistoryResults.map(async order => {
+            const [menuNameResults] = await pool.query(menuNameSql, [order.menu_id]);
+            return {
+                orderId: order.order_id,
+                orderStatus: order.status,
+                menuName: menuNameResults[0].name,
+                orderTime: order.order_time,
+            };
+        }));
 
-        for (let order of orders) {
-            const [menus] = await pool.execute('SELECT name FROM Menu WHERE menu_id = ?', [order.menu_id]);
-            order.menu_name = menus[0].name;
-
-            const [reviews] = await pool.execute('SELECT comment FROM Review WHERE order_id = ?', [order.order_id]);
-            if (reviews.length > 0) {
-                order.comment = reviews[0].comment;
-            }
-        }
-
-        res.json(orders);
+        res.json(orderHistoryData);
     } catch (err) {
         console.error(err);
         next(err);

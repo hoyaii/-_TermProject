@@ -87,18 +87,23 @@
 </div>
 
 <script>
-    // Sample data - Replace this with your actual restaurant and order data
-    const restaurantData = [
-        { restaurantId: 1, name: 'Restaurant1' },
-        { restaurantId: 2, name: 'Restaurant2' },
-        // Add more restaurant data as needed
-    ];
+    async function fetchRestaurantData() {
+        try {
+            const response = await fetch('/restaurants', {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const restaurantData = await response.json();
+            createRestaurantOptions(restaurantData);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
-    const orderHistoryData = [
-        { orderId: 1, orderStatus: 'cooked', menuName: 'Menu1', orderTime: '2023-11-30T10:00:00', restaurantId: 1 },
-        { orderId: 2, orderStatus: 'cooked', menuName: 'Menu2', orderTime: '2023-11-30T11:00:00', restaurantId: 1 },
-        // Add more order history data as needed
-    ];
+    // Fetch restaurant data when the page loads
+    window.onload = fetchRestaurantData;
 
     // Function to dynamically create restaurant options
     function createRestaurantOptions(restaurantData) {
@@ -131,13 +136,24 @@
         });
     }
 
-    // Call the function to create restaurant options with the sample data
-    createRestaurantOptions(restaurantData);
+    async function fetchOrderHistoryData(restaurantId) {
+        try {
+            const response = await fetch(`/restaurants/${restaurantId}/reviews`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
-    function showOrderHistory() {
+    async function showOrderHistory() {
         const selectedRestaurantId = document.getElementById('restaurantId').value;
-        const filteredOrders = orderHistoryData.filter(order => order.restaurantId.toString() === selectedRestaurantId);
-        createOrderHistory(filteredOrders);
+        const orderHistoryData = await fetchOrderHistoryData(selectedRestaurantId);
+        createOrderHistory(orderHistoryData);
 
         const orderHistoryContainer = document.querySelector('.order-history');
         orderHistoryContainer.style.display = 'block';
