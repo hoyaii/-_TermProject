@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/', isLoggedIn, createRestaurant);
 
 // 음식점 정보 조회
-router.get('/:restaurantId', getRestaurant);
+router.get('/:restaurantId', isLoggedIn,getRestaurant);
 
 // 음식점 업데이트
 router.put('/:restaurantId', isLoggedIn, updateRestaurant)

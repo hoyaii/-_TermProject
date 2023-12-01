@@ -89,7 +89,7 @@
 <script>
   async function fetchRestaurantData() {
     try {
-      const response = await fetch('/restaurant', {
+      const response = await fetch('/restaurants', {
         method: 'GET',
       });
       if (!response.ok) {
@@ -105,6 +105,19 @@
   // Fetch restaurant data when the page loads
   window.onload = fetchRestaurantData;
 
+  // Function to dynamically create restaurant options
+  function createRestaurantOptions(restaurantData) {
+    const restaurantSelect = document.getElementById('restaurantId');
+
+    restaurantData.forEach(restaurant => {
+      const option = document.createElement('option');
+      option.value = restaurant.restaurantId;
+      option.textContent = restaurant.name;
+
+      restaurantSelect.appendChild(option);
+    });
+  }
+
   async function fetchReviewHistoryData(restaurantId) {
     try {
       const response = await fetch(`/restaurant/${restaurantId}/reviews`, {
@@ -119,17 +132,13 @@
     }
   }
 
-  // Function to dynamically create restaurant options
-  function createRestaurantOptions(restaurantData) {
-    const restaurantSelect = document.getElementById('restaurantId');
+  async function showReviewHistory() {
+    const selectedRestaurantId = document.getElementById('restaurantId').value;
+    const reviewHistoryData = await fetchReviewHistoryData(selectedRestaurantId);
+    createReviewHistory(reviewHistoryData);
 
-    restaurantData.forEach(restaurant => {
-      const option = document.createElement('option');
-      option.value = restaurant.restaurantId;
-      option.textContent = restaurant.name;
-
-      restaurantSelect.appendChild(option);
-    });
+    const reviewHistoryContainer = document.querySelector('.review-history');
+    reviewHistoryContainer.style.display = 'block';
   }
 
   // Function to dynamically create review history
@@ -148,15 +157,6 @@
 
       reviewHistoryContainer.appendChild(reviewItem);
     });
-  }
-
-  async function showReviewHistory() {
-    const selectedRestaurantId = document.getElementById('restaurantId').value;
-    const reviewHistoryData = await fetchReviewHistoryData(selectedRestaurantId);
-    createReviewHistory(reviewHistoryData);
-
-    const reviewHistoryContainer = document.querySelector('.review-history');
-    reviewHistoryContainer.style.display = 'block';
   }
 </script>
 </body>

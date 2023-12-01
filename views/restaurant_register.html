@@ -86,12 +86,14 @@
       <option value="울산">울산</option>
     </select>
 
-    <button type="button" onclick="registerRestaurant()">등록</button>
+    <button type="button" type="submit">등록</button>
   </form>
 </div>
 
 <script>
-  function registerRestaurant() {
+  document.getElementById('register-restaurant-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
     const name = document.getElementById('name').value;
     const address = document.getElementById('address').value;
     const cuisineType = document.getElementById('cuisineType').value;
@@ -102,16 +104,28 @@
       return;
     }
 
-    // Assume you have a function named registerRestaurantService
-    // that handles the registration logic
-    const registerSuccess = registerRestaurantService(name, address, cuisineType, serviceArea);
+    try {
+      const response = await fetch(`/restaurants`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, address, cuisineType, serviceArea }),
+      });
 
-    if (registerSuccess) {
-      alert('음식점 정보가 성공적으로 등록되었습니다.');
-    } else {
+      if (response.ok) {
+        alert('음식점 정보가 성공적으로 등록되었습니다.');
+        setTimeout(function() {
+          window.location.href = 'main.html';
+        }, 500);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
       alert('음식점 정보 등록에 실패하였습니다.');
     }
-  }
+  });
 </script>
 </body>
 </html>

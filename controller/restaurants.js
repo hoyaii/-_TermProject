@@ -1,15 +1,21 @@
 const { Restaurant, Menu } = require('../models');
 
 exports.createRestaurant = async (req, res, next) => {
+    const { name, address, cuisineType, serviceArea } = req.body;
+    const userId = req.user.id; // Assuming the user's ID is stored in req.user.id
+    const sql = "INSERT INTO Restaurant (name, address, cuisine_type, owner_id, service_area) VALUES (?, ?, ?, ?, ?)";
+
     try {
-        const newRestaurant = await Restaurant.create({
-            name: req.body.name,
-            ownerId: req.user.id,
-        });
-        res.json(newRestaurant);
-    } catch (error) {
-        console.error(error);
-        next(error);
+        const [result] = await pool.query(sql, [name, address, cuisineType, userId, serviceArea]);
+
+        if (result.affectedRows > 0) {
+            res.sendStatus(201); // Send 'Created' status if the insertion was successful
+        } else {
+            res.sendStatus(500); // Send 'Server Error' status if no rows were affected
+        }
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 
