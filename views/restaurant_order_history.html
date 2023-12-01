@@ -138,7 +138,7 @@
 
     async function fetchOrderHistoryData(restaurantId) {
         try {
-            const response = await fetch(`/restaurants/${restaurantId}/reviews`, {
+            const response = await fetch(`/restaurants/${restaurantId}/orders`, {
                 method: 'GET',
             });
             if (!response.ok) {

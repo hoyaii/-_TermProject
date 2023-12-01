@@ -81,45 +81,37 @@
   <h2>Order Management</h2>
   <form id="select-restaurant-form">
     <label for="restaurantId">주문완료를 처리할 식당 선택</label>
-    <select id="restaurantId" name="restaurantId" onchange="showOrderList()" required>
-    <!-- Restaurant options will be dynamically added here -->
+    <select id="restaurantId" name="restaurantId" onchange="fetchOrderData()" required>
+      <!-- Restaurant options will be dynamically added here -->
     </select>
 
     <div class="order-list">
       <!-- Order list will be dynamically added here -->
     </div>
 
-    <button type="button" onclick="showOrderList()">선택</button>
+    <button type="button" onclick="fetchOrderData()">선택</button>
   </form>
-
-  <!-- Hidden form for updating an existing menu -->
-  <div id="select-order-form" class="hidden">
-    <div class="order-list">
-      <!-- Order list will be dynamically added here -->
-    </div>
-    <button type="button" onclick="finishCooking()">완료</button>
-  </div>
 </div>
 
 
 <script>
-  // Sample data - Replace this with your actual restaurant and order data
-  const restaurantData = [
-    { restaurantId: 1, name: 'Restaurant1' },
-    { restaurantId: 2, name: 'Restaurant2' },
-    // Add more restaurant data as needed
-  ];
+  async function fetchRestaurantData() {
+    try {
+      const response = await fetch('/restaurants', {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const restaurantData = await response.json();
+      createRestaurantOptions(restaurantData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
-  const orderData = [
-    { orderId: 1, itemName: 'Item1', restaurantId: '1' },
-    { orderId: 2, itemName: 'Item2', restaurantId: '1' },
-    { orderId: 3, itemName: 'Item3', restaurantId: '1' },
-    { orderId: 4, itemName: 'Item4', restaurantId: '1' },
-    { orderId: 5, itemName: 'Item5', restaurantId: '1' },
-    { orderId: 6, itemName: 'Item6', restaurantId: '1' },
-    { orderId: 2, itemName: 'Item2', restaurantId: '2' },
-    // Add more order data as needed
-  ];
+  // Fetch restaurant data when the page loads
+  window.onload = fetchRestaurantData;
 
   // Function to dynamically create restaurant options
   function createRestaurantOptions(restaurantData) {
@@ -134,6 +126,22 @@
     });
   }
 
+  async function fetchOrderData() {
+    const restaurantId = document.getElementById('restaurantId').value;
+    try {
+      const response = await fetch(`/restaurants/${restaurantId}/orders/matched`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const orderData = await response.json();
+      createOrderList(orderData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
   // Function to dynamically create order list
   function createOrderList(orderData) {
     const orderListContainer = document.querySelector('.order-list');
@@ -143,63 +151,36 @@
       const orderItem = document.createElement('div');
       orderItem.classList.add('order-item');
 
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.name = 'orderCheckbox';
-      checkbox.value = order.orderId;
-
-      // Add an event listener to the checkbox
-      checkbox.addEventListener('change', function() {
-        const checkboxes = document.querySelectorAll('input[name="orderCheckbox"]');
-        checkboxes.forEach(box => {
-          if (box !== this) box.checked = false;
-        });
-      });
+      const button = document.createElement('button');
+      button.textContent = '완료';
+      button.onclick = function() {
+        updateOrderFinish(order.orderId);
+      };
 
       const label = document.createElement('label');
-      label.textContent = order.itemName;
+      label.textContent = `${order.menuName} (주문 시간: ${order.orderTime})`;
 
-      orderItem.appendChild(checkbox);
+      orderItem.appendChild(button);
       orderItem.appendChild(label);
 
       orderListContainer.appendChild(orderItem);
     });
   }
 
-  // Call the function to create restaurant options with the sample data
-  createRestaurantOptions(restaurantData);
-
-  function showOrderList() {
-    const selectButton = document.querySelector('#select-restaurant-form button[type="button"]');
-    selectButton.style.display = 'none';
-
-    document.getElementById("select-order-form").classList.remove('hidden');
-
-    const selectedRestaurantId = document.getElementById('restaurantId').value;
-    const filteredOrders = orderData.filter(order => order.restaurantId === selectedRestaurantId);  // 수정된 부분: 형 변환 제거
-    createOrderList(filteredOrders);
-
-    const orderListContainer = document.querySelector('.order-list');
-    orderListContainer.style.display = 'block';
-  }
-
-  function finishCooking() {
-    const selectedOrderId = document.querySelector('input[name="orderCheckbox"]:checked');
-
-    if (selectedOrderId) {
-      const orderId = selectedOrderId.value;
-      updateOrderStatus(orderId, "cooked");
-    } else {
-      alert('주문을 선택해주세요.');
+  async function updateOrderFinish(orderId) {
+    try {
+      const response = await fetch(`/orders/${orderId}/finish`, {
+        method: 'PUT',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      alert('주문 처리가 완료되었습니다.');
+      await fetchOrderData();
+    } catch (error) {
+      console.error('Error:', error);
     }
   }
-
-  function updateOrderStatus(orderId, status) {
-    // Implement logic to handle order status update in the database
-    alert(`주문 상태를 업데이트합니다.\n(주문 번호: ${orderId})`);
-  }
-
-
 </script>
 </body>
 </html>
