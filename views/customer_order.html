@@ -64,37 +64,91 @@
   <h2>Order Food</h2>
   <form id="order-form">
     <label>주문할 메뉴 선택</label>
-
-    <!-- Display each menu option with checkboxes -->
-    <div class="checkbox-container">
-      <input type="checkbox" id="menu1" name="menuId" value="1">
-      <label for="menu1">메뉴1 - 10.0원</label>
+    <div id="checkbox-container">
+      <!-- Checkboxes will be dynamically added here -->
     </div>
-
-    <div class="checkbox-container">
-      <input type="checkbox" id="menu2" name="menuId" value="2">
-      <label for="menu2">메뉴2 - 15.0원</label>
-    </div>
-
-    <!-- Add more menu options as needed -->
-
     <button type="submit">주문</button>
   </form>
 </div>
 
 <script>
+  const checkboxContainer = document.getElementById('checkbox-container');
   const orderForm = document.getElementById('order-form');
+  const restaurantId = customer_search_result.restaurantId; // customer_search_result에서 restaurantId를 가져옵니다.
 
-  // Handle the form submission
-  orderForm.addEventListener('submit', function(event) {
+  async function fetchMenuData() {
+    try {
+      const response = await fetch(`/restaurant/${restaurantId}/menus`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const menuData = await response.json();
+      createMenuCheckboxes(menuData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  window.onload = fetchMenuData;
+
+  function createMenuCheckboxes(menuData) {
+    menuData.forEach(menu => {
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `menu${menu.menu_id}`;
+      checkbox.name = 'menuId';
+      checkbox.value = menu.menu_id;
+
+      const label = document.createElement('label');
+      label.for = `menu${menu.menu_id}`;
+      label.textContent = `${menu.name} - ${menu.price}원`;
+
+      const checkboxDiv = document.createElement('div');
+      checkboxDiv.classList.add('checkbox-container');
+      checkboxDiv.appendChild(checkbox);
+      checkboxDiv.appendChild(label);
+
+      checkboxContainer.appendChild(checkboxDiv);
+    });
+  }
+
+  orderForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 
-    // Get the selected menu IDs
     const selectedMenuIds = Array.from(document.querySelectorAll('input[name="menuId"]:checked'))
             .map(checkbox => checkbox.value);
 
-    // Add your logic for what to do with the selected menu IDs here
-    console.log('Selected Menu IDs:', selectedMenuIds);
+    try {
+      const deliveryResponse = await fetch(`/orders/delivery`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ restaurantId }),
+      });
+      if (!deliveryResponse.ok) {
+        throw new Error(`HTTP error! status: ${deliveryResponse.status}`);
+      }
+      const deliveryData = await deliveryResponse.json();
+
+      const response = await fetch('/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ deliveryId: deliveryData.deliveryId, restaurantId, menuId: selectedMenuIds }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      console.log('주문 생성 성공:', data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   });
 </script>
 </body>
