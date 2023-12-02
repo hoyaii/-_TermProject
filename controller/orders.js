@@ -1,4 +1,5 @@
 const {  } = require('../models');
+const db = require(process.cwd() + '/models');
 
 exports.createOrder = async (req, res, next) => {
     const { deliveryId, restaurantId, menuId } = req.body;
@@ -10,7 +11,7 @@ exports.createOrder = async (req, res, next) => {
         // order_time 구하기
         const currentTime = new Date();
 
-        await connection.query(sql, [deliveryId, restaurantId, menuId, userId, 'notMatched', currentTime]);
+        await db.query(sql, [deliveryId, restaurantId, menuId, userId, 'notMatched', currentTime]);
 
         res.status(200).send('Order created successfully');
     } catch (error) {
@@ -25,9 +26,9 @@ exports.getOrderByCustomerId = async (req, res, next) => {
     const menuSql = "SELECT m.name FROM Orders o JOIN Menu m ON o.menu_id = m.menu_id WHERE o.order_id = ?";
 
     try {
-        const [orderResults] = await pool.query(orderSql, [customerId]);
+        const [orderResults] = await db.query(orderSql, [customerId]);
         const orderData = await Promise.all(orderResults.map(async order => {
-            const [menuResults] = await pool.query(menuSql, [order.order_id]);
+            const [menuResults] = await db.query(menuSql, [order.order_id]);
             return {
                 orderId: order.order_id,
                 menuName: menuResults[0] ? menuResults[0].name : null,
@@ -47,12 +48,12 @@ exports.getDeliveryList = async (req, res, next) => {
 
     try {
         // delivery_id, restaurant_id, delivery_address를 구한다
-        let [rows] = await connection.query("SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = ?", [userId, "accepted"]);
+        let [rows] = await db.query("SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = ?", [userId, "accepted"]);
 
         // 각 배달에 대한 restaurantAddress를 추가한다
         for (let i = 0; i < rows.length; i++) {
             const restaurantId = rows[i].restaurant_id;
-            let [restaurantRows] = await connection.query("SELECT address FROM Restaurant WHERE restaurant_id = ?", [restaurantId]);
+            let [restaurantRows] = await db.query("SELECT address FROM Restaurant WHERE restaurant_id = ?", [restaurantId]);
             rows[i].restaurantAddress = restaurantRows[0].address;
         }
 
@@ -69,7 +70,7 @@ exports.getDeliveryStatus = async (req, res, next) => {
     const sql = "SELECT status FROM Orders WHERE order_id = ?";
 
     try {
-        const [results] = await pool.query(sql, [orderId]);
+        const [results] = await db.query(sql, [orderId]);
         if (results.length > 0) {
             res.send(results[0].status);
         } else {
@@ -87,14 +88,14 @@ exports.requestDelivery = async (req, res, next) => {
 
     try {
         // 사용자의 주소를 가져옵니다.
-        const userAddress = await connection.query("SELECT address FROM User WHERE user_id = ?", [userId]);
+        const userAddress = await db.query("SELECT address FROM User WHERE user_id = ?", [userId]);
 
         // 식당의 서비스 지역을 가져옵니다.
-        const serviceAreaResult = await connection.query("SELECT service_area FROM Restaurant WHERE restaurant_id = ?", [restaurantId]);
+        const serviceAreaResult = await db.query("SELECT service_area FROM Restaurant WHERE restaurant_id = ?", [restaurantId]);
         const serviceArea = serviceAreaResult[0].service_area;
 
         // 서비스 지역에서 현재 사용 가능한 배달원을 모두 가져옵니다.
-        const availableDeliveryPersons = await connection.query("SELECT user_id FROM User WHERE service_area = ? AND status = 'free'", [serviceArea]);
+        const availableDeliveryPersons = await db.query("SELECT user_id FROM User WHERE service_area = ? AND status = 'free'", [serviceArea]);
 
         if (availableDeliveryPersons.length === 0) {
             console.log("배달 가능한 배달원이 존재하지 않습니다.");
@@ -106,13 +107,13 @@ exports.requestDelivery = async (req, res, next) => {
         const selectedDeliveryPersonId = availableDeliveryPersons[randomIndex].user_id;
 
         // 새로운 배달 요청을 생성합니다.
-        await connection.query(
+        await db.query(
             "INSERT INTO Delivery (restaurant_id, delivery_address, delivery_person_id, status) VALUES (?, ?, ?, 'notAccepted')",
             [restaurantId, userAddress[0].address, selectedDeliveryPersonId]
         );
 
         // 새로 생성된 배달 요청의 ID를 가져옵니다.
-        const deliveryId = await connection.query("SELECT LAST_INSERT_ID() as delivery_id");
+        const deliveryId = await db.query("SELECT LAST_INSERT_ID() as delivery_id");
 
         res.status(200).json({ deliveryId: deliveryId[0].delivery_id });
     } catch (error) {
@@ -127,20 +128,20 @@ exports.finishDelivery = async (req, res, next) => {
 
     try {
         // deliveryId를 가지고 orderId를 구한다
-        let [rows] = await connection.query("SELECT order_id FROM Orders WHERE delivery_id = ? AND status = ?", [deliveryId, "cooked"]);
+        let [rows] = await db.query("SELECT order_id FROM Orders WHERE delivery_id = ? AND status = ?", [deliveryId, "cooked"]);
         if (rows.length === 0) {
             return res.status(404).send('해당 배달 ID에 대한 주문이 없습니다.');
         }
         const orderId = rows[0].order_id;
 
         // 배달 상태를 업데이트한다
-        [rows] = await connection.query("UPDATE Delivery SET status = ? WHERE delivery_id = ?", ["finished", deliveryId]);
+        [rows] = await db.query("UPDATE Delivery SET status = ? WHERE delivery_id = ?", ["finished", deliveryId]);
 
         // 주문 상태를 업데이트한다
-        [rows] = await connection.query("UPDATE Orders SET status = ? WHERE order_id = ?", ["finished", orderId]);
+        [rows] = await db.query("UPDATE Orders SET status = ? WHERE order_id = ?", ["finished", orderId]);
 
         // 유저 정보를 업데이트한다
-        [rows] = await connection.query("UPDATE User SET status = ? WHERE user_id = ?", ["free", userId]);
+        [rows] = await db.query("UPDATE User SET status = ? WHERE user_id = ?", ["free", userId]);
 
         res.status(200).send('배달 및 주문 상태가 성공적으로 업데이트되었습니다.');
     } catch (error) {
@@ -155,7 +156,7 @@ exports.getDeliveryHistory = async (req, res, next) => {
 
     try {
         // delivery_id 리스트를 구한다
-        let [deliveryRows] = await connection.query("SELECT delivery_id FROM Delivery WHERE delivery_person_id = ? AND status = 'finished'", [userId]);
+        let [deliveryRows] = await db.query("SELECT delivery_id FROM Delivery WHERE delivery_person_id = ? AND status = 'finished'", [userId]);
         let deliveryIdListSize = deliveryRows.length; // delivery_id 리스트의 크기를 구한다
 
         let deliveryHistory = [];
@@ -163,12 +164,12 @@ exports.getDeliveryHistory = async (req, res, next) => {
         // 각 delivery_id에 대한 정보를 추가한다
         for (let i = 0; i < deliveryRows.length; i++) {
             const deliveryId = deliveryRows[i].delivery_id;
-            let [orderRows] = await connection.query("SELECT order_id, menu_id, restaurant_id, order_time FROM Orders WHERE delivery_id = ? AND status = 'finished'", [deliveryId]);
+            let [orderRows] = await db.query("SELECT order_id, menu_id, restaurant_id, order_time FROM Orders WHERE delivery_id = ? AND status = 'finished'", [deliveryId]);
 
             for (let order of orderRows) {
-                let [menuRows] = await connection.query("SELECT name FROM Menu WHERE menu_id = ?", [order.menu_id]);
-                let [restaurantRows] = await connection.query("SELECT name FROM Restaurant WHERE restaurant_id = ?", [order.restaurant_id]);
-                let [deliveryAddressRows] = await connection.query("SELECT delivery_address FROM Delivery WHERE delivery_id = (SELECT delivery_id FROM Orders WHERE order_id = ?)", [order.order_id]);
+                let [menuRows] = await db.query("SELECT name FROM Menu WHERE menu_id = ?", [order.menu_id]);
+                let [restaurantRows] = await db.query("SELECT name FROM Restaurant WHERE restaurant_id = ?", [order.restaurant_id]);
+                let [deliveryAddressRows] = await db.query("SELECT delivery_address FROM Delivery WHERE delivery_id = (SELECT delivery_id FROM Orders WHERE order_id = ?)", [order.order_id]);
 
                 // 주문 시간을 원하는 형식으로 포맷한다
                 let formattedOrderTime = formatDate(order.order_time);
@@ -195,7 +196,7 @@ exports.getDeliveryRequest = async (req, res, next) => {
     const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
-        let [rows] = await connection.query(
+        let [rows] = await db.query(
             "SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = 'notAccepted'",
             [userId]
         );
@@ -212,7 +213,7 @@ exports.acceptDeliveryRequest = async (req, res, next) => {
     const { deliveryId } = req.body; // 요청 본문에서 배달 ID를 가져옵니다.
 
     try {
-        const [orderIds] = await connection.query(
+        const [orderIds] = await db.query(
             "SELECT order_id FROM Orders WHERE delivery_id = ? AND status = 'notMatched'",
             [deliveryId]
         );
@@ -220,15 +221,15 @@ exports.acceptDeliveryRequest = async (req, res, next) => {
         if (orderIds.length > 0) {
             const orderId = orderIds[0].order_id;
 
-            await connection.query(
+            await db.query(
                 "UPDATE Delivery SET status = 'accepted' WHERE delivery_id = ?",
                 [deliveryId]
             );
-            await connection.query(
+            await db.query(
                 "UPDATE Orders SET status = 'deliveryMatched' WHERE order_id = ?",
                 [orderId]
             );
-            await connection.query(
+            await db.query(
                 "UPDATE User SET status = 'notFree' WHERE user_id = ?",
                 [userId]
             );

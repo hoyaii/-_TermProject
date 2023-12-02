@@ -1,4 +1,5 @@
 const { User, Order } = require('../models');
+const db = require(process.cwd() + '/models');
 
 
 exports.addDeliveryPersonInfo = async (req, res, next) => {
@@ -6,7 +7,7 @@ exports.addDeliveryPersonInfo = async (req, res, next) => {
     const { serviceArea } = req.body; // 요청 본문에서 서비스 지역을 가져옵니다.
 
     try {
-        await connection.query(
+        await db.query(
             "UPDATE User SET service_area = ?, status = 'free' WHERE user_id = ?",
             [serviceArea, userId]
         );
@@ -22,7 +23,7 @@ exports.getRole = async (req, res, next) => {
     const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
-        let [rows] = await connection.query(
+        let [rows] = await db.query(
             "SELECT role FROM User WHERE user_id = ?",
             [userId]
         );
