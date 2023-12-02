@@ -114,15 +114,26 @@
   const checkboxContainer = document.getElementById('checkbox-container');
   const reviewContainer = document.getElementById('review-container');
 
-  // Sample data - Replace this with your actual order data
-  const orderData = [
-    { orderId: 1, menuName: 'Menu1', orderTime: '2023-12-01T12:30:00' },
-    { orderId: 2, menuName: 'Menu2', orderTime: '2023-12-01T13:45:00' },
-    // Add more order data as needed
-  ];
+  async function fetchOrderData() {
+    try {
+      const response = await fetch(`/orders/customer`, {  // 수정된 부분
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const orderData = await response.json();
+      createOrderOptions(orderData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  // Fetch order data when the page loads
+  window.onload = fetchOrderData;
 
   // Function to dynamically create checkboxes based on order data
-  function createCheckboxes(orderData) {
+  function createOrderOptions(orderData) {
     orderData.forEach(order => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -132,7 +143,7 @@
 
       const label = document.createElement('label');
       label.for = `order${order.orderId}`;
-      label.textContent = `주문${order.orderId} - ${order.menuName} | ${order.orderTime}`;
+      label.textContent = `주문 ID: ${order.orderId} | 메뉴명: ${order.menuName} | 주문 시간: ${order.orderTime}`;
 
       const checkboxDiv = document.createElement('div');
       checkboxDiv.classList.add('checkbox-container');
@@ -143,47 +154,63 @@
     });
   }
 
-  // Call the function to create checkboxes with the sample data
-  createCheckboxes(orderData);
-
   // Function to show the review form
   function showReviewForm() {
-    // Get the selected order IDs
     const selectedOrderIds = Array.from(document.querySelectorAll('input[name="orderId"]:checked'))
             .map(checkbox => checkbox.value);
 
-    // 체크 박스가 선택되지 않았을 때는 함수를 종료합니다.
     if (selectedOrderIds.length === 0) {
       alert('주문을 선택해주세요.');
       return;
     }
 
-    // 체크 박스가 두 개 이상 선택되었을 때는 함수를 종료합니다.
     if (selectedOrderIds.length > 1) {
       alert('하나의 주문만 선택해주세요.');
       return;
     }
 
-    // Show the review form
     reviewContainer.style.display = 'block';
-
-    // '확인' 버튼을 숨깁니다.
     document.querySelector('#delivery-form button').style.display = 'none';
   }
 
-  // Handle the review form submission
   const reviewForm = document.getElementById('review-form');
-  reviewForm.addEventListener('submit', function(event) {
+  reviewForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const rating = document.getElementById('rating').value;
     const comment = document.getElementById('comment').value;
+    const selectedOrderIds = Array.from(document.querySelectorAll('input[name="orderId"]:checked'))
+            .map(checkbox => checkbox.value);
 
-    // Assume you have a function named submitReviewService
-    // that handles the submission of reviews
-    submitReviewService(selectedOrderIds, rating, comment);
+    if (selectedOrderIds.length === 0) {
+      alert('주문을 선택해주세요.');
+      return;
+    }
 
-    // Optional: You can add logic to handle the response or redirect the user.
+    if (selectedOrderIds.length > 1) {
+      alert('하나의 주문만 선택해주세요.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orderId: selectedOrderIds[0], rating, comment }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      alert('리뷰가 성공적으로 작성되었습니다.');
+      window.location.href = '/customer_main.html';
+    } catch (error) {
+      console.error('Error:', error);
+      alert('리뷰 작성에 실패하였습니다.');
+    }
   });
 </script>
 </body>

@@ -73,8 +73,10 @@
 
 <script>
   const checkboxContainer = document.getElementById('checkbox-container');
-  const orderForm = document.getElementById('order-form');
-  const restaurantId = customer_search_result.restaurantId; // customer_search_result에서 restaurantId를 가져옵니다.
+
+  // Get restaurantId from the URL query string
+  const urlParams = new URLSearchParams(window.location.search);
+  const restaurantId = urlParams.get('restaurantId');
 
   async function fetchMenuData() {
     try {
@@ -91,8 +93,10 @@
     }
   }
 
+  // Fetch menu data when the page loads
   window.onload = fetchMenuData;
 
+  // Function to dynamically create checkboxes based on menu data
   function createMenuCheckboxes(menuData) {
     menuData.forEach(menu => {
       const checkbox = document.createElement('input');
@@ -114,31 +118,37 @@
     });
   }
 
+  const orderForm = document.getElementById('order-form');
+
+  // 주문 폼 제출 핸들러
   orderForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 
+    // 선택한 메뉴 ID들을 가져옵니다.
     const selectedMenuIds = Array.from(document.querySelectorAll('input[name="menuId"]:checked'))
             .map(checkbox => checkbox.value);
 
+    // 먼저 배달 요청을 보냅니다.
     try {
       const deliveryResponse = await fetch(`/orders/delivery`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ restaurantId }),
+        body: JSON.stringify({ restaurantId }), // 식당 ID를 전달합니다.
       });
       if (!deliveryResponse.ok) {
         throw new Error(`HTTP error! status: ${deliveryResponse.status}`);
       }
       const deliveryData = await deliveryResponse.json();
 
+      // 성공적으로 배달 요청을 받으면, 이 배달 ID를 이용해 주문을 생성합니다.
       const response = await fetch('/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ deliveryId: deliveryData.deliveryId, restaurantId, menuId: selectedMenuIds }),
+        body: JSON.stringify({ deliveryId: deliveryData.deliveryId, restaurantId, menuId: selectedMenuIds }), // 배달 ID, 식당 ID, 선택한 메뉴 ID들을 전달합니다.
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
