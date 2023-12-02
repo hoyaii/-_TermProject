@@ -72,7 +72,7 @@
       <option value="울산">울산</option>
     </select>
 
-    <button type="submit">입력 완료</button>
+    <button type="submit">완료</button>
   </form>
 </div>
 <script>
@@ -91,7 +91,7 @@
 
     if (response.ok) {
       alert('배달원 정보가 성공적으로 업데이트되었습니다.');
-      window.location.reload();
+      window.location.href = '/login.html';
     } else {
       alert('배달원 정보 업데이트에 실패하였습니다.');
     }

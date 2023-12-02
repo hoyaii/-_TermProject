@@ -34,12 +34,6 @@
       margin-top: 10px;
     }
 
-    .checkbox-container {
-      display: flex;
-      align-items: center;
-      margin-top: 5px;
-    }
-
     input[type="checkbox"] {
       margin-right: 5px;
     }
@@ -68,32 +62,41 @@
     <div id="checkbox-container">
       <!-- Checkboxes will be dynamically added here -->
     </div>
-    <button type="button" onclick="acceptDeliveryRequest()">수락</button>
+    <button type="button" onclick="acceptRequest()">수락</button>
   </form>
 </div>
 
 <script>
   const checkboxContainer = document.getElementById('checkbox-container');
 
-  // Sample data - Replace this with your actual delivery request data
-  const deliveryRequestData = [
-    { deliveryId: 1, restaurantAddress: 'Restaurant1 Address', deliveryAddress: 'Delivery1 Address' },
-    { deliveryId: 2, restaurantAddress: 'Restaurant2 Address', deliveryAddress: 'Delivery2 Address' },
-    // Add more delivery request data as needed
-  ];
+  async function fetchDeliveryRequest() {
+    try {
+      const response = await fetch('/orders/delivery/request', {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const deliveryRequestData = await response.json();
+      createCheckboxes(deliveryRequestData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
-  // Function to dynamically create checkboxes based on delivery request data
+  window.onload = fetchDeliveryRequest;
+
   function createCheckboxes(deliveryRequestData) {
     deliveryRequestData.forEach(request => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
-      checkbox.id = `delivery${request.deliveryId}`;
+      checkbox.id = `delivery${request.delivery_id}`;
       checkbox.name = 'deliveryId';
-      checkbox.value = request.deliveryId;
+      checkbox.value = request.delivery_id;
 
       const label = document.createElement('label');
-      label.for = `delivery${request.deliveryId}`;
-      label.textContent = `id: ${request.deliveryId} | 가게 주소: ${request.restaurantAddress} | 배달할 주소: ${request.deliveryAddress}`;
+      label.for = `delivery${request.delivery_id}`;
+      label.textContent = `id: ${request.delivery_id} | 가게 주소: ${request.restaurant_id} | 배달할 주소: ${request.delivery_address}`;
 
       const checkboxDiv = document.createElement('div');
       checkboxDiv.classList.add('checkbox-container');
@@ -104,38 +107,27 @@
     });
   }
 
-  // Call the function to create checkboxes with the sample data
-  createCheckboxes(deliveryRequestData);
+  async function acceptRequest() {
+    const checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
+    for (let i = 0; i < checkboxes.length; i++) {
+      const deliveryId = checkboxes[i].value;
+      const response = await fetch('/orders/delivery/accept', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ deliveryId }),
+      });
 
-  // Function to handle accepting delivery request
-  function acceptDeliveryRequest() {
-    // Get the selected delivery IDs
-    const selectedDeliveryIds = Array.from(document.querySelectorAll('input[name="deliveryId"]:checked'))
-            .map(checkbox => checkbox.value);
-
-    // 체크 박스가 선택되지 않았을 때는 함수를 종료합니다.
-    if (selectedDeliveryIds.length === 0) {
-      alert('수락하고 싶은 배달 요청을 선택하세요.');
-      return;
+      if (response.ok) {
+        alert('배달 요청이 성공적으로 수락되었습니다.');
+        window.location.href = '/login.html';
+      } else {
+        alert('배달 요청 수락에 실패하였습니다.');
+      }
     }
-
-    // 체크 박스가 두 개 이상 선택되었을 때는 함수를 종료합니다.
-    if (selectedDeliveryIds.length > 1) {
-      alert('하나의 배달 요청만 선택해주세요.');
-      return;
-    }
-
-    // 체크 박스가 한 개 선택되었을 때만 아래 코드가 실행됩니다.
-    const selectedDeliveryId = selectedDeliveryIds[0];
-
-    // Assume you have functions for the logic below
-    const orderId = getOrderIdByDeliveryId(selectedDeliveryId, 'notMatched');
-    updateDeliveryStatus('accepted', selectedDeliveryId);
-    updateOrderStatus('deliveryMatched', orderId);
-    updateUserStatus('notFree');
-
-    alert('요청이 수락되었습니다.');
   }
+
 </script>
 </body>
 </html>

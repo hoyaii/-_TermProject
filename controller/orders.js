@@ -191,6 +191,59 @@ exports.getDeliveryHistory = async (req, res, next) => {
     }
 };
 
+exports.getDeliveryRequest = async (req, res, next) => {
+    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+
+    try {
+        let [rows] = await connection.query(
+            "SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = 'notAccepted'",
+            [userId]
+        );
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('배달 요청 조회에 실패하였습니다.');
+        next(error);
+    }
+};
+
+exports.acceptDeliveryRequest = async (req, res, next) => {
+    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const { deliveryId } = req.body; // 요청 본문에서 배달 ID를 가져옵니다.
+
+    try {
+        const [orderIds] = await connection.query(
+            "SELECT order_id FROM Orders WHERE delivery_id = ? AND status = 'notMatched'",
+            [deliveryId]
+        );
+
+        if (orderIds.length > 0) {
+            const orderId = orderIds[0].order_id;
+
+            await connection.query(
+                "UPDATE Delivery SET status = 'accepted' WHERE delivery_id = ?",
+                [deliveryId]
+            );
+            await connection.query(
+                "UPDATE Orders SET status = 'deliveryMatched' WHERE order_id = ?",
+                [orderId]
+            );
+            await connection.query(
+                "UPDATE User SET status = 'notFree' WHERE user_id = ?",
+                [userId]
+            );
+
+            res.status(200).send('배달 요청이 성공적으로 수락되었습니다.');
+        } else {
+            res.status(400).send('배달 요청을 수락할 수 없습니다.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('배달 요청 수락에 실패하였습니다.');
+        next(error);
+    }
+};
+
 function formatDate(date) {
     // 여기서 date를 원하는 형식의 문자열로 변환한다
     // 예를 들어, yyyy-mm-dd 형식으로 변환하려면 다음과 같이 한다:
