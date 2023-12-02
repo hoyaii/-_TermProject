@@ -20,12 +20,12 @@ exports.addDeliveryPersonInfo = async (req, res, next) => {
 };
 
 exports.getRole = async (req, res, next) => {
-    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const { email } = req.body;
 
     try {
         let [rows] = await db.query(
-            "SELECT role FROM User WHERE user_id = ?",
-            [userId]
+            "SELECT role FROM User WHERE email = ?",
+            [email]
         );
         if (rows.length > 0) {
             res.status(200).json({ role: rows[0].role });
