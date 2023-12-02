@@ -75,15 +75,26 @@
 <script>
   const checkboxContainer = document.getElementById('checkbox-container');
 
-  // Sample data - Replace this with your actual order data
-  const orderData = [
-    { orderId: 1, menuName: 'Menu1', orderTime: '2023-12-01T10:00:00' },
-    { orderId: 2, menuName: 'Menu2', orderTime: '2023-12-01T12:00:00' },
-    // Add more order data as needed
-  ];
+  async function fetchOrderData() {
+    try {
+      const response = await fetch(`/orders/customer`, {  // 수정된 부분
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const orderData = await response.json();
+      createOrderOptions(orderData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  // Fetch order data when the page loads
+  window.onload = fetchOrderData;
 
   // Function to dynamically create checkboxes based on order data
-  function createCheckboxes(orderData) {
+  function createOrderOptions(orderData) {
     orderData.forEach(order => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -104,34 +115,27 @@
     });
   }
 
-  // Call the function to create checkboxes with the order data
-  createCheckboxes(orderData);
-
   // Function to handle checking delivery status
-  function checkDeliveryStatus() {
-    // Get the selected order IDs
-    const selectedOrderIds = Array.from(document.querySelectorAll('input[name="orderId"]:checked'))
-            .map(checkbox => checkbox.value);
+  async function checkDeliveryStatus() {
+    const selectedOrderId = document.querySelector('input[name="orderId"]:checked')?.value;
 
-    // 체크 박스가 선택되지 않았을 때는 함수를 종료합니다.
-    if (selectedOrderIds.length === 0) {
+    if (!selectedOrderId) {
       alert('확인하고 싶은 주문을 선택하세요.');
       return;
     }
 
-    // 체크 박스가 두 개 이상 선택되었을 때는 함수를 종료합니다.
-    if (selectedOrderIds.length > 1) {
-      alert('하나의 주문만 선택해주세요.');
-      return;
+    try {
+      const response = await fetch(`/orders/${selectedOrderId}/delivery`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const deliveryStatus = await response.text();
+      alert(`해당 주문의 배달 상태는 ${deliveryStatus}입니다!`);
+    } catch (error) {
+      console.error('Error:', error);
     }
-
-    // 체크 박스가 한 개 선택되었을 때만 아래 코드가 실행됩니다.
-    const selectedOrderId = selectedOrderIds[0];
-
-    // Assume you have a function to get the delivery status by order ID
-    const deliveryStatus = getDeliveryStatusByOrderId(selectedOrderId);
-
-    alert(`해당 주문의 배달 상태는 ${deliveryStatus}입니다!`);
   }
 </script>
 </body>

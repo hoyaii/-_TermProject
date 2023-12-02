@@ -1,50 +1,41 @@
-const { Order, DeliveryPerson } = require('../models');
+const {  } = require('../models');
 
-exports.createOrder = async (req, res, next) => {
+exports.getOrderByCustomerId = async (req, res, next) => {
+    const customerId = req.user.id;  // 수정된 부분
+    const orderSql = "SELECT order_id, order_time FROM Orders WHERE customer_id = ?";
+    const menuSql = "SELECT m.name FROM Orders o JOIN Menu m ON o.menu_id = m.menu_id WHERE o.order_id = ?";
+
     try {
-        const newOrder = await Order.create({
-            userId: req.user.id,
-            restaurantId: req.body.restaurantId,
-            menuId: req.body.menuId,
-        });
-        res.json(newOrder);
-    } catch (error) {
-        console.error(error);
-        next(error);
+        const [orderResults] = await pool.query(orderSql, [customerId]);
+        const orderData = await Promise.all(orderResults.map(async order => {
+            const [menuResults] = await pool.query(menuSql, [order.order_id]);
+            return {
+                orderId: order.order_id,
+                menuName: menuResults[0] ? menuResults[0].name : null,
+                orderTime: order.order_time,
+            };
+        }));
+
+        res.json(orderData);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 
-exports.updateOrder = async (req, res, next) => {
-    try {
-        const updatedOrder = await Order.update({
-            deliveryStatus: req.body.deliveryStatus,
-        }, {
-            where: { id: req.params.orderId },
-        });
-        if (!updatedOrder) {
-            return res.status(404).send('Order not found');
-        }
-        res.json(updatedOrder);
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-};
+exports.getDeliveryStatus = async (req, res, next) => {
+    const orderId = req.params.orderId;
+    const sql = "SELECT status FROM Orders WHERE order_id = ?";
 
-exports.getDeliveryOrders = async (req, res, next) => {
     try {
-        const deliveryPerson = await DeliveryPerson.findOne({
-            where: { id: req.params.deliveryPersonId },
-        });
-        if (!deliveryPerson) {
-            return res.status(404).send('Delivery person not found');
+        const [results] = await pool.query(sql, [orderId]);
+        if (results.length > 0) {
+            res.send(results[0].status);
+        } else {
+            res.send('해당하는 주문이 없습니다.');
         }
-        const orders = await Order.findAll({
-            where: { deliveryPersonId: req.params.deliveryPersonId },
-        });
-        res.json(orders);
-    } catch (error) {
-        console.error(error);
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };

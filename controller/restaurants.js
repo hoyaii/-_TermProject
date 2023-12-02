@@ -1,8 +1,8 @@
-const { Restaurant, Menu } = require('../models');
+const { } = require('../models');
 
 exports.createRestaurant = async (req, res, next) => {
     const { name, address, cuisineType, serviceArea } = req.body;
-    const userId = req.user.id; // Assuming the user's ID is stored in req.user.id
+    const userId = req.user.id;
     const sql = "INSERT INTO Restaurant (name, address, cuisine_type, owner_id, service_area) VALUES (?, ?, ?, ?, ?)";
 
     try {
@@ -98,7 +98,7 @@ exports.deleteMenu = async (req, res, next) => {
     }
 };
 
-exports.getMatchedOrderHistory = async (req, res, next) => {
+exports.getOrderMatchedByRestaurantId = async (req, res, next) => {
     const restaurantId = req.params.restaurantId;
     const orderHistorySql = "SELECT order_id, status, menu_id, order_time FROM Orders WHERE restaurant_id = ? AND status = 'deliveryMatched'";
     const menuNameSql = "SELECT name FROM Menu WHERE menu_id = ?";
@@ -122,7 +122,7 @@ exports.getMatchedOrderHistory = async (req, res, next) => {
     }
 };
 
-exports.getOrderHistory = async (req, res, next) => {
+exports.getOrderByRestaurantId = async (req, res, next) => {
     const restaurantId = req.params.restaurantId;
     const orderHistorySql = "SELECT order_id, status, menu_id, order_time FROM Orders WHERE restaurant_id = ?";
     const menuNameSql = "SELECT name FROM Menu WHERE menu_id = ?";
