@@ -57,10 +57,11 @@ app.use((req, res, next) => {
 });
 
 // 에러 처리 미들웨어
+// 에러 처리 미들웨어
 app.use((err, req, res, next) => {
+    console.error(err); // 에러 출력
     res.status(err.status || 500).render('errors.html', { error: err });
 });
-
 app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기 중');
 });
