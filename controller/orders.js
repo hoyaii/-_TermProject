@@ -42,6 +42,28 @@ exports.getOrderByCustomerId = async (req, res, next) => {
     }
 };
 
+exports.getDeliveryList = async (req, res, next) => {
+    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+
+    try {
+        // delivery_id, restaurant_id, delivery_address를 구한다
+        let [rows] = await connection.query("SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = ?", [userId, "accepted"]);
+
+        // 각 배달에 대한 restaurantAddress를 추가한다
+        for (let i = 0; i < rows.length; i++) {
+            const restaurantId = rows[i].restaurant_id;
+            let [restaurantRows] = await connection.query("SELECT address FROM Restaurant WHERE restaurant_id = ?", [restaurantId]);
+            rows[i].restaurantAddress = restaurantRows[0].address;
+        }
+
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('배달 목록 조회에 실패하였습니다.');
+        next(error);
+    }
+};
+
 exports.getDeliveryStatus = async (req, res, next) => {
     const orderId = req.params.orderId;
     const sql = "SELECT status FROM Orders WHERE order_id = ?";
@@ -59,7 +81,7 @@ exports.getDeliveryStatus = async (req, res, next) => {
     }
 };
 
-exports.requestDeliveryService = async (req, res, next) => {
+exports.requestDelivery = async (req, res, next) => {
     const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
     const restaurantId = req.body.restaurantId; // 요청 본문에서 식당 ID를 가져옵니다.
 
@@ -95,6 +117,35 @@ exports.requestDeliveryService = async (req, res, next) => {
         res.status(200).json({ deliveryId: deliveryId[0].delivery_id });
     } catch (error) {
         console.error('Error:', error);
+        next(error);
+    }
+};
+
+exports.finishDelivery = async (req, res, next) => {
+    const deliveryId = req.body.deliveryId;
+    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+
+    try {
+        // deliveryId를 가지고 orderId를 구한다
+        let [rows] = await connection.query("SELECT order_id FROM Orders WHERE delivery_id = ? AND status = ?", [deliveryId, "cooked"]);
+        if (rows.length === 0) {
+            return res.status(404).send('해당 배달 ID에 대한 주문이 없습니다.');
+        }
+        const orderId = rows[0].order_id;
+
+        // 배달 상태를 업데이트한다
+        [rows] = await connection.query("UPDATE Delivery SET status = ? WHERE delivery_id = ?", ["finished", deliveryId]);
+
+        // 주문 상태를 업데이트한다
+        [rows] = await connection.query("UPDATE Orders SET status = ? WHERE order_id = ?", ["finished", orderId]);
+
+        // 유저 정보를 업데이트한다
+        [rows] = await connection.query("UPDATE User SET status = ? WHERE user_id = ?", ["free", userId]);
+
+        res.status(200).send('배달 및 주문 상태가 성공적으로 업데이트되었습니다.');
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('배달 및 주문 상태 업데이트에 실패하였습니다.');
         next(error);
     }
 };
