@@ -21,8 +21,10 @@ exports.createRestaurant = async (req, res, next) => {
 };
 
 exports.getRestaurantByOwnerId = async (req, res, next) => {
+    const userId = req.user.user_id;
+
     try {
-        const [rows] = await db.execute('SELECT restaurant_id AS restaurantId, name FROM Restaurant WHERE owner_id = ?', [req.user.id]);
+        const [rows] = await db.execute('SELECT restaurant_id AS restaurantId, name FROM Restaurant WHERE owner_id = ?', [userId]);
         res.json(rows);
     } catch (err) {
         console.error(err);
@@ -50,12 +52,8 @@ exports.updateRestaurant = async (req, res, next) => {
 
     try {
         const [affectedRows] = await db.query(sql, [name, address, cuisineType, serviceArea, restaurantId]);
+        res.sendStatus(200);
 
-        if (affectedRows > 0) {
-            res.sendStatus(200); // Send 'OK' status if the update was successful
-        } else {
-            res.sendStatus(404); // Send 'Not Found' status if no rows were affected (i.e., the restaurant does not exist)
-        }
     } catch (err) {
         console.error(err);
         next(err);

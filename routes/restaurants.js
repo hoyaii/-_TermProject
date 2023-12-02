@@ -10,11 +10,11 @@ const router = express.Router();
 // 음식점 등록
 router.post('/', isLoggedIn, createRestaurant);
 
-// 음식점 정보 조회 by query string
-router.get('/', isLoggedIn, getRestaurant);
+// 음식점 정보 조회 by query string -> 검색 함수에서 주소 수정해야함
+router.get('/search', isLoggedIn, getRestaurant);
 
 // 음식점 정보 조회 by ownerId
-router.get('/:restaurantId', isLoggedIn,getRestaurantByOwnerId);
+router.get('/', isLoggedIn,getRestaurantByOwnerId);
 
 // 음식점 업데이트
 router.put('/:restaurantId', isLoggedIn, updateRestaurant)

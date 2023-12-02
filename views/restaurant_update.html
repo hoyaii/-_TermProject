@@ -127,9 +127,6 @@
     });
   }
 
-  // Call the function to create restaurant options with the sample data
-  createRestaurantOptions(restaurantData);
-
   document.getElementById('update-restaurant-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -148,15 +145,9 @@
         body: JSON.stringify({ name, address, cuisineType, serviceArea }),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      alert("업데이트가 완료되었습니다.")
+      window.location.href = 'restaurant_main.html';
 
-      setTimeout(function() {
-        window.location.href = 'restaurant_main.html';
-      }, 500);
-
-      // Do something with the response (e.g., refresh the page, show a success message, etc.)
     } catch (error) {
       console.error('Error:', error);
     }
