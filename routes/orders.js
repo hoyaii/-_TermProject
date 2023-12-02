@@ -7,10 +7,13 @@ const router = express.Router();
 // 주문 이력 조회 by customerId -> 체크 필요
 router.get('/customer', isLoggedIn, getOrderByCustomerId);
 
-// 배달 상태 조회 - 각 주문에 대한
+// 주문 이력 조회 by deliver_personId
+router.get('/delivery/history', isLoggedIn, getDeliveryHistory)
+
+// 배달 상태 조회 - 각 주문에 대한 배달 상태 조회
 router.get('/:orderId/delivery', isLoggedIn, getOrderByCustomerId);
 
-// 배달 리스트 조회
+// 배달 리스트 조회 - 배달 기사 id를 통해 조회
 router.get('/delivery', isLoggedIn, getDeliveryList)
 
 // 배달 요청

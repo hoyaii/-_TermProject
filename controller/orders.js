@@ -149,3 +149,53 @@ exports.finishDelivery = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.getDeliveryHistory = async (req, res, next) => {
+    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+
+    try {
+        // delivery_id 리스트를 구한다
+        let [deliveryRows] = await connection.query("SELECT delivery_id FROM Delivery WHERE delivery_person_id = ? AND status = 'finished'", [userId]);
+        let deliveryIdListSize = deliveryRows.length; // delivery_id 리스트의 크기를 구한다
+
+        let deliveryHistory = [];
+
+        // 각 delivery_id에 대한 정보를 추가한다
+        for (let i = 0; i < deliveryRows.length; i++) {
+            const deliveryId = deliveryRows[i].delivery_id;
+            let [orderRows] = await connection.query("SELECT order_id, menu_id, restaurant_id, order_time FROM Orders WHERE delivery_id = ? AND status = 'finished'", [deliveryId]);
+
+            for (let order of orderRows) {
+                let [menuRows] = await connection.query("SELECT name FROM Menu WHERE menu_id = ?", [order.menu_id]);
+                let [restaurantRows] = await connection.query("SELECT name FROM Restaurant WHERE restaurant_id = ?", [order.restaurant_id]);
+                let [deliveryAddressRows] = await connection.query("SELECT delivery_address FROM Delivery WHERE delivery_id = (SELECT delivery_id FROM Orders WHERE order_id = ?)", [order.order_id]);
+
+                // 주문 시간을 원하는 형식으로 포맷한다
+                let formattedOrderTime = formatDate(order.order_time);
+
+                deliveryHistory.push({
+                    orderId: order.order_id,
+                    restaurantName: restaurantRows[0].name,
+                    menuName: menuRows[0].name,
+                    formattedOrderTime,
+                    deliveryAddress: deliveryAddressRows[0].delivery_address,
+                });
+            }
+        }
+
+        res.status(200).json({ deliveryHistory, deliveryIdListSize });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('배달 기록 조회에 실패하였습니다.');
+        next(error);
+    }
+};
+
+function formatDate(date) {
+    // 여기서 date를 원하는 형식의 문자열로 변환한다
+    // 예를 들어, yyyy-mm-dd 형식으로 변환하려면 다음과 같이 한다:
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고, 2자리로 만든다
+    let day = String(date.getDate()).padStart(2, '0'); // 일자를 2자리로 만든다
+    return `${year}-${month}-${day}`;
+}

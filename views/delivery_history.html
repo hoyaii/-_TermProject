@@ -47,6 +47,20 @@
     .delivery-details p:not(:last-child) {
       margin-bottom: 5px;
     }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -56,19 +70,31 @@
   <div class="delivery-history-container" id="delivery-history-container">
     <!-- Delivery history will be dynamically added here -->
   </div>
+
+  <button id="finish-btn">완료</button>
 </div>
 
 <script>
   const deliveryHistoryContainer = document.getElementById('delivery-history-container');
+  const finishBtn = document.getElementById('finish-btn');
 
-  // Sample data - Replace this with your actual delivery history data
-  const deliveryHistoryData = [
-    { orderId: 1, restaurantName: 'Restaurant1', menuName: 'Menu1', orderTime: '2023-12-01T12:30:00', deliveryAddress: 'Address1' },
-    { orderId: 2, restaurantName: 'Restaurant2', menuName: 'Menu2', orderTime: '2023-12-01T13:45:00', deliveryAddress: 'Address2' },
-    // Add more delivery history data as needed
-  ];
+  async function fetchDeliveryHistory() {
+    try {
+      const response = await fetch('/orders/delivery/history', {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const deliveryHistoryData = await response.json();
+      createDeliveryHistory(deliveryHistoryData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
-  // Function to dynamically create delivery history details
+  window.onload = fetchDeliveryHistory;
+
   function createDeliveryHistory(deliveryHistoryData) {
     deliveryHistoryData.forEach(history => {
       const deliveryDetails = document.createElement('div');
@@ -86,8 +112,9 @@
     });
   }
 
-  // Call the function to create delivery history with the sample data
-  createDeliveryHistory(deliveryHistoryData);
+  finishBtn.addEventListener('click', function() {
+    window.location.href = '/deliver_person_main.html';
+  });
 </script>
 </body>
 </html>

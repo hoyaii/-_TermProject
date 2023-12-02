@@ -101,7 +101,6 @@
 
       const label = document.createElement('label');
       label.for = `delivery${delivery.deliveryId}`;
-      // id, 가게 주소, 배달할 주소를 레이블 텍스트에 추가
       label.textContent = `id: ${delivery.deliveryId} | 가게 주소: ${delivery.restaurantAddress} | 배달할 주소: ${delivery.deliveryAddress}`;
 
       const checkboxDiv = document.createElement('div');
