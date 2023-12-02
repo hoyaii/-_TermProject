@@ -9,7 +9,7 @@ module.exports = () => {
     });
 
     index.deserializeUser((id, done) => {
-        db.execute('SELECT * FROM users WHERE id = ?', [id]) // 'users' 테이블과 컬럼명을 실제 환경에 맞게 수정해야 합니다.
+        db.execute('SELECT * FROM User WHERE id = ?', [id])
             .then(([rows, fields]) => {
                 if (rows.length > 0) {
                     done(null, rows[0]);

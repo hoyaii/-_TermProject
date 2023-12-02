@@ -8,7 +8,7 @@ module.exports = (passport) => {
         passwordField: 'password',
     }, async (email, password, done) => {
         try {
-            const [rows, fields] = await db.execute('SELECT * FROM users WHERE email = ?', [email]); // 'users' 테이블과 컬럼명을 실제 환경에 맞게 수정해야 합니다.
+            const [rows, fields] = await db.execute('SELECT * FROM User WHERE email = ?', [email]); 
 
             if (rows.length > 0) {
                 const exUser = rows[0];
