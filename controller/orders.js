@@ -3,7 +3,7 @@ const db = require(process.cwd() + '/models');
 
 exports.createOrder = async (req, res, next) => {
     const { deliveryId, restaurantId, menuId } = req.body;
-    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id;; // 세션에서 사용자 ID를 가져옵니다.
 
     const sql = "INSERT INTO Orders (delivery_id, restaurant_id, menu_id, customer_id, status, order_time) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -44,7 +44,7 @@ exports.getOrderByCustomerId = async (req, res, next) => {
 };
 
 exports.getDeliveryList = async (req, res, next) => {
-    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
         // delivery_id, restaurant_id, delivery_address를 구한다
@@ -83,7 +83,7 @@ exports.getDeliveryStatus = async (req, res, next) => {
 };
 
 exports.requestDelivery = async (req, res, next) => {
-    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
     const restaurantId = req.body.restaurantId; // 요청 본문에서 식당 ID를 가져옵니다.
 
     try {
@@ -124,7 +124,7 @@ exports.requestDelivery = async (req, res, next) => {
 
 exports.finishDelivery = async (req, res, next) => {
     const deliveryId = req.body.deliveryId;
-    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
         // deliveryId를 가지고 orderId를 구한다
@@ -152,7 +152,7 @@ exports.finishDelivery = async (req, res, next) => {
 };
 
 exports.getDeliveryHistory = async (req, res, next) => {
-    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
         // delivery_id 리스트를 구한다
@@ -193,7 +193,7 @@ exports.getDeliveryHistory = async (req, res, next) => {
 };
 
 exports.getDeliveryRequest = async (req, res, next) => {
-    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
         let [rows] = await db.query(
@@ -209,7 +209,7 @@ exports.getDeliveryRequest = async (req, res, next) => {
 };
 
 exports.acceptDeliveryRequest = async (req, res, next) => {
-    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
     const { deliveryId } = req.body; // 요청 본문에서 배달 ID를 가져옵니다.
 
     try {

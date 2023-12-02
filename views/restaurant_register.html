@@ -86,7 +86,7 @@
       <option value="울산">울산</option>
     </select>
 
-    <button type="button" type="submit">등록</button>
+    <button type="submit">등록</button>
   </form>
 </div>
 
@@ -116,7 +116,7 @@
       if (response.ok) {
         alert('음식점 정보가 성공적으로 등록되었습니다.');
         setTimeout(function() {
-          window.location.href = 'main.html';
+          window.location.href = 'restaurant_main.html';
         }, 500);
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);

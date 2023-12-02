@@ -3,7 +3,7 @@ const db = require(process.cwd() + '/models');
 
 exports.createRestaurant = async (req, res, next) => {
     const { name, address, cuisineType, serviceArea } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.user_id;
     const sql = "INSERT INTO Restaurant (name, address, cuisine_type, owner_id, service_area) VALUES (?, ?, ?, ?, ?)";
 
     try {

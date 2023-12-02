@@ -9,7 +9,7 @@ module.exports = () => {
     });
 
     index.deserializeUser((email, done) => {
-        db.execute('SELECT * FROM User WHERE email = ?', [email])
+        db.execute('SELECT user_id FROM User WHERE email = ?', [email])
             .then(([rows, fields]) => {
                 if (rows.length > 0) {
                     done(null, rows[0]);
