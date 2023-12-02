@@ -3,15 +3,15 @@ const bcrypt = require('bcrypt');
 const db = require(process.cwd() + '/models');
 
 exports.join = async (req, res, next) => {
-    const {email, nick, password} = req.body;
+    const { email, username, password, role, phoneNumber, address } = req.body;
     try {
-        const [rows] = await db.execute('SELECT * FROM users WHERE email=?', [email]);
+        const [rows] = await db.execute('SELECT * FROM User WHERE email=?', [email]);
         if (rows.length > 0) {
-            return res.redirect('/join?error=exist');
+            return res.status(409).json({ error: '이미 존재하는 이메일입니다.' });
         }
         const hash = await bcrypt.hash(password, 12);
-        await db.execute('INSERT INTO users (email, nick, password) VALUES (?, ?, ?)', [email, nick, hash]);
-        return res.redirect('/');
+        await db.execute('INSERT INTO User (email, username, password, role, phone_number, address) VALUES (?, ?, ?, ?, ?, ?)', [email, username, hash, role, phoneNumber, address]);
+        return res.json({ success: true });
     } catch (err) {
         console.error(err);
         return next(err);
@@ -25,14 +25,14 @@ exports.login = (req, res, next) => {
             return next(authErr);
         }
         if (!user) {
-            return res.redirect(`/?loginError=${info.message}`);
+            return res.status(401).json({ error: info.message });
         }
         return req.login(user, (loginErr) => {
             if (loginErr) {
                 console.error(loginErr);
                 return next(loginErr);
             }
-            return res.redirect('/');
+            return res.json({ success: true });
         });
     })(req, res, next);
 };
