@@ -93,7 +93,7 @@
     const phoneNumber = document.getElementById('phoneNumber').value;
     const address = document.getElementById('address').value;
 
-    const response = await fetch('/join', {
+    const response = await fetch('/auth/join', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

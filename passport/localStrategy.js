@@ -1,18 +1,17 @@
-const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+const db = require('../models/index'); // 데이터베이스 연결 설정을 불러옵니다.
 
-const User = require('../models/user');
-
-module.exports = () => {
+module.exports = (passport) => {
     passport.use(new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password',
+        usernameField: 'email',
+        passwordField: 'password',
     }, async (email, password, done) => {
         try {
-            const exUser = await User.findOne({ where: { email } });
+            const [rows, fields] = await db.execute('SELECT * FROM users WHERE email = ?', [email]); // 'users' 테이블과 컬럼명을 실제 환경에 맞게 수정해야 합니다.
 
-            if (exUser) {
+            if (rows.length > 0) {
+                const exUser = rows[0];
                 const result = await bcrypt.compare(password, exUser.password);
 
                 if (result) {

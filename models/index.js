@@ -3,10 +3,10 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(process.cwd() + '/config/config.json')[env];
 
 const pool = mysql.createPool({
-    host: config.host,
-    user: config.username,
-    password: config.password,
-    database: config.database,
+    host: '127.0.0.1',
+    user: "root",
+    password: "0623",
+    database: "dbTermProject",
     waitForConnections: true,
     connectionLimit: 10,
     enableKeepAlive: true,
