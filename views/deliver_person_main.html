@@ -71,27 +71,36 @@
 <div class="main-container">
   <h2>Delivery Main</h2>
   <div class="button-container">
-    <a id="request-btn" href="/request">배달 요청 확인 및 수락</a>
-    <a id="complete-btn" href="/complete">배달 완료 처리하기</a>
-    <a id="history-btn" href="/history">완료한 배달 이력 확인</a>
-    <a id="logout-btn" href="/auth/logout">로그아웃</a>
+    <a id="request-btn">배달 요청 확인 및 수락</a>
+    <a id="complete-btn">배달 완료 처리하기</a>
+    <a id="history-btn">완료한 배달 이력 확인</a>
+    <a id="logout-btn">로그아웃</a>
   </div>
 </div>
 <script>
   document.getElementById('request-btn').addEventListener('click', () => {
-    // 배달 요청 확인 및 수락 처리 로직
+    location.href = '/delivery_request.html';
   });
 
   document.getElementById('complete-btn').addEventListener('click', () => {
-    // 배달 완료 처리하기 로직
+    location.href = '/delivery_finish.html';
   });
 
   document.getElementById('history-btn').addEventListener('click', () => {
-    // 완료한 배달 이력 확인 로직
+    location.href = '/delivery_history.html';
   });
 
-  document.getElementById('logout-btn').addEventListener('click', () => {
-    // 로그아웃 처리 로직
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    const response = await fetch('/auth/logout', {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      alert('로그아웃 성공!');
+      location.href = '/login.html'; // 로그아웃 성공 후 리다이렉션할 페이지
+    } else {
+      alert('로그아웃 실패');
+    }
   });
 </script>
 </body>

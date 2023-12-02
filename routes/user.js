@@ -1,17 +1,11 @@
 const express = require('express');
 const { isLoggedIn } = require('../middlewares');
-const { getUser, updateUser, deleteUser, addDeliveryPersonInfo} = require('../controller/user');
+const { addDeliveryPersonInfo, getRole} = require('../controller/user');
 
 const router = express.Router();
 
-// 사용자 정보 조회
-router.get('/:userId', isLoggedIn, getUser);
-
-// 사용자 정보 수정
-router.put('/:userId', isLoggedIn, updateUser);
-
-// 사용자 계정 삭제
-router.delete('/:userId', isLoggedIn, deleteUser);
+// 유저 역할
+router.get('/role', getRole)
 
 // 배달원 추가 정보 입력
 router.patch('/deliveryPerson', addDeliveryPersonInfo)

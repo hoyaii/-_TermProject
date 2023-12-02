@@ -81,8 +81,29 @@
         });
 
         if (response.ok) {
+            const roleResponse = await fetch('/user/role', {
+                method: 'GET',
+            });
+            if (!roleResponse.ok) {
+                throw new Error(`HTTP error! status: ${roleResponse.status}`);
+            }
+            const roleData = await roleResponse.json();
+            const role = roleData.role;
+
+            let redirectURL;
+            switch(role) {
+                case 'Customer':
+                    redirectURL = '/customer_main.html';
+                    break;
+                case 'RestaurantOwner':
+                    redirectURL = '/restaurant_main.html';
+                    break;
+                case 'DeliveryPerson':
+                    redirectURL = '/delivery_person_main.html';
+                    break;
+            }
             alert('로그인 성공!');
-            location.href = '/'; // 로그인 성공 후 리다이렉션할 페이지
+            location.href = redirectURL; // 로그인 성공 후 리다이렉트
         } else {
             alert('로그인 실패');
         }

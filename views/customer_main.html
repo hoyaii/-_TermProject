@@ -69,32 +69,37 @@
 <div class="main-container">
   <h2>Customer Main</h2>
   <div class="button-container">
-    <a id="search-btn" href="/search">음식점 검색/주문</a>
-    <a id="status-btn" href="/status">배달 상태 확인</a>
-    <a id="review-btn" href="/review">리뷰 작성</a>
-    <a id="logout-btn" href="/auth/logout">로그아웃</a>
+    <a id="search-btn">음식점 검색/주문</a>
+    <a id="status-btn">배달 상태 확인</a>
+    <a id="review-btn">리뷰 작성</a>
+    <a id="logout-btn">로그아웃</a>
   </div>
 </div>
 
 <script>
-  document.getElementById('search-btn').addEventListener('submit', () => {
-    // 음식점 검색 처리 로직
-  });
-
-  document.getElementById('order-btn').addEventListener('click', () => {
-    // 주문 처리 로직
+  document.getElementById('search-btn').addEventListener('click', () => {
+    location.href = '/customer_search_result.html';
   });
 
   document.getElementById('status-btn').addEventListener('click', () => {
-    // 배달 상태 확인 로직
+    location.href = '/customer_delivery_status.html';
   });
 
   document.getElementById('review-btn').addEventListener('click', () => {
-    // 리뷰 작성 로직
+    location.href = '/customer_write_review.html';
   });
 
-  document.getElementById('logout-btn').addEventListener('click', () => {
-    // 로그아웃 처리 로직
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    const response = await fetch('/auth/logout', {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      alert('로그아웃 성공!');
+      location.href = '/login.html'; // 로그아웃 성공 후 리다이렉션할 페이지
+    } else {
+      alert('로그아웃 실패');
+    }
   });
 </script>
 </body>
