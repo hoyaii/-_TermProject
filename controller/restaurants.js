@@ -19,10 +19,23 @@ exports.createRestaurant = async (req, res, next) => {
     }
 };
 
-exports.getRestaurant = async (req, res, next) => {
+exports.getRestaurantByOwnerId = async (req, res, next) => {
     try {
         const [rows] = await pool.execute('SELECT restaurant_id AS restaurantId, name FROM Restaurant WHERE owner_id = ?', [req.user.id]);
         res.json(rows);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+
+exports.getRestaurant = async (req, res, next) => {
+    const { name, serviceArea, cuisineType } = req.query;  // Get the parameters from the query string
+    const sql = "SELECT restaurant_id, name, service_area, cuisine_type FROM Restaurant WHERE name LIKE ? AND service_area LIKE ? AND cuisine_type LIKE ?";
+
+    try {
+        const [restaurantData] = await pool.query(sql, [`%${name}%`, `%${serviceArea}%`, `%${cuisineType}%`]);
+        res.json(restaurantData);
     } catch (err) {
         console.error(err);
         next(err);

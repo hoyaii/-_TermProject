@@ -1,7 +1,8 @@
 const express = require('express');
 const { isLoggedIn } = require('../middlewares');
-const { createRestaurant, getRestaurant, createMenu,getMenu,updateMenu, deleteMenu, getOrderByRestaurantId, updateRestaurant,
-    getOrderMatchedByRestaurantId, updateOrderFinish
+const { createRestaurant, getRestaurantByOwnerId, createMenu,getMenu,updateMenu, deleteMenu, getOrderByRestaurantId, updateRestaurant,
+    getOrderMatchedByRestaurantId, updateOrderFinish,
+    getRestaurant
 } = require('../controller/restaurants');
 
 const router = express.Router();
@@ -9,8 +10,11 @@ const router = express.Router();
 // 음식점 등록
 router.post('/', isLoggedIn, createRestaurant);
 
-// 음식점 정보 조회
-router.get('/:restaurantId', isLoggedIn,getRestaurant);
+// 음식점 정보 조회 by query string
+router.get('/', isLoggedIn, getRestaurant);
+
+// 음식점 정보 조회 by ownerId
+router.get('/:restaurantId', isLoggedIn,getRestaurantByOwnerId);
 
 // 음식점 업데이트
 router.put('/:restaurantId', isLoggedIn, updateRestaurant)

@@ -103,50 +103,48 @@
     <label for="name">음식점 이름 입력 (옵션):</label>
     <input id="name" name="name">
 
-    <button type="button" onclick="searchRestaurants()">검색</button>
+    <button type="button" onclick="fetchRestaurantData()">검색</button>
 
     <div class="restaurant-list hidden">
       <!-- 음식점 목록이 동적으로 추가됩니다 -->
     </div>
 
-    <button class="hidden" type="button" onclick="checkMenu()">메뉴 확인</button>
+    <button class="hidden" type="button" onclick="goToOrderPage()">메뉴 확인</button>
   </form>
 </div>
 
 <script>
-  function searchRestaurants() {
-    // 여기에 음식점 검색을 처리하는 로직을 추가하십시오.
-    // 아래 코드는 예시이며 실제 데이터와 로직에 맞게 변경하십시오.
-    const restaurantData = [
-      { restaurantId: 1, name: 'Restaurant1', serviceArea: '서울', type: '한식' },
-      { restaurantId: 2, name: 'Restaurant2', serviceArea: '부산', type: '양식' },
-      { restaurantId: 3, name: 'Restaurant3', serviceArea: '서울', type: '한식' },
-      { restaurantId: 4, name: 'Restaurant4', serviceArea: '서울', type: '한식' },
-      { restaurantId: 5, name: 'Restaurant5', serviceArea: '서울', type: '한식' },
-      //...
-    ];
-
-    const serviceArea = document.getElementById('serviceArea').value;
-    const type = document.getElementById('type').value;
+  async function fetchRestaurantData() {
     const name = document.getElementById('name').value;
+    const serviceArea = document.getElementById('serviceArea').value;
+    const cuisineType = document.getElementById('type').value;
 
-    const filteredRestaurants = restaurantData.filter((restaurant) => {
-      return (restaurant.serviceArea === serviceArea) &&
-              (!type || restaurant.type === type) &&
-              (!name || restaurant.name.includes(name));
-    });
+    try {
+      const response = await fetch(`/restaurants?name=${name}&serviceArea=${serviceArea}&cuisineType=${cuisineType}`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const restaurantData = await response.json();
+      createRestaurantOptions(restaurantData);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
+  function createRestaurantOptions(restaurantData) {
     const restaurantList = document.querySelector('.restaurant-list');
     restaurantList.innerHTML = '';
 
-    filteredRestaurants.forEach((restaurant) => {
+    restaurantData.forEach((restaurant) => {
       const restaurantItem = document.createElement('div');
       restaurantItem.classList.add('order-item');
 
       const checkbox = document.createElement('input');
       checkbox.type = 'radio';
       checkbox.name = 'restaurantCheckbox';
-      checkbox.value = restaurant.restaurantId;
+      checkbox.value = restaurant.restaurant_id;
 
       const label = document.createElement('label');
       label.textContent = restaurant.name;
@@ -156,15 +154,13 @@
       restaurantList.appendChild(restaurantItem);
     });
 
-
-    // 검색 결과가 있다면 '메뉴 확인' 버튼을 보이게 합니다.
-    if (filteredRestaurants.length > 0) {
+    if (restaurantData.length > 0) {
       document.querySelector('.restaurant-list').classList.remove('hidden');
       document.querySelector('#search-form button.hidden').classList.remove('hidden');
     }
   }
 
-  function checkMenu() {
+  function goToOrderPage() {
     const selectedRestaurantId = document.querySelector('input[name="restaurantCheckbox"]:checked');
 
     if (selectedRestaurantId) {
