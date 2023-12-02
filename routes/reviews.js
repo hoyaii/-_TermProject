@@ -7,7 +7,4 @@ const router = express.Router();
 // 리뷰 작성
 router.post('/', isLoggedIn, createReview);
 
-// 리뷰 조회
-router.get('/:reviewId', getReview);
-
 module.exports = router;

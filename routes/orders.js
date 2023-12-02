@@ -1,7 +1,7 @@
 const express = require('express');
 const { isLoggedIn } = require('../middlewares');
-const { getOrderByCustomerId, requestDelivery, createOrder, finishDelivery, getDeliveryList, getDeliveryHistory,
-    getDeliveryRequest, acceptDeliveryRequest
+const {requestDelivery, createOrder, getDeliveryList, getDeliveryHistory,
+    getDeliveryRequest, acceptDeliveryRequest, finishDelivery, getDeliveryStatus, getOrderByCustomerId
 } = require('../controller/orders');
 
 const router = express.Router();
@@ -16,7 +16,7 @@ router.get('delivery/request', isLoggedIn, getDeliveryRequest)
 router.get('/delivery/history', isLoggedIn, getDeliveryHistory)
 
 // 배달 상태 조회 - 각 주문에 대한 배달 상태 조회
-router.get('/:orderId/delivery', isLoggedIn, getOrderByCustomerId);
+router.get('/:orderId/delivery', isLoggedIn, getDeliveryStatus);
 
 // 배달 리스트 조회 - 배달 기사 id를 통해 조회
 router.get('/delivery', isLoggedIn, getDeliveryList)
