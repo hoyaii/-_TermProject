@@ -80,6 +80,8 @@
             body: JSON.stringify({ email, password })
         });
 
+        const responseData = await response.json();
+
         if (response.ok) {
             const roleResponse = await fetch('/user/role', {
                 method: 'GET',
@@ -105,7 +107,7 @@
             alert('로그인 성공!');
             location.href = redirectURL; // 로그인 성공 후 리다이렉트
         } else {
-            alert('로그인 실패');
+            alert(responseData.error);
         }
     });
 
