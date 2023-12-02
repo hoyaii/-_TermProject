@@ -1,6 +1,6 @@
 const express = require('express');
 const { isLoggedIn } = require('../middlewares');
-const { getUser, updateUser, deleteUser } = require('../controller/user');
+const { getUser, updateUser, deleteUser, addDeliveryPersonInfo} = require('../controller/user');
 
 const router = express.Router();
 
@@ -12,5 +12,8 @@ router.put('/:userId', isLoggedIn, updateUser);
 
 // 사용자 계정 삭제
 router.delete('/:userId', isLoggedIn, deleteUser);
+
+// 배달원 추가 정보 입력
+router.patch('/deliveryPerson', addDeliveryPersonInfo)
 
 module.exports = router;
