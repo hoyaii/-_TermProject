@@ -110,6 +110,7 @@
     </div>
 
     <button class="hidden" type="button" onclick="goToOrderPage()">메뉴 확인</button>
+    <button type="button" onclick="goToHomePage()">홈</button>
   </form>
 </div>
 
@@ -154,6 +155,10 @@
       restaurantList.appendChild(restaurantItem);
     });
 
+    if(restaurantData.length  == 0){
+      alert('검색되는 식당이 존재하지 않습니다.');
+    }
+
     if (restaurantData.length > 0) {
       document.querySelector('.restaurant-list').classList.remove('hidden');
       document.querySelector('#search-form button.hidden').classList.remove('hidden');
@@ -168,6 +173,10 @@
     } else {
       alert('음식점을 선택해주세요.');
     }
+  }
+
+  function goToHomePage() { // 홈 페이지로 이동하는 함수 추가
+    location.href = '/customer_main.html';
   }
 </script>
 </body>
