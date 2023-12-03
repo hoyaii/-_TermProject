@@ -120,7 +120,7 @@
 
   async function fetchReviewHistoryData(restaurantId) {
     try {
-      const response = await fetch(`/restaurants/${restaurantId}/reviews`, {
+      const response = await fetch(`/reviews/restaurants/${restaurantId}`, {
         method: 'GET',
       });
       if (!response.ok) {
