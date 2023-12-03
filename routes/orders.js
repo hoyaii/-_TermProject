@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/customer', isLoggedIn, getOrderByCustomerId);
 
 // 주문 이력 조회
-router.get('delivery/request', isLoggedIn, getDeliveryRequest)
+router.get('/delivery/request', isLoggedIn, getDeliveryRequest)
 
 // 주문 이력 조회 by deliver_personId
 router.get('/delivery/history', isLoggedIn, getDeliveryHistory)
@@ -25,7 +25,7 @@ router.get('/delivery', isLoggedIn, getDeliveryList)
 router.post('/delivery', isLoggedIn, requestDelivery)
 
 // 배달 수락
-router.post('delivery/accept', isLoggedIn, acceptDeliveryRequest)
+router.post('/delivery/accept', isLoggedIn, acceptDeliveryRequest)
 
 // 주문 생성
 router.post('/', isLoggedIn, createOrder);

@@ -3,7 +3,7 @@ const db = require(process.cwd() + '/models');
 
 exports.createOrder = async (req, res, next) => {
     const { deliveryId, restaurantId, menuId } = req.body;
-    const userId = req.user.user_id;; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
 
     const sql = "INSERT INTO Orders (delivery_id, restaurant_id, menu_id, customer_id, status, order_time) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -21,7 +21,7 @@ exports.createOrder = async (req, res, next) => {
 };
 
 exports.getOrderByCustomerId = async (req, res, next) => {
-    const customerId = req.user.id;  // 수정된 부분
+    const customerId = req.user.user_id;  // 수정된 부분
     const orderSql = "SELECT order_id, order_time FROM Orders WHERE customer_id = ?";
     const menuSql = "SELECT m.name FROM Orders o JOIN Menu m ON o.menu_id = m.menu_id WHERE o.order_id = ?";
 
@@ -44,7 +44,7 @@ exports.getOrderByCustomerId = async (req, res, next) => {
 };
 
 exports.getDeliveryList = async (req, res, next) => {
-    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
         // delivery_id, restaurant_id, delivery_address를 구한다

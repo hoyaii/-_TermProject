@@ -87,6 +87,11 @@
   window.onload = fetchDeliveryRequest;
 
   function createCheckboxes(deliveryRequestData) {
+    if(deliveryRequestData.length === 0){
+      alert('들어온 요청이 존재하지 않습니다.');
+      window.location.href = '/delivery_person_main.html';
+    }
+
     deliveryRequestData.forEach(request => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -121,7 +126,7 @@
 
       if (response.ok) {
         alert('배달 요청이 성공적으로 수락되었습니다.');
-        window.location.href = '/login.html';
+        window.location.href = '/delivery_person_main.html';
       } else {
         alert('배달 요청 수락에 실패하였습니다.');
       }
