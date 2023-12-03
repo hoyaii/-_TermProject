@@ -10,8 +10,6 @@ exports.isNotLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
         next(); // 로그인 상태가 아니라면 다음 미들웨어로 넘어감.
     } else {
-        const error = new Error('로그인한 상태입니다.');
-        error.status = 403;
-        next(error); // 로그인 상태라면 403 에러를 반환
+        res.status(403).json({ error: '로그인한 상태입니다.' });
     }
 };

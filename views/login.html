@@ -111,9 +111,9 @@
                     redirectURL = '/delivery_person_main.html';
                     break;
             }
-
             location.href = redirectURL; // 로그인 성공 후 리다이렉트
         } else {
+            const responseData = await response.json();
             alert(responseData.error);
         }
     });
