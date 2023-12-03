@@ -84,17 +84,20 @@
     <select id="restaurantId" name="restaurantId" onchange="fetchOrderData()" required>
       <!-- Restaurant options will be dynamically added here -->
     </select>
+    <button type="button" onclick="fetchOrderData()">선택</button>
 
-    <div class="order-list">
+    <div id="order-list" class="hidden">
       <!-- Order list will be dynamically added here -->
+      <button id="complete-btn">완료</button>
     </div>
 
-    <button type="button" onclick="fetchOrderData()">선택</button>
   </form>
 </div>
 
-
 <script>
+  const orderListDiv = document.getElementById('order-list');
+  const completeBtn = document.getElementById('complete-btn');
+
   async function fetchRestaurantData() {
     try {
       const response = await fetch('/restaurants', {
@@ -135,7 +138,12 @@
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       const orderData = await response.json();
+
+      // 이 부분을 수정합니다.
+      alert("Order data received: " + JSON.stringify(orderData));
+
       createOrderList(orderData);
     } catch (error) {
       console.error('Error:', error);
@@ -144,32 +152,44 @@
 
   // Function to dynamically create order list
   function createOrderList(orderData) {
-    const orderListContainer = document.querySelector('.order-list');
-    orderListContainer.innerHTML = '';
+    //orderListDiv.innerHTML = ''; // 기존 주문 리스트를 초기화합니다.
 
     orderData.forEach(order => {
-      const orderItem = document.createElement('div');
-      orderItem.classList.add('order-item');
+      const orderItemDiv = document.createElement('div');
+      orderItemDiv.classList.add('order-item');
 
-      const button = document.createElement('button');
-      button.textContent = '완료';
-      button.onclick = function() {
-        updateOrderFinish(order.orderId);
-      };
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `order${order.orderId}`;
+      checkbox.name = 'orderId';
+      checkbox.value = order.orderId;
 
       const label = document.createElement('label');
-      label.textContent = `${order.menuName} (주문 시간: ${order.orderTime})`;
+      label.for = `order${order.orderId}`;
+      label.textContent = `주문 ID: ${order.orderId} | 메뉴명: ${order.menuName} | 주문 상태: ${order.orderStatus} | 주문 시간: ${order.orderTime}`;
 
-      orderItem.appendChild(button);
-      orderItem.appendChild(label);
+      orderItemDiv.appendChild(checkbox);
+      orderItemDiv.appendChild(label);
 
-      orderListContainer.appendChild(orderItem);
+      orderListDiv.appendChild(orderItemDiv);
     });
+
+    document.getElementById('order-list').classList.remove('hidden');
   }
+
+  completeBtn.addEventListener('click', function() {
+    const checkboxes = document.querySelectorAll('input[name="orderId"]:checked');
+
+    checkboxes.forEach(checkbox => {
+      updateOrderFinish(checkbox.value);
+    });
+
+    window.location.href = '/restaurant_main.html';
+  });
 
   async function updateOrderFinish(orderId) {
     try {
-      const response = await fetch(`/orders/${orderId}/finish`, {
+      const response = await fetch(`/restaurants/${orderId}/finish`, {
         method: 'PUT',
       });
       if (!response.ok) {

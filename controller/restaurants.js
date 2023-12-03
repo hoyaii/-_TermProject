@@ -117,6 +117,7 @@ exports.getOrderMatchedByRestaurantId = async (req, res, next) => {
 
     try {
         const [orderHistoryResults] = await db.query(orderHistorySql, [restaurantId]);
+
         const orderHistoryData = await Promise.all(orderHistoryResults.map(async order => {
             const [menuNameResults] = await db.query(menuNameSql, [order.menu_id]);
             return {

@@ -136,7 +136,7 @@ exports.finishDelivery = async (req, res, next) => {
         if (rows.length === 0) {
             return res.status(404).send('해당 배달 ID에 대한 주문이 없습니다.');
         }
-        const orderId = rows[0].order_id;
+        const orderId = rows[0][0].order_id;
 
         // 배달 상태를 업데이트한다
         [rows] = await db.query("UPDATE Delivery SET status = ? WHERE delivery_id = ?", ["finished", deliveryId]);
