@@ -94,7 +94,7 @@
       <label for="newMenuPrice">새로운 메뉴 가격</label>
       <input type="number" id="newMenuPrice" name="newMenuPrice" required>
 
-      <button type="button" onclick="updateMenu()">완료</button>
+      <button type="button" onclick="updateMenu()">수정 완료</button>
     </div>
 
     <!-- Hidden form for deleting an existing menu -->
@@ -104,12 +104,13 @@
         <!-- Menu options will be dynamically added here -->
       </select>
 
-      <button type="button" onclick="deleteMenu()">완료</button>
+      <button type="button" onclick="deleteMenu()">삭제 완료</button>
     </div>
 
     <button type="button" onclick="showForm('addMenuForm')">메뉴 추가</button>
-    <button type="button" onclick="showForm('updateMenuForm')">메뉴 수정</button>
-    <button type="button" onclick="showForm('deleteMenuForm')">메뉴 삭제</button>
+    <button type="button" onclick="showForm('updateMenuForm'); fetchMenuData(document.getElementById('restaurantId').value)">메뉴 수정</button>
+    <button type="button" onclick="showForm('deleteMenuForm'); fetchMenuData(document.getElementById('restaurantId').value)">메뉴 삭제</button>
+    <button type="button" onclick="goToHomePage()">홈</button>
   </form>
 </div>
 
@@ -173,7 +174,7 @@
 
     menuData.forEach(menu => {
       const option = document.createElement('option');
-      option.value = menu.menuId;
+      option.value = menu.menu_id;
       option.textContent = menu.name;
 
       menuSelect.appendChild(option);
@@ -188,7 +189,7 @@
 
     menuData.forEach(menu => {
       const option = document.createElement('option');
-      option.value = menu.menuId;
+      option.value = menu.menu_id;
       option.textContent = menu.name;
 
       deleteMenuSelect.appendChild(option);
@@ -227,6 +228,7 @@
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       alert('메뉴가 성공적으로 등록되었습니다.');
       await fetchMenuData(restaurantId);
     } catch (error) {
@@ -258,6 +260,7 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       alert('메뉴가 성공적으로 수정되었습니다.');
+
       await fetchMenuData(restaurantId);
     } catch (error) {
       console.error('Error:', error);
@@ -281,6 +284,10 @@
     } catch (error) {
       console.error('Error:', error);
     }
+  }
+
+  function goToHomePage() {
+    location.href = '/restaurant_main.html';
   }
 </script>
 </body>

@@ -61,7 +61,7 @@ exports.updateRestaurant = async (req, res, next) => {
 };
 
 exports.createMenu = async (req, res, next) => {
-    const restaurantId = req.params.restaurantId;
+        const restaurantId = req.params.restaurantId;
     const { name, price } = req.body;
     const sql = "INSERT INTO Menu (name, price, restaurant_id) VALUES (?, ?, ?)";
     try {
