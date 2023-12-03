@@ -83,7 +83,7 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const deliveryData = await response.json();
-      createDeliveryCheckboxes(deliveryData);
+      createDeliveryCheckboxes(deliveryData.deliveryHistory);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -95,13 +95,13 @@
     deliveryData.forEach(delivery => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
-      checkbox.id = `delivery${delivery.deliveryId}`;
+      checkbox.id = `delivery${delivery.delivery_id}`;
       checkbox.name = 'deliveryId';
-      checkbox.value = delivery.deliveryId;
+      checkbox.value = delivery.delivery_id;
 
       const label = document.createElement('label');
       label.for = `delivery${delivery.deliveryId}`;
-      label.textContent = `id: ${delivery.deliveryId} | 가게 주소: ${delivery.restaurantAddress} | 배달할 주소: ${delivery.deliveryAddress}`;
+      label.textContent = `id: ${delivery.delivery_id} | 가게 주소: ${delivery.restaurantAddress} | 배달할 주소: ${delivery.delivery_address}`;
 
       const checkboxDiv = document.createElement('div');
       checkboxDiv.classList.add('checkbox-container');
@@ -131,10 +131,13 @@
         },
         body: JSON.stringify({ deliveryId: selectedDeliveryId }),
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       alert('배달 완료 처리가 되었습니다.');
+      window.location.href = '/delivery_person_main.html';
     } catch (error) {
       console.error('Error:', error);
       alert('배달 완료 처리에 실패하였습니다.');

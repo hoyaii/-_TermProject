@@ -29,10 +29,12 @@ exports.getOrderByCustomerId = async (req, res, next) => {
         const [orderResults] = await db.query(orderSql, [customerId]);
         const orderData = await Promise.all(orderResults.map(async order => {
             const [menuResults] = await db.query(menuSql, [order.order_id]);
+            let formattedOrderTime = formatDate(order.order_time);
+
             return {
                 orderId: order.order_id,
                 menuName: menuResults[0] ? menuResults[0].name : null,
-                orderTime: order.order_time,
+                orderTime: formattedOrderTime,
             };
         }));
 
@@ -53,8 +55,9 @@ exports.getDeliveryList = async (req, res, next) => {
         // 각 배달에 대한 restaurantAddress를 추가한다
         for (let i = 0; i < rows.length; i++) {
             const restaurantId = rows[i].restaurant_id;
+
             let [restaurantRows] = await db.query("SELECT address FROM Restaurant WHERE restaurant_id = ?", [restaurantId]);
-            rows[i].restaurantAddress = restaurantRows[0].address;
+            rows[0].restaurantAddress = restaurantRows[0].address;
         }
 
         res.status(200).json(rows);
@@ -136,7 +139,7 @@ exports.finishDelivery = async (req, res, next) => {
         if (rows.length === 0) {
             return res.status(404).send('해당 배달 ID에 대한 주문이 없습니다.');
         }
-        const orderId = rows[0][0].order_id;
+        const orderId = rows[0].order_id;
 
         // 배달 상태를 업데이트한다
         [rows] = await db.query("UPDATE Delivery SET status = ? WHERE delivery_id = ?", ["finished", deliveryId]);
@@ -161,7 +164,6 @@ exports.getDeliveryHistory = async (req, res, next) => {
     try {
         // delivery_id 리스트를 구한다
         let [deliveryRows] = await db.query("SELECT delivery_id FROM Delivery WHERE delivery_person_id = ? AND status = 'finished'", [userId]);
-        let deliveryIdListSize = deliveryRows.length; // delivery_id 리스트의 크기를 구한다
 
         let deliveryHistory = [];
 
@@ -182,13 +184,12 @@ exports.getDeliveryHistory = async (req, res, next) => {
                     orderId: order.order_id,
                     restaurantName: restaurantRows[0].name,
                     menuName: menuRows[0].name,
-                    formattedOrderTime,
+                    orderTime: formattedOrderTime,
                     deliveryAddress: deliveryAddressRows[0].delivery_address,
                 });
             }
         }
-
-        res.status(200).json({ deliveryHistory, deliveryIdListSize });
+        res.status(200).json(deliveryHistory);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send('배달 기록 조회에 실패하였습니다.');
@@ -250,10 +251,11 @@ exports.acceptDeliveryRequest = async (req, res, next) => {
 };
 
 function formatDate(date) {
-    // 여기서 date를 원하는 형식의 문자열로 변환한다
-    // 예를 들어, yyyy-mm-dd 형식으로 변환하려면 다음과 같이 한다:
     let year = date.getFullYear();
-    let month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고, 2자리로 만든다
-    let day = String(date.getDate()).padStart(2, '0'); // 일자를 2자리로 만든다
-    return `${year}-${month}-${day}`;
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()).padStart(2, '0');
+    let hours = String(date.getHours()).padStart(2, '0');
+    let minutes = String(date.getMinutes()).padStart(2, '0');
+    let seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }

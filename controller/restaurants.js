@@ -120,11 +120,13 @@ exports.getOrderMatchedByRestaurantId = async (req, res, next) => {
 
         const orderHistoryData = await Promise.all(orderHistoryResults.map(async order => {
             const [menuNameResults] = await db.query(menuNameSql, [order.menu_id]);
+            let formattedOrderTime = formatDate(order.order_time);
+
             return {
                 orderId: order.order_id,
                 orderStatus: order.status,
                 menuName: menuNameResults[0].name,
-                orderTime: order.order_time,
+                orderTime: formattedOrderTime,
             };
         }));
 
@@ -144,11 +146,13 @@ exports.getOrderByRestaurantId = async (req, res, next) => {
         const [orderHistoryResults] = await db.query(orderHistorySql, [restaurantId]);
         const orderHistoryData = await Promise.all(orderHistoryResults.map(async order => {
             const [menuNameResults] = await db.query(menuNameSql, [order.menu_id]);
+            let formattedOrderTime = formatDate(order.order_time);
+
             return {
                 orderId: order.order_id,
                 orderStatus: order.status,
                 menuName: menuNameResults[0].name,
-                orderTime: order.order_time,
+                orderTime: formattedOrderTime,
             };
         }));
 
@@ -174,3 +178,13 @@ exports.updateOrderFinish = async (req, res, next) => {
         next(err);
     }
 };
+
+function formatDate(date) {
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()).padStart(2, '0');
+    let hours = String(date.getHours()).padStart(2, '0');
+    let minutes = String(date.getMinutes()).padStart(2, '0');
+    let seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
