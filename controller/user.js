@@ -3,13 +3,13 @@ const db = require(process.cwd() + '/models');
 
 
 exports.addDeliveryPersonInfo = async (req, res, next) => {
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
-    const { serviceArea } = req.body; // 요청 본문에서 서비스 지역을 가져옵니다.
+   // const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
+    const { serviceArea, email } = req.body; // 요청 본문에서 서비스 지역을 가져옵니다.
 
     try {
         await db.query(
-            "UPDATE User SET service_area = ?, status = 'free' WHERE user_id = ?",
-            [serviceArea, userId]
+            "UPDATE User SET service_area = ?, status = 'free' WHERE email = ?",
+            [serviceArea, email]
         );
         res.status(200).send('배달원 정보가 성공적으로 업데이트되었습니다.');
     } catch (error) {
