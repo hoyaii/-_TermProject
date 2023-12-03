@@ -116,7 +116,7 @@
 
   async function fetchOrderData() {
     try {
-      const response = await fetch(`/orders/customer`, {  // 수정된 부분
+      const response = await fetch(`/orders/customer/finish`, {
         method: 'GET',
       });
       if (!response.ok) {
@@ -193,7 +193,7 @@
     }
 
     try {
-      const response = await fetch('/review', {
+      const response = await fetch('/reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

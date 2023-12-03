@@ -21,8 +21,33 @@ exports.createOrder = async (req, res, next) => {
 };
 
 exports.getOrderByCustomerId = async (req, res, next) => {
-    const customerId = req.user.user_id;  // 수정된 부분
+    const customerId = req.user.user_id;
     const orderSql = "SELECT order_id, order_time FROM Orders WHERE customer_id = ?";
+    const menuSql = "SELECT m.name FROM Orders o JOIN Menu m ON o.menu_id = m.menu_id WHERE o.order_id = ?";
+
+    try {
+        const [orderResults] = await db.query(orderSql, [customerId]);
+        const orderData = await Promise.all(orderResults.map(async order => {
+            const [menuResults] = await db.query(menuSql, [order.order_id]);
+            let formattedOrderTime = formatDate(order.order_time);
+
+            return {
+                orderId: order.order_id,
+                menuName: menuResults[0] ? menuResults[0].name : null,
+                orderTime: formattedOrderTime,
+            };
+        }));
+
+        res.json(orderData);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+
+exports.getFinishOrderByCustomerId = async (req, res, next) => {
+    const customerId = req.user.user_id;
+    const orderSql = "SELECT order_id, order_time FROM Orders WHERE customer_id = ? AND status = 'finished'";
     const menuSql = "SELECT m.name FROM Orders o JOIN Menu m ON o.menu_id = m.menu_id WHERE o.order_id = ?";
 
     try {
