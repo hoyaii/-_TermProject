@@ -8,6 +8,6 @@ const router = express.Router();
 router.post('/', isLoggedIn, createReview);
 
 // 리뷰 확인 by 식당 주인
-router.get('restaurants/${restaurantId}', isLoggedIn, getReview)
+router.get('/restaurant/:restaurantId', isLoggedIn, getReview)
 
 module.exports = router;

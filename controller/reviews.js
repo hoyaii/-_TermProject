@@ -32,11 +32,13 @@ exports.getReview = async (req, res, next) => {
             let [menuRows] = await db.query("SELECT name FROM Menu WHERE menu_id = ?", [order.menu_id]);
             let [reviewRows] = await db.query("SELECT comment FROM Review WHERE order_id = ?", [order.order_id]);
 
-            reviewHistory.push({
-                orderId: order.order_id,
-                menuName: menuRows[0].name,
-                comment: reviewRows[0].comment,
-            });
+            if (menuRows[0] && reviewRows[0]) { // menuRows[0]과 reviewRows[0]이 존재하는지 확인합니다.
+                reviewHistory.push({
+                    orderId: order.order_id,
+                    menuName: menuRows[0].name,
+                    comment: reviewRows[0].comment,
+                });
+            }
         }
 
         res.status(200).json(reviewHistory);

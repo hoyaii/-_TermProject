@@ -82,7 +82,7 @@
       <!-- Review history will be dynamically added here -->
     </div>
 
-    <button type="button" onclick="showReviewHistory()">선택</button>
+    <button type="button" onclick="showReviewHistory()">조회하기</button>
   </form>
 </div>
 
@@ -120,7 +120,7 @@
 
   async function fetchReviewHistoryData(restaurantId) {
     try {
-      const response = await fetch(`/reviews/restaurants/${restaurantId}`, {
+      const response = await fetch(`/reviews/restaurant/${restaurantId}`, {
         method: 'GET',
       });
       if (!response.ok) {
