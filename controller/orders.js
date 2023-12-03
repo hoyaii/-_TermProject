@@ -44,7 +44,7 @@ exports.getOrderByCustomerId = async (req, res, next) => {
 };
 
 exports.getDeliveryList = async (req, res, next) => {
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.session.userId; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
         // delivery_id, restaurant_id, delivery_address를 구한다
@@ -83,7 +83,11 @@ exports.getDeliveryStatus = async (req, res, next) => {
 };
 
 exports.requestDelivery = async (req, res, next) => {
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
+    if (!req.user) {
+        return res.status(401).json({ error: '로그인이 필요합니다.' });
+    }
+
+    const userId = req.user.user_id // 세션에서 사용자 ID를 가져옵니다.
     const restaurantId = req.body.restaurantId; // 요청 본문에서 식당 ID를 가져옵니다.
 
     try {
@@ -92,7 +96,7 @@ exports.requestDelivery = async (req, res, next) => {
 
         // 식당의 서비스 지역을 가져옵니다.
         const serviceAreaResult = await db.query("SELECT service_area FROM Restaurant WHERE restaurant_id = ?", [restaurantId]);
-        const serviceArea = serviceAreaResult[0].service_area;
+        const serviceArea = serviceAreaResult[0][0].service_area;
 
         // 서비스 지역에서 현재 사용 가능한 배달원을 모두 가져옵니다.
         const availableDeliveryPersons = await db.query("SELECT user_id FROM User WHERE service_area = ? AND status = 'free'", [serviceArea]);
@@ -103,21 +107,21 @@ exports.requestDelivery = async (req, res, next) => {
         }
 
         // 가능한 배달원 중에서 무작위로 한 명을 선택합니다.
-        const randomIndex = Math.floor(Math.random() * availableDeliveryPersons.length);
-        const selectedDeliveryPersonId = availableDeliveryPersons[randomIndex].user_id;
+        const randomIndex = Math.floor(Math.random() * availableDeliveryPersons[0].length);
+        const selectedDeliveryPersonId = availableDeliveryPersons[0][randomIndex].user_id;
 
         // 새로운 배달 요청을 생성합니다.
-        await db.query(
-            "INSERT INTO Delivery (restaurant_id, delivery_address, delivery_person_id, status) VALUES (?, ?, ?, 'notAccepted')",
-            [restaurantId, userAddress[0].address, selectedDeliveryPersonId]
+        const result = await db.query(
+            "INSERT INTO Delivery (restaurant_id, delivery_address, delivery_person_id, status) VALUES (?, ?, ?, ?)",
+            [restaurantId, userAddress[0][0].address, selectedDeliveryPersonId, 'notAccepted']
         );
 
         // 새로 생성된 배달 요청의 ID를 가져옵니다.
-        const deliveryId = await db.query("SELECT LAST_INSERT_ID() as delivery_id");
+        const deliveryId = result[0].insertId;
 
-        res.status(200).json({ deliveryId: deliveryId[0].delivery_id });
+        res.status(200).json({ deliveryId: deliveryId });
     } catch (error) {
-        console.error('Error:', error);
+        res.status(500).send('실패하였습니다.');
         next(error);
     }
 };

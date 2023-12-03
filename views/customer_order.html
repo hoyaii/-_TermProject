@@ -80,7 +80,7 @@
 
   async function fetchMenuData() {
     try {
-      const response = await fetch(`/restaurant/${restaurantId}/menus`, {
+      const response = await fetch(`/restaurants/${restaurantId}/menus`, {
         method: 'GET',
       });
       if (!response.ok) {
@@ -150,13 +150,19 @@
         },
         body: JSON.stringify({ deliveryId: deliveryData.deliveryId, restaurantId, menuId: selectedMenuIds }), // 배달 ID, 식당 ID, 선택한 메뉴 ID들을 전달합니다.
       });
-      if (!response.ok) {
+
+      if (response.ok) {
+        alert('주문 요청 성공!');
+        setTimeout(function() {
+          window.location.href = 'customer_main.html';
+        }, 500);
+
+      } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data = await response.json();
 
-      console.log('주문 생성 성공:', data);
     } catch (error) {
+      alert('주문 요청을 실패!');
       console.error('Error:', error);
     }
   });

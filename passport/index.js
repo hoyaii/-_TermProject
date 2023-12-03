@@ -5,11 +5,11 @@ const db = require('../models/index'); // 데이터베이스 연결 설정을 �
 
 module.exports = () => {
     index.serializeUser((user, done) => {
-        done(null, user.email);  // email로 변경
+        done(null, user.user_id);  // user_id로 변경
     });
 
-    index.deserializeUser((email, done) => {
-        db.execute('SELECT user_id FROM User WHERE email = ?', [email])
+    index.deserializeUser((user_id, done) => {
+        db.execute('SELECT user_id, email FROM User WHERE user_id = ?', [user_id])
             .then(([rows, fields]) => {
                 if (rows.length > 0) {
                     done(null, rows[0]);
