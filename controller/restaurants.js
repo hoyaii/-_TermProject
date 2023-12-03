@@ -32,7 +32,7 @@ exports.getRestaurantByOwnerId = async (req, res, next) => {
     }
 };
 
-exports.getRestaurant = async (req, res, next) => {
+exports.getRestaurantByQuery = async (req, res, next) => {
     const { name, serviceArea, cuisineType } = req.query;  // Get the parameters from the query string
     const sql = "SELECT restaurant_id, name, service_area, cuisine_type FROM Restaurant WHERE name LIKE ? AND service_area LIKE ? AND cuisine_type LIKE ?";
 

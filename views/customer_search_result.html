@@ -103,12 +103,11 @@
     <label for="name">음식점 이름 입력 (옵션):</label>
     <input id="name" name="name">
 
-    <button type="button" onclick="fetchRestaurantData()">검색</button>
-
     <div class="restaurant-list hidden">
       <!-- 음식점 목록이 동적으로 추가됩니다 -->
     </div>
 
+    <button type="button" onclick="fetchRestaurantData()">검색</button>
     <button class="hidden" type="button" onclick="goToOrderPage()">메뉴 확인</button>
     <button type="button" onclick="goToHomePage()">홈</button>
   </form>
@@ -121,7 +120,7 @@
     const cuisineType = document.getElementById('type').value;
 
     try {
-      const response = await fetch(`/restaurants?name=${name}&serviceArea=${serviceArea}&cuisineType=${cuisineType}`, {
+      const response = await fetch(`/restaurants/search?name=${name}&serviceArea=${serviceArea}&cuisineType=${cuisineType}`, {
         method: 'GET',
       });
       if (!response.ok) {

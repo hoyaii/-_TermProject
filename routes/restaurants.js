@@ -2,7 +2,7 @@ const express = require('express');
 const { isLoggedIn } = require('../middlewares');
 const { createRestaurant, getRestaurantByOwnerId, createMenu,getMenu,updateMenu, deleteMenu, getOrderByRestaurantId, updateRestaurant,
     getOrderMatchedByRestaurantId, updateOrderFinish,
-    getRestaurant
+    getRestaurantByQuery
 } = require('../controller/restaurants');
 
 const router = express.Router();
@@ -11,7 +11,7 @@ const router = express.Router();
 router.post('/', isLoggedIn, createRestaurant);
 
 // 음식점 정보 조회 by query string -> 검색 함수에서 주소 수정해야함
-router.get('/search', isLoggedIn, getRestaurant);
+router.get('/search', isLoggedIn, getRestaurantByQuery);
 
 // 음식점 정보 조회 by ownerId
 router.get('/', isLoggedIn,getRestaurantByOwnerId);
