@@ -9,10 +9,10 @@ const router = express.Router();
 router.post('/', isLoggedIn, createOrder);
 
 // 주문 이력 조회
-router.get('/customer', isLoggedIn, getOrderByCustomerId);
+router.get('/', isLoggedIn, getOrderByCustomerId);
 
 // 완료된 주문 이력 조회
-router.get('/customer/finish',isLoggedIn, getFinishOrderByCustomerId)
+router.get('/finish',isLoggedIn, getFinishOrderByCustomerId)
 
 // 배달 상태 조회 - 각 주문에 대한 배달 상태 조회
 router.get('/:orderId/delivery', isLoggedIn, getDeliveryStatus);

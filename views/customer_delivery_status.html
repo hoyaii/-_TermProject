@@ -77,7 +77,7 @@
 
   async function fetchOrderData() {
     try {
-      const response = await fetch(`/orders/customer`, {  // 수정된 부분
+      const response = await fetch(`/orders`, {  // 수정된 부분
         method: 'GET',
       });
       if (!response.ok) {

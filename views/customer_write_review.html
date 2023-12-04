@@ -116,7 +116,7 @@
 
   async function fetchOrderData() {
     try {
-      const response = await fetch(`/orders/customer/finish`, {
+      const response = await fetch(`/orders/finish`, {
         method: 'GET',
       });
       if (!response.ok) {
