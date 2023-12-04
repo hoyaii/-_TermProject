@@ -67,7 +67,7 @@
 </head>
 <body>
 <div class="main-container">
-  <h2>고객님 반갑습니다!</h2>
+  <h2 id="welcome-msg">고객님 반갑습니다!</h2>
   <div class="button-container">
     <a id="search-btn">음식점 검색/주문</a>
     <a id="status-btn">배달 상태 확인</a>
@@ -77,6 +77,22 @@
 </div>
 
 <script>
+  // 페이지 로드 시 사용자 이름 가져오기
+  window.onload = async () => {
+    const response = await fetch('/user/name', {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const welcomeMsg = document.getElementById('welcome-msg');
+
+      alert(data.name);
+
+      welcomeMsg.textContent = `${data.name} 고객님 반갑습니다!`;
+    }
+  };
+
   document.getElementById('search-btn').addEventListener('click', () => {
     location.href = '/customer_search_result.html';
   });

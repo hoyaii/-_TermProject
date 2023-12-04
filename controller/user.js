@@ -3,8 +3,7 @@ const db = require(process.cwd() + '/models');
 
 
 exports.addDeliveryPersonInfo = async (req, res, next) => {
-   // const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
-    const { serviceArea, email } = req.body; // 요청 본문에서 서비스 지역을 가져옵니다.
+    const { serviceArea, email } = req.body;
 
     try {
         await db.query(
@@ -35,6 +34,27 @@ exports.getRole = async (req, res, next) => {
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send('사용자 역할 조회에 실패하였습니다.');
+        next(error);
+    }
+};
+
+exports.getName = async (req, res, next) => {
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
+
+    try {
+        let [rows] = await db.query(
+            "SELECT username FROM User WHERE user_id = ?",
+            [userId]
+        );
+
+        if (rows.length > 0) {
+            res.status(200).json({ name: rows[0].username });
+        } else {
+            res.status(400).send('사용자를 찾을 수 없습니다.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('사용자 이름 조회에 실패하였습니다.');
         next(error);
     }
 };

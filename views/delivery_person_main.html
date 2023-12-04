@@ -69,7 +69,7 @@
 </head>
 <body>
 <div class="main-container">
-  <h2>배달원님 반갑습니다!</h2>
+  <h2 id="welcome-msg">배달원님 반갑습니다!</h2>
   <div class="button-container">
     <a id="request-btn">배달 요청 확인 및 수락</a>
     <a id="complete-btn">배달 완료 처리하기</a>
@@ -78,6 +78,18 @@
   </div>
 </div>
 <script>
+  window.onload = async () => {
+    const response = await fetch('/user/name', {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const welcomeMsg = document.getElementById('welcome-msg');
+      welcomeMsg.textContent = `${data.name} 배달원님 반갑습니다!`;
+    }
+  };
+
   document.getElementById('request-btn').addEventListener('click', () => {
     location.href = '/delivery_request.html';
   });
