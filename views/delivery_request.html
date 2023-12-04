@@ -71,7 +71,7 @@
 
   async function fetchDeliveryRequest() {
     try {
-      const response = await fetch('/orders/delivery/request', {
+      const response = await fetch('/delivery/request', {
         method: 'GET',
       });
       if (!response.ok) {
@@ -116,7 +116,7 @@
     const checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
     for (let i = 0; i < checkboxes.length; i++) {
       const deliveryId = checkboxes[i].value;
-      const response = await fetch('/orders/delivery/accept', {
+      const response = await fetch('/delivery/accept', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

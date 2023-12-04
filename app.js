@@ -15,6 +15,7 @@ const userRouter = require('./routes/user'); // 사용자 관련 라우터
 const restaurantRouter = require('./routes/restaurants'); // 음식점 관련 라우터
 const orderRouter = require('./routes/orders'); // 주문 관련 라우터
 const reviewRouter = require('./routes/reviews'); // 리뷰 관련 라우터
+const deliveryRouter = require('./routes/delivery') // 배달 관련 라우터
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use('/user', userRouter);
 app.use('/restaurants', restaurantRouter);
 app.use('/orders', orderRouter);
 app.use('/reviews', reviewRouter);
+app.use('/delivery', deliveryRouter)
 
 // 404 에러 처리
 app.use((req, res, next) => {

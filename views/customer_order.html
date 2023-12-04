@@ -130,7 +130,7 @@
 
     // 먼저 배달 요청을 보냅니다.
     try {
-      const deliveryResponse = await fetch(`/orders/delivery`, {
+      const deliveryResponse = await fetch(`/delivery`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

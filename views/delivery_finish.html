@@ -76,7 +76,7 @@
 
   async function fetchDeliveryData() {
     try {
-      const response = await fetch(`/orders/delivery`, {
+      const response = await fetch(`/delivery`, {
         method: 'GET',
       });
       if (!response.ok) {
@@ -124,7 +124,7 @@
     }
 
     try {
-      const response = await fetch('/orders/delivery/finish', {
+      const response = await fetch('/delivery/finish', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

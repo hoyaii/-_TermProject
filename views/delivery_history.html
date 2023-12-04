@@ -80,7 +80,7 @@
 
   async function fetchDeliveryHistory() {
     try {
-      const response = await fetch('/orders/delivery/history', {
+      const response = await fetch('/delivery/history', {
         method: 'GET',
       });
       if (!response.ok) {
