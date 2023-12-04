@@ -14,9 +14,9 @@ exports.createOrder = async (req, res, next) => {
         await db.query(sql, [deliveryId, restaurantId, menuId, userId, 'notMatched', currentTime]);
 
         res.status(200).send('Order created successfully');
-    } catch (error) {
-        console.error('Error:', error);
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 

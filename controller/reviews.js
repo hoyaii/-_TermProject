@@ -11,10 +11,9 @@ exports.createReview = async (req, res, next) => {
         await db.query(sql, [orderId, userId, rating, comment]);
 
         res.status(200).send('리뷰가 성공적으로 작성되었습니다.');
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('리뷰 작성에 실패하였습니다.');
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 
@@ -42,9 +41,8 @@ exports.getReview = async (req, res, next) => {
         }
 
         res.status(200).json(reviewHistory);
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('리뷰 조회에 실패하였습니다.');
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };

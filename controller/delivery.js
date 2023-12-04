@@ -10,10 +10,9 @@ exports.getDeliveryRequestByUserId = async (req, res, next) => {
             [userId]
         );
         res.status(200).json(rows);
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('배달 요청 조회에 실패하였습니다.');
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 
@@ -49,10 +48,9 @@ exports.getDeliveryHistoryByUserId = async (req, res, next) => {
             }
         }
         res.status(200).json(deliveryHistory);
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('배달 기록 조회에 실패하였습니다.');
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 
@@ -86,10 +84,9 @@ exports.acceptDeliveryRequest = async (req, res, next) => {
         } else {
             res.status(400).send('배달 요청을 수락할 수 없습니다.');
         }
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('배달 요청 수락에 실패하였습니다.');
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 
@@ -115,10 +112,9 @@ exports.finishDelivery = async (req, res, next) => {
         [rows] = await db.query("UPDATE User SET status = ? WHERE user_id = ?", ["free", userId]);
 
         res.status(200).send('배달 및 주문 상태가 성공적으로 업데이트되었습니다.');
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('배달 및 주문 상태 업데이트에 실패하였습니다.');
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 
@@ -138,10 +134,9 @@ exports.getDeliveryListByUserId = async (req, res, next) => {
         }
 
         res.status(200).json(rows);
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('배달 목록 조회에 실패하였습니다.');
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 
@@ -166,7 +161,7 @@ exports.requestDelivery = async (req, res, next) => {
 
         if (availableDeliveryPersons.length === 0) {
             console.log("배달 가능한 배달원이 존재하지 않습니다.");
-            return;
+            return res.status(400).json({ error: '배달 가능한 배달원이 존재하지 않습니다.' });
         }
 
         // 가능한 배달원 중에서 무작위로 한 명을 선택합니다.
@@ -183,9 +178,9 @@ exports.requestDelivery = async (req, res, next) => {
         const deliveryId = result[0].insertId;
 
         res.status(200).json({ deliveryId: deliveryId });
-    } catch (error) {
-        res.status(500).send('실패하였습니다.');
-        next(error);
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };
 
