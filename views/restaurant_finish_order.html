@@ -79,9 +79,9 @@
 </head>
 <body>
 <div class="main-container">
-  <h2>주문 완료처리</h2>
+  <h2>조리 완료처리</h2>
   <form id="select-restaurant-form">
-    <label for="restaurantId">주문완료를 처리할 식당 선택</label>
+    <label for="restaurantId">조리완료를 처리할 식당 선택</label>
     <select id="restaurantId" name="restaurantId" onchange="fetchOrderData()" required>
       <!-- Restaurant options will be dynamically added here -->
     </select>
@@ -95,29 +95,35 @@
 </div>
 
 <script>
+  // 주문 목록과 완료 버튼 요소를 가져옵니다.
   const orderListDiv = document.getElementById('order-list');
   const completeBtn = document.getElementById('finish-button');
 
+  // 식당 데이터를 서버에서 가져오는 함수
   async function fetchRestaurantData() {
     try {
+      // 서버에 식당 데이터 요청
       const response = await fetch('/restaurants', {
         method: 'GET',
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      // 응답 데이터를 JSON 형식으로 변환
       const restaurantData = await response.json();
+      // 가져온 식당 데이터로 식당 옵션 생성
       createRestaurantOptions(restaurantData);
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  // Fetch restaurant data when the page loads
+  // 페이지를 로딩할 때 식당 데이터를 가져옵니다.
   window.onload = fetchRestaurantData;
 
-  // Function to dynamically create restaurant options
+  // 식당 데이터를 기반으로 식당 옵션을 생성하는 함수
   function createRestaurantOptions(restaurantData) {
+    // 운영하고 있는 식당이 없을 때 예외 처리
     if(restaurantData.length === 0){
       alert('운영하고 있는 식당이 존재하지 않습니다.');
       location.href = '/restaurant_main.html';
@@ -125,6 +131,7 @@
 
     const restaurantSelect = document.getElementById('restaurantId');
 
+    // 각 식당 데이터에 대해 옵션을 생성하여 페이지에 추가
     restaurantData.forEach(restaurant => {
       const option = document.createElement('option');
       option.value = restaurant.restaurantId;
@@ -134,9 +141,11 @@
     });
   }
 
+  // 주문 데이터를 서버에서 가져오는 함수
   async function fetchOrderData() {
     const restaurantId = document.getElementById('restaurantId').value;
     try {
+      // 서버에 주문 데이터 요청
       const response = await fetch(`/restaurants/${restaurantId}/orders/matched`, {
         method: 'GET',
       });
@@ -146,16 +155,18 @@
 
       const orderData = await response.json();
 
+      // 가져온 주문 데이터로 주문 목록 생성
       createOrderList(orderData);
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  // Function to dynamically create order list
+  // 주문 데이터를 기반으로 주문 목록을 생성하는 함수
   function createOrderList(orderData) {
     orderListDiv.innerHTML = ''; // 기존 주문 리스트를 초기화합니다.
 
+    // 각 주문 데이터에 대해 체크박스와 라벨을 생성하여 페이지에 추가
     orderData.forEach(order => {
       const orderItemDiv = document.createElement('div');
       orderItemDiv.classList.add('order-item');
@@ -186,14 +197,18 @@
     }
   }
 
+  // 완료 버튼 클릭 이벤트 핸들러
   completeBtn.addEventListener('click', function() {
+    // 선택된 체크박스를 가져옵니다.
     const checkboxes = document.querySelectorAll('input[name="orderId"]:checked');
 
+    // 아무것도 고르지 않았을 때 유효성 검사
     if (checkboxes.length === 0) {
       alert('처리 완료하고 싶은 주문을 선택하세요.');
       return;
     }
 
+    // 각 체크박스에 대해 주문 완료를 업데이트합니다.
     checkboxes.forEach(checkbox => {
       updateOrderFinish(checkbox.value);
     });
@@ -201,8 +216,10 @@
     window.location.href = '/restaurant_main.html';
   });
 
+  // 주문 완료를 업데이트하는 함수
   async function updateOrderFinish(orderId) {
     try {
+      // 서버에 주문 완료 업데이트 요청
       const response = await fetch(`/restaurants/${orderId}/finish`, {
         method: 'PUT',
       });

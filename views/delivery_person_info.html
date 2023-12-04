@@ -79,6 +79,7 @@
   const urlParams = new URLSearchParams(window.location.search);
   const email = urlParams.get('email');
 
+  // 배달원의 경우 배달 지역을 등록해야 해서 추가적으로 등록하는 페이지 입니다.
   document.getElementById('delivery-person-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 

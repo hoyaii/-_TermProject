@@ -1,13 +1,14 @@
 const { Review } = require('../models');
 const db = require(process.cwd() + '/models');
 
+// 리뷰를 생성하는 함수
 exports.createReview = async (req, res, next) => {
     const { orderId, rating, comment } = req.body;
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
-
-    const sql = "INSERT INTO Review (order_id, customer_id, rating, comment) VALUES (?, ?, ?, ?)";
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옴
 
     try {
+        // 리뷰 정보를 DB에 저장
+        const sql = "INSERT INTO Review (order_id, customer_id, rating, comment) VALUES (?, ?, ?, ?)";
         await db.query(sql, [orderId, userId, rating, comment]);
 
         res.status(200).send('리뷰가 성공적으로 작성되었습니다.');
@@ -17,11 +18,12 @@ exports.createReview = async (req, res, next) => {
     }
 };
 
+// 리뷰를 가져오는 함수
 exports.getReview = async (req, res, next) => {
-    const restaurantId = req.params.restaurantId; // URL 경로에서 restaurantId를 가져옵니다.
+    const restaurantId = req.params.restaurantId; // URL 경로에서 restaurantId를 가져옴
 
     try {
-        // restaurant_id에 해당하는 주문의 order_id와 menu_id를 가져옵니다.
+        // 식당 ID에 해당하는 주문의 주문 ID와 메뉴 ID를 가져옴
         let [orderRows] = await db.query("SELECT order_id, menu_id FROM Orders WHERE restaurant_id = ?", [restaurantId]);
 
         let reviewHistory = [];
@@ -31,7 +33,8 @@ exports.getReview = async (req, res, next) => {
             let [menuRows] = await db.query("SELECT name FROM Menu WHERE menu_id = ?", [order.menu_id]);
             let [reviewRows] = await db.query("SELECT comment FROM Review WHERE order_id = ?", [order.order_id]);
 
-            if (menuRows[0] && reviewRows[0]) { // menuRows[0]과 reviewRows[0]이 존재하는지 확인합니다.
+            // 메뉴와 리뷰가 존재하는 경우에만 리뷰 이력에 추가
+            if (menuRows[0] && reviewRows[0]) {
                 reviewHistory.push({
                     orderId: order.order_id,
                     menuName: menuRows[0].name,

@@ -96,25 +96,28 @@
 </div>
 
 <script>
-  // Sample data - Replace this with your actual restaurant data
   async function fetchRestaurantData() {
     try {
+      // 서버에 식당 데이터 요청
       const response = await fetch('/restaurants', {
         method: 'GET',
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      // 응답 데이터를 JSON 형식으로 변환
       const restaurantData = await response.json();
+      // 가져온 식당 데이터로 식당 옵션 생성
       createRestaurantOptions(restaurantData);
     } catch (error) {
       console.error('Error:', error);
     }
   }
-  // Fetch restaurant data when the page loads
+
+  // 페이지를 로딩할 때 식당 데이터를 가져옵니다.
   window.onload = fetchRestaurantData;
 
-  // Function to dynamically create restaurant options
+  // 식당 데이터를 기반으로 식당 옵션을 생성하는 함수
   function createRestaurantOptions(restaurantData) {
     if(restaurantData.length === 0){
       alert('운영하고 있는 식당이 존재하지 않습니다.');
@@ -123,6 +126,7 @@
 
     const restaurantSelect = document.getElementById('restaurantId');
 
+    // 각 식당 데이터에 대해 옵션을 생성하여 페이지에 추가
     restaurantData.forEach(restaurant => {
       const option = document.createElement('option');
       option.value = restaurant.restaurantId;
@@ -132,9 +136,11 @@
     });
   }
 
+  // 식당 정보 업데이트 폼 제출 이벤트 리스너
   document.getElementById('update-restaurant-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
+    // 업데이트할 식당 정보 가져오기
     const restaurantId = document.getElementById('restaurantId').value;
     const name = document.getElementById('newName').value;
     const address = document.getElementById('newAddress').value;
@@ -142,6 +148,7 @@
     const serviceArea = document.getElementById('newServiceArea').value;
 
     try {
+      // 서버에 식당 정보 업데이트 요청
       const response = await fetch(`/restaurants/${restaurantId}`, {
         method: 'PUT',
         headers: {

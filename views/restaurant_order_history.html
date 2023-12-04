@@ -87,28 +87,33 @@
 </div>
 
 <script>
+    // 식당 데이터를 서버에서 가져오는 함수
     async function fetchRestaurantData() {
         try {
+            // 서버에 식당 데이터 요청
             const response = await fetch('/restaurants', {
                 method: 'GET',
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+            // 응답 데이터를 JSON 형식으로 변환
             const restaurantData = await response.json();
+            // 가져온 식당 데이터로 식당 옵션 생성
             createRestaurantOptions(restaurantData);
         } catch (error) {
             console.error('Error:', error);
         }
     }
 
-    // Fetch restaurant data when the page loads
+    // 페이지를 로딩할 때 식당 데이터를 가져옵니다.
     window.onload = fetchRestaurantData;
 
-    // Function to dynamically create restaurant options
+    // 식당 데이터를 기반으로 식당 옵션을 생성하는 함수
     function createRestaurantOptions(restaurantData) {
         const restaurantSelect = document.getElementById('restaurantId');
 
+        // 각 식당 데이터에 대해 옵션을 생성하여 페이지에 추가
         restaurantData.forEach(restaurant => {
             const option = document.createElement('option');
             option.value = restaurant.restaurantId;
@@ -117,13 +122,16 @@
             restaurantSelect.appendChild(option);
         });
 
+        // 운영하고 있는 식당이 없을 때 예외 처리
         if(restaurantData.length  === 0){
             alert('운영하고 있는 식당이 존재하지 않습니다.');
         }
     }
 
+    // 식당의 주문 이력 데이터를 서버에서 가져오는 함수
     async function fetchOrderHistoryData(restaurantId) {
         try {
+            // 서버에 주문 이력 데이터 요청
             const response = await fetch(`/restaurants/${restaurantId}/orders`, {
                 method: 'GET',
             });
@@ -136,8 +144,9 @@
         }
     }
 
-    // Function to dynamically create order history
+    // 주문 이력을 동적으로 생성하는 함수
     function createOrderHistory(orderHistoryData) {
+        // 주문이 존재하지 않을 때 예외 처리
         if(orderHistoryData.length === 0){
             alert('주문 내역이 존재하지 않습니다.');
             location.href = '/restaurant_main.html';
@@ -146,6 +155,7 @@
         const orderHistoryContainer = document.querySelector('.order-history');
         orderHistoryContainer.innerHTML = '';
 
+        // 각 주문 이력에 대해 라벨을 생성하여 페이지에 추가
         orderHistoryData.forEach(order => {
             const orderItem = document.createElement('div');
             orderItem.classList.add('order-item');
@@ -159,6 +169,7 @@
         });
     }
 
+    // 주문 이력을 보여주는 함수
     async function showOrderHistory() {
         const selectedRestaurantId = document.getElementById('restaurantId').value;
         const orderHistoryData = await fetchOrderHistoryData(selectedRestaurantId);

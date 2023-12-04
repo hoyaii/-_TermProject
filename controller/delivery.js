@@ -1,10 +1,12 @@
 const {  } = require('../models');
 const db = require(process.cwd() + '/models');
 
+// 사용자 ID로 배달 요청을 가져오는 함수
 exports.getDeliveryRequestByUserId = async (req, res, next) => {
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옴
 
     try {
+        // 아직 수락되지 않은 배달 요청을 가져옴
         let [rows] = await db.query(
             "SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = 'notAccepted'",
             [userId]
@@ -16,16 +18,16 @@ exports.getDeliveryRequestByUserId = async (req, res, next) => {
     }
 };
 
+// 사용자 ID로 배달 이력을 가져오는 함수
 exports.getDeliveryHistoryByUserId = async (req, res, next) => {
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옴
 
     try {
-        // delivery_id 리스트를 구한다
+        // 배달 완료된 배달 ID 리스트를 가져옴
         let [deliveryRows] = await db.query("SELECT delivery_id FROM Delivery WHERE delivery_person_id = ? AND status = 'finished'", [userId]);
 
+        // 각 배달에 대한 상세 정보를 추가함
         let deliveryHistory = [];
-
-        // 각 delivery_id에 대한 정보를 추가한다
         for (let i = 0; i < deliveryRows.length; i++) {
             const deliveryId = deliveryRows[i].delivery_id;
             let [orderRows] = await db.query("SELECT order_id, menu_id, restaurant_id, order_time FROM Orders WHERE delivery_id = ? AND status = 'finished'", [deliveryId]);
@@ -54,16 +56,19 @@ exports.getDeliveryHistoryByUserId = async (req, res, next) => {
     }
 };
 
+// 배달 요청을 수락하는 함수
 exports.acceptDeliveryRequest = async (req, res, next) => {
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
-    const { deliveryId } = req.body; // 요청 본문에서 배달 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옴
+    const { deliveryId } = req.body; // 요청 본문에서 배달 ID를 가져옴
 
     try {
+        // 아직 수락되지 않은 주문 ID 리스트를 가져옴
         const [orderIds] = await db.query(
             "SELECT order_id FROM Orders WHERE delivery_id = ? AND status = 'notMatched'",
             [deliveryId]
         );
 
+        // 배달과 주문 상태 업데이트
         if (orderIds.length > 0) {
             const orderId = orderIds[0].order_id;
 
@@ -90,11 +95,13 @@ exports.acceptDeliveryRequest = async (req, res, next) => {
     }
 };
 
+// 배달을 완료하는 함수
 exports.finishDelivery = async (req, res, next) => {
     const deliveryId = req.body.deliveryId;
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옴
 
     try {
+        // 배달 상태와 주문 상태 업데이트
         // deliveryId를 가지고 orderId를 구한다
         let [rows] = await db.query("SELECT order_id FROM Orders WHERE delivery_id = ? AND status = ?", [deliveryId, "cooked"]);
         if (rows.length === 0) {
@@ -118,12 +125,13 @@ exports.finishDelivery = async (req, res, next) => {
     }
 };
 
+// 사용자 ID로 배달 목록을 가져오는 함수
 exports.getDeliveryListByUserId = async (req, res, next) => {
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옴
 
     try {
-        // delivery_id, restaurant_id, delivery_address를 구한다
-        let [rows] = await db.query("SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = ?", [userId, "cooked"]);
+        // 사용자가 수락한 배달 목록을 가져옴
+        let [rows] = await db.query("SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = ?", [userId, "accepted"]);
 
         // 각 배달에 대한 restaurantAddress를 추가한다
         for (let i = 0; i < rows.length; i++) {
@@ -141,12 +149,8 @@ exports.getDeliveryListByUserId = async (req, res, next) => {
 };
 
 exports.requestDelivery = async (req, res, next) => {
-    if (!req.user) {
-        return res.status(401).json({ error: '로그인이 필요합니다.' });
-    }
-
-    const userId = req.user.user_id // 세션에서 사용자 ID를 가져옵니다.
-    const restaurantId = req.body.restaurantId; // 요청 본문에서 식당 ID를 가져옵니다.
+    const userId = req.user.user_id // 세션에서 사용자 ID를 가져옴
+    const restaurantId = req.body.restaurantId; // 요청 본문에서 식당 ID를 가져옴
 
     try {
         // 사용자의 주소를 가져옵니다.
@@ -159,7 +163,7 @@ exports.requestDelivery = async (req, res, next) => {
         // 서비스 지역에서 현재 사용 가능한 배달원을 모두 가져옵니다.
         const availableDeliveryPersons = await db.query("SELECT user_id FROM User WHERE service_area = ? AND status = 'free'", [serviceArea]);
 
-        if (availableDeliveryPersons.length === 0) {
+        if (availableDeliveryPersons[0].length === 0) {
             console.log("배달 가능한 배달원이 존재하지 않습니다.");
             return res.status(400).json({ error: '배달 가능한 배달원이 존재하지 않습니다.' });
         }
@@ -184,6 +188,7 @@ exports.requestDelivery = async (req, res, next) => {
     }
 };
 
+// 날짜를 원하는 형식으로 포맷하는 함수
 function formatDate(date) {
     let year = date.getFullYear();
     let month = String(date.getMonth() + 1).padStart(2, '0');

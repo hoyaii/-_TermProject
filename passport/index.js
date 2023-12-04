@@ -1,11 +1,11 @@
 const index = require('passport');
 const local = require('./localStrategy');
-const User = require('../controller/user'); // 이를 적절한 데이터베이스 라이브러리로 교체해야 합니다.
-const db = require('../models/index'); // 데이터베이스 연결 설정을 불러옵니다.
+const User = require('../controller/user');
+const db = require('../models/index');
 
 module.exports = () => {
     index.serializeUser((user, done) => {
-        done(null, user.user_id);  // user_id로 변경
+        done(null, user.user_id); // user_id를 세션에 저장하고 사용합니다.
     });
 
     index.deserializeUser((user_id, done) => {

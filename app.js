@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const passportConfig = require('./passport');
 
-dotenv.config(); // 환경 변수를 로드합니다.
+dotenv.config(); // 환경 변수를 로드
 const db = require('./models');
 const authRouter = require('./routes/auth'); // 인증 관련 라우터
 const userRouter = require('./routes/user'); // 사용자 관련 라우터
@@ -28,7 +28,7 @@ nunjucks.configure('views', {
 
 // 미들웨어 설정
 app.use(morgan('dev'));
-app.use(express.static(path.join(__dirname, 'views'))); // public -> views로 수정
+app.use(express.static(path.join(__dirname, 'views')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -42,8 +42,8 @@ app.use(session({
     },
 }));
 
-app.use(passport.initialize()); // 체크
-app.use(passport.session()); // 체크
+app.use(passport.initialize());
+app.use(passport.session());
 passportConfig()
 
 // 라우팅 설정

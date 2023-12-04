@@ -87,25 +87,29 @@
 </div>
 
 <script>
+  // 식당 데이터를 서버에서 가져오는 함수
   async function fetchRestaurantData() {
     try {
+      // 서버에 식당 데이터 요청
       const response = await fetch('/restaurants', {
         method: 'GET',
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      // 응답 데이터를 JSON 형식으로 변환
       const restaurantData = await response.json();
+      // 가져온 식당 데이터로 식당 옵션 생성
       createRestaurantOptions(restaurantData);
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  // Fetch restaurant data when the page loads
+  // 페이지를 로딩할 때 식당 데이터를 가져옵니다.
   window.onload = fetchRestaurantData;
 
-  // Function to dynamically create restaurant options
+  // 식당 데이터를 기반으로 식당 옵션을 생성하는 함수
   function createRestaurantOptions(restaurantData) {
     if(restaurantData.length  === 0){
       alert('운영하고 있는 식당이 존재하지 않습니다.');
@@ -114,6 +118,7 @@
 
     const restaurantSelect = document.getElementById('restaurantId');
 
+    // 각 식당 데이터에 대해 옵션을 생성하여 페이지에 추가
     restaurantData.forEach(restaurant => {
       const option = document.createElement('option');
       option.value = restaurant.restaurantId;
@@ -123,8 +128,10 @@
     });
   }
 
+  // 식당의 리뷰 이력 데이터를 서버에서 가져오는 함수
   async function fetchReviewHistoryData(restaurantId) {
     try {
+      // 서버에 리뷰 이력 데이터 요청
       const response = await fetch(`/reviews/restaurant/${restaurantId}`, {
         method: 'GET',
       });
@@ -137,6 +144,7 @@
     }
   }
 
+  // 리뷰 이력을 보여주는 함수
   async function showReviewHistory() {
     const selectedRestaurantId = document.getElementById('restaurantId').value;
     const reviewHistoryData = await fetchReviewHistoryData(selectedRestaurantId);
@@ -146,8 +154,9 @@
     reviewHistoryContainer.style.display = 'block';
   }
 
-  // Function to dynamically create review history
+  // 리뷰 이력을 동적으로 생성하는 함수
   function createReviewHistory(reviewHistoryData) {
+    // 리뷰 내역이 존재하지 않을 떄 예외 처리
     if(reviewHistoryData.length === 0){
       alert('리뷰 내역이 존재하지 않습니다.');
     }
@@ -155,6 +164,7 @@
     const reviewHistoryContainer = document.querySelector('.review-history');
     reviewHistoryContainer.innerHTML = '';
 
+    // 각 리뷰 이력에 대해 라벨을 생성하여 페이지에 추가
     reviewHistoryData.forEach(review => {
       const reviewItem = document.createElement('div');
       reviewItem.classList.add('review-item');

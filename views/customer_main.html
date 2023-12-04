@@ -83,7 +83,7 @@
       method: 'GET',
     });
 
-    if (response.ok) {
+    if (response.ok) { // 회원 이름을 메인회면에서 출력합니다.
       const data = await response.json();
       const welcomeMsg = document.getElementById('welcome-msg');
 
@@ -91,6 +91,7 @@
     }
   };
 
+  // 선택한 기능에 따라 해당 기능에 대한 페이지로 이동
   document.getElementById('search-btn').addEventListener('click', () => {
     location.href = '/customer_search_result.html';
   });

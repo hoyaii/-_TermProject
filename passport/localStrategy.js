@@ -8,7 +8,7 @@ module.exports = (passport) => {
         passwordField: 'password',
     }, async (email, password, done) => {
         try {
-            const [rows, fields] = await db.execute('SELECT * FROM User WHERE email = ?', [email]); 
+            const [rows, fields] = await db.execute('SELECT * FROM User WHERE email = ?', [email]); // email 기반
 
             if (rows.length > 0) {
                 const exUser = rows[0];

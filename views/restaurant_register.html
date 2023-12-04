@@ -99,6 +99,7 @@
     const cuisineType = document.getElementById('cuisineType').value;
     const serviceArea = document.getElementById('serviceArea').value;
 
+    // 등록할 음식점의 이름과 위치를 모두 입력하도록 유효성 검사
     if (!name || !address) {
       alert('음식점 이름과 위치를 모두 입력하세요.');
       return;
@@ -115,9 +116,7 @@
 
       if (response.ok) {
         alert('음식점 정보가 성공적으로 등록되었습니다.');
-        setTimeout(function() {
-          window.location.href = 'restaurant_main.html';
-        }, 500);
+        window.location.href = 'restaurant_main.html' // 완료되면 메인으로 돌아갑니다.
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

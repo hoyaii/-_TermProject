@@ -70,7 +70,6 @@
       <option value="Customer">Customer</option>
       <option value="RestaurantOwner">RestaurantOwner</option>
       <option value="DeliveryPerson">DeliveryPerson</option>
-      <option value="ServiceProvider">ServiceProvider</option>
     </select>
 
     <label for="phoneNumber">전화번호</label>
@@ -103,7 +102,7 @@
 
     if (response.ok) {
       alert('회원 가입 성공!');
-      if (role === 'DeliveryPerson') {
+      if (role === 'DeliveryPerson') { // 배달원의 경우 서비스 지역을 입력해야 합니다
         location.href = `/delivery_person_info.html?email=${email}`;
       } else {
         location.href = '/login.html'; // 그 외의 경우 로그인 페이지로 이동

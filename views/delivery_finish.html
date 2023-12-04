@@ -71,33 +71,41 @@
 </div>
 
 <script>
+  // 배달 완료 폼과 체크박스 컨테이너 요소를 가져옵니다.
   const finishDeliveryForm = document.getElementById('finish-delivery-form');
   const checkboxContainer = document.getElementById('checkbox-container');
 
+  // 배달 데이터를 서버에서 가져오는 함수
   async function fetchDeliveryData() {
     try {
+      // 서버에 배달 데이터 요청
       const response = await fetch(`/delivery`, {
         method: 'GET',
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      // 응답 데이터를 JSON 형식으로 변환
       const deliveryData = await response.json();
 
+      // 가져온 배달 데이터로 체크박스 생성
       createDeliveryCheckboxes(deliveryData);
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
+  // 페이지를 로딩할 때 배달 데이터를 가져옵니다.
   window.onload = fetchDeliveryData;
 
+  // 배달 데이터를 기반으로 체크박스를 생성하는 함수
   function createDeliveryCheckboxes(deliveryData) {
     if(deliveryData.length === 0){
       alert('배달 목록이 존재하지 않습니다.');
       window.location.href = '/delivery_person_main.html';
     }
 
+    // 각 배달 데이터에 대해 체크박스와 라벨을 생성하여 페이지에 추가
     deliveryData.forEach(delivery => {
       const checkbox = document.createElement('input');
       checkbox.type = 'radio';
@@ -118,9 +126,11 @@
     });
   }
 
+  // 배달 완료 폼 제출 핸들러
   finishDeliveryForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 
+    // 선택된 배달 ID를 가져옵니다.
     const selectedDeliveryId = Array.from(document.querySelectorAll('input[name="deliveryId"]:checked'))
             .map(checkbox => checkbox.value)[0];
 
@@ -130,6 +140,7 @@
     }
 
     try {
+      // 서버에 배달 완료 요청
       const response = await fetch('/delivery/finish', {
         method: 'POST',
         headers: {

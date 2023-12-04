@@ -94,6 +94,7 @@
         }
     });
 
+    // 로그인한 유저의 역할에 따라 페이지 리다이렉트하는 함수
     async function redirectToRolePage(email) {
         const roleResponse = await fetch('/user/role', {
             method: 'POST',
@@ -111,7 +112,6 @@
         const role = roleData.role;
 
         let redirectURL;
-
         switch(role) {
             case 'Customer':
                 redirectURL = '/customer_main.html';
@@ -123,10 +123,10 @@
                 redirectURL = '/delivery_person_main.html';
                 break;
         }
-
         location.href = redirectURL;
     }
 
+    // 회원가입으로 이동
     document.getElementById('join-btn').addEventListener('click', () => {
         location.href = '/join.html';
     });

@@ -77,9 +77,9 @@
 </head>
 <body>
 <div class="main-container">
-  <h2>Delivery Status and Review</h2>
+  <h2>리뷰 작성하기</h2>
   <form id="delivery-form">
-    <label>확인하고 싶은 주문 선택</label>
+    <label>리뷰를 작성하고 싶은 주문 선택</label>
     <!-- Dynamic creation of checkboxes based on the number of orders -->
     <div id="checkbox-container">
       <!-- Checkboxes will be dynamically added here -->
@@ -118,34 +118,40 @@
 </div>
 
 <script>
+  // 체크박스와 리뷰 컨테이너 요소를 가져옵니다.
   const checkboxContainer = document.getElementById('checkbox-container');
   const reviewContainer = document.getElementById('review-container');
 
+  // 주문 데이터를 서버에서 가져오는 함수
   async function fetchOrderData() {
     try {
+      // 서버에 주문 데이터 요청
       const response = await fetch(`/orders/finish`, {
         method: 'GET',
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      // 응답 데이터를 JSON 형식으로 변환
       const orderData = await response.json();
+      // 가져온 주문 데이터로 주문 옵션 생성
       createOrderOptions(orderData);
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  // Fetch order data when the page loads
+  // 페이지를 로딩할 때 주문 데이터를 가져옵니다.
   window.onload = fetchOrderData;
 
-  // Function to dynamically create checkboxes based on order data
+  // 주문 데이터를 기반으로 주문 옵션을 생성하는 함수
   function createOrderOptions(orderData) {
     if(orderData.length  === 0){
       alert('주문 내역이 존재하지 않습니다.');
       location.href = '/customer_search_result.html';
     }
 
+    // 각 주문 데이터에 대해 체크박스와 라벨을 생성하여 페이지에 추가
     orderData.forEach(order => {
       const checkbox = document.createElement('input');
       checkbox.type = 'radio';
@@ -166,27 +172,25 @@
     });
   }
 
-  // Function to show the review form
+  // 리뷰 폼을 보여주는 함수
   function showReviewForm() {
     const selectedOrderIds = Array.from(document.querySelectorAll('input[name="orderId"]:checked'))
             .map(checkbox => checkbox.value);
 
+    // 주문 내역이 없을 떄 예외 처리
     if (selectedOrderIds.length === 0) {
       alert('주문을 선택해주세요.');
       return;
     }
 
-    if (selectedOrderIds.length > 1) {
-      alert('하나의 주문만 선택해주세요.');
-      return;
-    }
-
+    // 리뷰 폼을 보여줍니다.
     reviewContainer.style.display = 'block';
     document.querySelector('#delivery-form button').style.display = 'none';
   }
 
   const reviewForm = document.getElementById('review-form');
 
+  // 리뷰 폼 제출 핸들러
   reviewForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -195,11 +199,13 @@
     const selectedOrderIds = Array.from(document.querySelectorAll('input[name="orderId"]:checked'))
             .map(checkbox => checkbox.value);
 
+    // 아무것도 선택하지 않았을 때 유효성 검사
     if (selectedOrderIds.length === 0) {
       alert('주문을 선택해주세요.');
       return;
     }
 
+    // 별점과 리뷰 내용을 달지 않았을 때 유효성 검사
     if (!rating) {
       alert('별점을 선택해주세요.');
       return;
@@ -211,6 +217,7 @@
     }
 
     try {
+      // 서버에 리뷰 데이터 요청
       const response = await fetch('/reviews', {
         method: 'POST',
         headers: {

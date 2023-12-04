@@ -115,25 +115,29 @@
 </div>
 
 <script>
+  // 식당 데이터를 서버에서 가져오는 함수
   async function fetchRestaurantData() {
     try {
+      // 서버에 식당 데이터 요청
       const response = await fetch('/restaurants', {
         method: 'GET',
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      // 응답 데이터를 JSON 형식으로 변환
       const restaurantData = await response.json();
+      // 가져온 식당 데이터로 식당 옵션 생성
       createRestaurantOptions(restaurantData);
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  // Fetch restaurant data when the page loads
+  // 페이지를 로딩할 때 식당 데이터를 가져옵니다.
   window.onload = fetchRestaurantData;
 
-  // Function to dynamically create restaurant options
+  // 식당 데이터를 기반으로 식당 옵션을 생성하는 함수
   function createRestaurantOptions(restaurantData) {
     if(restaurantData.length  == 0){
       alert('운영하고 있는 식당이 존재하지 않습니다.');
@@ -142,6 +146,7 @@
 
     const restaurantSelect = document.getElementById('restaurantId');
 
+    // 각 식당 데이터에 대해 옵션을 생성하여 페이지에 추가
     restaurantData.forEach(restaurant => {
       const option = document.createElement('option');
       option.value = restaurant.restaurantId;
@@ -151,6 +156,7 @@
     });
   }
 
+  // 식당의 메뉴 데이터를 서버에서 가져오는 함수
   async function fetchMenuData(restaurantId) {
     try {
       const response = await fetch(`/restaurants/${restaurantId}/menus`, {
@@ -166,17 +172,20 @@
     }
   }
 
-  // Function to dynamically create menu options
+  // 메뉴 데이터를 기반으로 메뉴 옵션을 생성하는 함수
   function createMenuOptions(menuData) {
     createUpdateMenuOptions(menuData);
     createDeleteMenuOptions(menuData);
   }
 
+  // 수정할 메뉴의 옵션을 생성하는 함수
   function createUpdateMenuOptions(menuData) {
     const menuSelect = document.getElementById('updateMenuList');
 
+    // 기존의 옵션을 초기화
     menuSelect.innerHTML = '';
 
+    // 각 메뉴 데이터에 대해 옵션을 생성하여 페이지에 추가
     menuData.forEach(menu => {
       const option = document.createElement('option');
       option.value = menu.menu_id;
@@ -186,12 +195,14 @@
     });
   }
 
+  // 삭제할 메뉴의 옵션을 생성하는 함수
   function createDeleteMenuOptions(menuData) {
     const deleteMenuSelect = document.getElementById('deleteMenuList');
 
-    // Clear existing options
+    // 기존의 옵션을 초기화
     deleteMenuSelect.innerHTML = '';
 
+    // 각 메뉴 데이터에 대해 옵션을 생성하여 페이지에 추가
     menuData.forEach(menu => {
       const option = document.createElement('option');
       option.value = menu.menu_id;
@@ -201,27 +212,31 @@
     });
   }
 
+  // 선택한 폼을 보여주는 함수
   function showForm(formId) {
-    // Hide all forms
+    // 모든 폼을 숨깁니다
     document.getElementById('addMenuForm').classList.add('hidden');
     document.getElementById('updateMenuForm').classList.add('hidden');
     document.getElementById('deleteMenuForm').classList.add('hidden');
 
-    // Show the selected form
+    // 선택한 폼을 보입니다.
     document.getElementById(formId).classList.remove('hidden');
   }
 
+  // 메뉴를 등록하는 함수
   async function registerMenu() {
     const menuName = document.getElementById('menuName').value;
     const menuPrice = document.getElementById('menuPrice').value;
     const restaurantId = document.getElementById('restaurantId').value;
 
+    // 등록할 메뉴명 혹 가격을 입력하지 않았을 때 유효성 검사
     if (!menuName || !menuPrice) {
       alert('모든 정보를 입력해주세요.');
       return;
     }
 
     try {
+      // 서버에 메뉴 등록 요청
       const response = await fetch(`/restaurants/${restaurantId}/menus`, {
         method: 'POST',
         headers: {
@@ -241,18 +256,21 @@
     }
   }
 
+  // 메뉴를 수정하는 함수
   async function updateMenu() {
     const newMenuName = document.getElementById('newMenuName').value;
     const newMenuPrice = document.getElementById('newMenuPrice').value;
     const menuId = document.getElementById('updateMenuList').value;
     const restaurantId = document.getElementById('restaurantId').value;
 
+    // 수정할 메뉴명 혹 가격을 입력하지 않았을 때 유효성 검사
     if (!newMenuName || !newMenuPrice) {
       alert('모든 정보를 입력해주세요.');
       return;
     }
 
     try {
+      // 서버에 메뉴 수정 요청
       const response = await fetch(`/restaurants/menus/${menuId}`, {
         method: 'PUT',
         headers: {
@@ -272,11 +290,13 @@
     }
   }
 
+  // 메뉴를 삭제하는 함수
   async function deleteMenu() {
     const menuId = document.getElementById('deleteMenuList').value;
     const restaurantId = document.getElementById('restaurantId').value;
 
     try {
+      // 서버에 메뉴 삭제 요청
       const response = await fetch(`/restaurants/menus/${menuId}`, {
         method: 'DELETE',
       });
@@ -291,6 +311,7 @@
     }
   }
 
+  // 홈페이지로 이동하는 함수
   function goToHomePage() {
     location.href = '/restaurant_main.html';
   }

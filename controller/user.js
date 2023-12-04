@@ -1,11 +1,12 @@
 const { User, Order } = require('../models');
 const db = require(process.cwd() + '/models');
 
-
+// 배달원 정보를 추가하는 함수
 exports.addDeliveryPersonInfo = async (req, res, next) => {
     const { serviceArea, email } = req.body;
 
     try {
+        // 배달원의 서비스 지역과 상태를 업데이트
         await db.query(
             "UPDATE User SET service_area = ?, status = 'free' WHERE email = ?",
             [serviceArea, email]
@@ -38,10 +39,12 @@ exports.getRole = async (req, res, next) => {
     }
 };
 
+// 사용자 역할을 가져오는 함수
 exports.getName = async (req, res, next) => {
-    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
+    const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옴.
 
     try {
+        // 주어진 이메일로 사용자 역할을 조회
         let [rows] = await db.query(
             "SELECT username FROM User WHERE user_id = ?",
             [userId]

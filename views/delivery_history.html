@@ -75,32 +75,41 @@
 </div>
 
 <script>
+  // 배달 내역 컨테이너와 완료 버튼 요소를 가져옵니다.
   const deliveryHistoryContainer = document.getElementById('delivery-history-container');
   const finishBtn = document.getElementById('finish-btn');
 
+  // 배달 내역을 서버에서 가져오는 함수
   async function fetchDeliveryHistory() {
     try {
+      // 서버에 배달 내역 요청
       const response = await fetch('/delivery/history', {
         method: 'GET',
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      // 응답 데이터를 JSON 형식으로 변환
       const deliveryHistoryData = await response.json();
+      // 가져온 배달 내역으로 배달 내역 생성
       createDeliveryHistory(deliveryHistoryData);
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
+  // 페이지를 로딩할 때 배달 내역을 가져옵니다.
   window.onload = fetchDeliveryHistory;
 
+  // 배달 내역 데이터를 기반으로 배달 내역을 생성하는 함수
   function createDeliveryHistory(deliveryHistoryData) {
+    // 완료한 배달 내역이 없을 때 예외처리
     if(deliveryHistoryData.length === 0){
-        alert('완료한 배달 내역이 존재하지 않습니다.');
-        location.href = '/delivery_person_main.html';
+      alert('완료한 배달 내역이 존재하지 않습니다.');
+      location.href = '/delivery_person_main.html';
     }
 
+    // 각 배달 내역 데이터에 대해 배달 내역을 생성하여 페이지에 추가
     deliveryHistoryData.forEach(history => {
       const deliveryDetails = document.createElement('div');
       deliveryDetails.classList.add('delivery-details');
@@ -117,7 +126,9 @@
     });
   }
 
+  // 완료 버튼 클릭 이벤트 핸들러
   finishBtn.addEventListener('click', function() {
+    // 메인 페이지로 이동
     window.location.href = '/delivery_person_main.html';
   });
 </script>

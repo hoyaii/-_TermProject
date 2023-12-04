@@ -1,18 +1,20 @@
 const { } = require('../models');
 const db = require(process.cwd() + '/models');
 
+// 식당을 생성하는 함수
 exports.createRestaurant = async (req, res, next) => {
     const { name, address, cuisineType, serviceArea } = req.body;
     const userId = req.user.user_id;
     const sql = "INSERT INTO Restaurant (name, address, cuisine_type, owner_id, service_area) VALUES (?, ?, ?, ?, ?)";
 
     try {
+        // 식당 정보를 DB에 저장
         const [result] = await db.query(sql, [name, address, cuisineType, userId, serviceArea]);
 
         if (result.affectedRows > 0) {
-            res.sendStatus(201); // Send 'Created' status if the insertion was successful
+            res.sendStatus(201);
         } else {
-            res.sendStatus(500); // Send 'Server Error' status if no rows were affected
+            res.sendStatus(500);
         }
     } catch (err) {
         console.error(err);
@@ -20,10 +22,12 @@ exports.createRestaurant = async (req, res, next) => {
     }
 };
 
+// 소유자 ID로 식당을 가져오는 함수
 exports.getRestaurantByOwnerId = async (req, res, next) => {
     const userId = req.user.user_id;
 
     try {
+        // 주인이 소유한 식당 정보를 가져옴
         const [rows] = await db.execute('SELECT restaurant_id AS restaurantId, name FROM Restaurant WHERE owner_id = ?', [userId]);
         res.json(rows);
     } catch (err) {
@@ -32,11 +36,13 @@ exports.getRestaurantByOwnerId = async (req, res, next) => {
     }
 };
 
+// 쿼리로 식당을 검색하는 함수
 exports.getRestaurantByQuery = async (req, res, next) => {
     const { name, serviceArea, cuisineType } = req.query;  // Get the parameters from the query string
     const sql = "SELECT restaurant_id, name, service_area, cuisine_type FROM Restaurant WHERE name LIKE ? AND service_area LIKE ? AND cuisine_type LIKE ?";
 
     try {
+        // 주어진 쿼리로 식당을 검색
         const [restaurantData] = await db.query(sql, [`%${name}%`, `%${serviceArea}%`, `%${cuisineType}%`]);
         res.json(restaurantData);
     } catch (err) {
@@ -45,6 +51,7 @@ exports.getRestaurantByQuery = async (req, res, next) => {
     }
 };
 
+// 식당 정보를 수정하는 함수
 exports.updateRestaurant = async (req, res, next) => {
     const restaurantId = req.params.restaurantId;
     const { name, address, cuisineType, serviceArea } = req.body;
@@ -60,6 +67,7 @@ exports.updateRestaurant = async (req, res, next) => {
     }
 };
 
+// 메뉴를 생성하는 함수
 exports.createMenu = async (req, res, next) => {
         const restaurantId = req.params.restaurantId;
     const { name, price } = req.body;
@@ -73,6 +81,7 @@ exports.createMenu = async (req, res, next) => {
     }
 };
 
+// 메뉴를 가져오는 함수
 exports.getMenu = async (req, res, next) => {
     const restaurantId = req.params.restaurantId;
     const sql = "SELECT menu_id, name, price FROM Menu WHERE restaurant_id = ?";
@@ -85,6 +94,7 @@ exports.getMenu = async (req, res, next) => {
     }
 };
 
+// 메뉴를 수정하는 함수
 exports.updateMenu = async (req, res, next) => {
     const menuId = req.params.menuId;
     const { name, price } = req.body;
@@ -98,6 +108,7 @@ exports.updateMenu = async (req, res, next) => {
     }
 };
 
+// 메뉴를 삭제하는 함수
 exports.deleteMenu = async (req, res, next) => {
     const menuId = req.params.menuId;
     const sql = "DELETE FROM Menu WHERE menu_id = ?";
@@ -110,6 +121,7 @@ exports.deleteMenu = async (req, res, next) => {
     }
 };
 
+// 식당 ID로 매칭된 주문을 가져오는 함수
 exports.getMatchedOrderByRestaurantId = async (req, res, next) => {
     const restaurantId = req.params.restaurantId;
     const orderHistorySql = "SELECT order_id, status, menu_id, order_time FROM Orders WHERE restaurant_id = ? AND status = 'deliveryMatched'";
@@ -137,6 +149,7 @@ exports.getMatchedOrderByRestaurantId = async (req, res, next) => {
     }
 };
 
+// 식당 ID로 주문을 가져오는 함수
 exports.getOrderByRestaurantId = async (req, res, next) => {
     const restaurantId = req.params.restaurantId;
     const orderHistorySql = "SELECT order_id, status, menu_id, order_time FROM Orders WHERE restaurant_id = ?";
@@ -163,6 +176,7 @@ exports.getOrderByRestaurantId = async (req, res, next) => {
     }
 };
 
+// 주문을 완료하는 함수
 exports.finishOrder = async (req, res, next) => {
     const orderId = req.params.orderId;
     const sql = "UPDATE Orders SET status = 'cooked' WHERE order_id = ?";
@@ -179,6 +193,7 @@ exports.finishOrder = async (req, res, next) => {
     }
 };
 
+// 날짜를 원하는 형식으로 포맷하는 함수
 function formatDate(date) {
     let year = date.getFullYear();
     let month = String(date.getMonth() + 1).padStart(2, '0');

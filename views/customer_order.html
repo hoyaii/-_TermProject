@@ -74,10 +74,14 @@
 <script>
   const checkboxContainer = document.getElementById('checkbox-container');
 
-  // Get restaurantId from the URL query string
+  // URL 쿼리 문자열에서 restaurantId를 가져옵니다.
   const urlParams = new URLSearchParams(window.location.search);
   const restaurantId = urlParams.get('restaurantId');
 
+  // 페이지가 로드될 때 메뉴 데이터를 가져옵니다.
+  window.onload = fetchMenuData;
+
+  // 메뉴 데이터를 서버에서 비동기적으로 가져옵니다.
   async function fetchMenuData() {
     try {
       const response = await fetch(`/restaurants/${restaurantId}/menus`, {
@@ -87,22 +91,22 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const menuData = await response.json();
+      // 가져온 메뉴 데이터를 기반으로 체크박스를 생성합니다.
       createMenuCheckboxes(menuData);
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  // Fetch menu data when the page loads
-  window.onload = fetchMenuData;
-
-  // Function to dynamically create checkboxes based on menu data
+  // 메뉴 데이터를 기반으로 체크박스를 동적으로 생성하는 함수
   function createMenuCheckboxes(menuData) {
+    // 등록한 메뉴가 없을 때 예외 처리
     if(menuData.length === 0){
       alert('등록된 메뉴가 존재하지 않습니다.');
       location.href = '/customer_search_result.html';
     }
 
+    // 각 메뉴 데이터에 대해 체크박스와 라벨을 생성하여 페이지에 추가
     menuData.forEach(menu => {
       const checkbox = document.createElement('input');
       checkbox.type = 'radio';
@@ -133,6 +137,7 @@
     const selectedMenuIds = Array.from(document.querySelectorAll('input[name="menuId"]:checked'))
             .map(checkbox => checkbox.value);
 
+    // 아무것도 선택하지 않았을 때 유효성 검사
     if (selectedMenuIds.length === 0) {
       alert('주문하고 싶은 메뉴를 선택하세요.');
       return;
@@ -170,11 +175,13 @@
       }
 
     } catch (error) {
-      alert('주문 요청을 실패!');
-      console.error('Error:', error);
+      alert('배달 가능한 배달원이 없는 등의 이유로 요청을 실패했습니다.');
+      console.error(error);
     }
   });
 </script>
+</body>
+</html>
 </body>
 </html>
 
