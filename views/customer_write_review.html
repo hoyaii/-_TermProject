@@ -100,7 +100,14 @@
     <h3>리뷰 작성</h3>
     <form id="review-form">
       <label>리뷰의 별점을 입력해 주세요 (1~5):</label>
-      <input type="number" id="rating" name="rating" min="1" max="5" class="review-input" required>
+      <select id="rating" name="rating" class="review-input" required>
+        <option value="">선택하세요</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
 
       <label>리뷰 내용을 입력해 주세요:</label>
       <textarea id="comment" name="comment" class="review-input" required></textarea>
@@ -190,6 +197,16 @@
 
     if (selectedOrderIds.length === 0) {
       alert('주문을 선택해주세요.');
+      return;
+    }
+
+    if (!rating) {
+      alert('별점을 선택해주세요.');
+      return;
+    }
+
+    if (!comment.trim()) {
+      alert('리뷰 내용을 입력해주세요.');
       return;
     }
 

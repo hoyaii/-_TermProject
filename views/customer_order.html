@@ -163,9 +163,7 @@
 
       if (response.ok) {
         alert('주문 요청 성공!');
-        setTimeout(function() {
-          window.location.href = 'customer_main.html';
-        }, 500);
+        window.location.href = 'customer_main.html';
 
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
