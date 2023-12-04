@@ -107,7 +107,7 @@
 
       const label = document.createElement('label');
       label.for = `menu${menu.menu_id}`;
-      label.textContent = `${menu.name} - ${menu.price}원`;
+      label.textContent = `${menu.name} - ${Math.round(menu.price)}원`;
 
       const checkboxDiv = document.createElement('div');
       checkboxDiv.classList.add('checkbox-container');

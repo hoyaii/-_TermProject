@@ -136,7 +136,23 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const deliveryStatus = await response.text();
-      alert(`해당 주문의 배달 상태는 ${deliveryStatus}입니다!`);
+
+      let message;
+      switch (deliveryStatus) {
+        case 'notMatched':
+          message = '현재 주문 상태는 요청 수락 전입니다!';
+          break;
+        case 'deliveryMatched':
+          message = '현재 주문 상태는 요리 중입니다!';
+          break;
+        case 'cooked':
+          message = '현재 주문 상태는 배달 중입니다!'
+          break;
+        case 'finished':
+          message = '현재 주문 상태는 완료입니다!';
+          break;
+      }
+      alert(message);
     } catch (error) {
       console.error('Error:', error);
     }
