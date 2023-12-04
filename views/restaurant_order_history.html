@@ -117,7 +117,7 @@
             restaurantSelect.appendChild(option);
         });
 
-        if(restaurantData.length  == 0){
+        if(restaurantData.length  === 0){
             alert('운영하고 있는 식당이 존재하지 않습니다.');
         }
     }
@@ -138,7 +138,7 @@
 
     // Function to dynamically create order history
     function createOrderHistory(orderHistoryData) {
-        if(orderHistoryData.length  == 0){
+        if(orderHistoryData.length === 0){
             alert('주문 내역이 존재하지 않습니다.');
             location.href = '/restaurant_main.html';
         }

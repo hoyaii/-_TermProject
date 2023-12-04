@@ -118,7 +118,7 @@
 
   // Function to dynamically create restaurant options
   function createRestaurantOptions(restaurantData) {
-    if(restaurantData.length  == 0){
+    if(restaurantData.length === 0){
       alert('운영하고 있는 식당이 존재하지 않습니다.');
       location.href = '/restaurant_main.html';
     }
@@ -161,7 +161,7 @@
       orderItemDiv.classList.add('order-item');
 
       const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
+      checkbox.type = 'radio';
       checkbox.id = `order${order.orderId}`;
       checkbox.name = 'orderId';
       checkbox.value = order.orderId;
@@ -178,7 +178,7 @@
 
     document.getElementById('order-list').classList.remove('hidden');
 
-    if(orderData.length  == 0){
+    if(orderData.length === 0){
       alert('주문 내역이 존재하지 않습니다.');
     }
     else{
@@ -188,6 +188,11 @@
 
   completeBtn.addEventListener('click', function() {
     const checkboxes = document.querySelectorAll('input[name="orderId"]:checked');
+
+    if (checkboxes.length === 0) {
+      alert('처리 완료하고 싶은 주문을 선택하세요.');
+      return;
+    }
 
     checkboxes.forEach(checkbox => {
       updateOrderFinish(checkbox.value);

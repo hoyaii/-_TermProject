@@ -134,14 +134,14 @@
 
   // Function to dynamically create checkboxes based on order data
   function createOrderOptions(orderData) {
-    if(orderData.length  == 0){
+    if(orderData.length  === 0){
       alert('주문 내역이 존재하지 않습니다.');
       location.href = '/customer_search_result.html';
     }
 
     orderData.forEach(order => {
       const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
+      checkbox.type = 'radio';
       checkbox.id = `order${order.orderId}`;
       checkbox.name = 'orderId';
       checkbox.value = order.orderId;
@@ -190,11 +190,6 @@
 
     if (selectedOrderIds.length === 0) {
       alert('주문을 선택해주세요.');
-      return;
-    }
-
-    if (selectedOrderIds.length > 1) {
-      alert('하나의 주문만 선택해주세요.');
       return;
     }
 

@@ -96,9 +96,9 @@
   window.onload = fetchDeliveryHistory;
 
   function createDeliveryHistory(deliveryHistoryData) {
-    if(deliveryHistoryData.length  == 0){
-      alert('완료한 배달 내역이 존재하지 않습니다.');
-      location.href = '/delivery_person_main.html';
+    if(deliveryHistoryData.length === 0){
+        alert('완료한 배달 내역이 존재하지 않습니다.');
+        location.href = '/delivery_person_main.html';
     }
 
     deliveryHistoryData.forEach(history => {

@@ -93,14 +93,14 @@
   window.onload = fetchDeliveryData;
 
   function createDeliveryCheckboxes(deliveryData) {
-    if(deliveryData.length == 0){
+    if(deliveryData.length === 0){
       alert('배달 목록이 존재하지 않습니다.');
       window.location.href = '/delivery_person_main.html';
     }
 
     deliveryData.forEach(delivery => {
       const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
+      checkbox.type = 'radio';
       checkbox.id = `delivery${delivery.delivery_id}`;
       checkbox.name = 'deliveryId';
       checkbox.value = delivery.delivery_id;

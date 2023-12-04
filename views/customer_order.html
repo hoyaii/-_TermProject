@@ -98,14 +98,14 @@
 
   // Function to dynamically create checkboxes based on menu data
   function createMenuCheckboxes(menuData) {
-    if(menuData.length  == 0){
+    if(menuData.length === 0){
       alert('등록된 메뉴가 존재하지 않습니다.');
       location.href = '/customer_search_result.html';
     }
 
     menuData.forEach(menu => {
       const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
+      checkbox.type = 'radio';
       checkbox.id = `menu${menu.menu_id}`;
       checkbox.name = 'menuId';
       checkbox.value = menu.menu_id;
@@ -132,6 +132,11 @@
     // 선택한 메뉴 ID들을 가져옵니다.
     const selectedMenuIds = Array.from(document.querySelectorAll('input[name="menuId"]:checked'))
             .map(checkbox => checkbox.value);
+
+    if (selectedMenuIds.length === 0) {
+      alert('주문하고 싶은 메뉴를 선택하세요.');
+      return;
+    }
 
     // 먼저 배달 요청을 보냅니다.
     try {

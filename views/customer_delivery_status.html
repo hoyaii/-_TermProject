@@ -95,14 +95,14 @@
 
   // Function to dynamically create checkboxes based on order data
   function createOrderOptions(orderData) {
-    if(orderData.length == 0){
+    if(orderData.length === 0){
       alert('주문 내역이 존재하지 않습니다.');
       location.href = '/customer_main.html';
     }
     
     orderData.forEach(order => {
       const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
+      checkbox.type = 'radio';
       checkbox.id = `order${order.orderId}`;
       checkbox.name = 'orderId';
       checkbox.value = order.orderId;
@@ -122,12 +122,14 @@
 
   // Function to handle checking delivery status
   async function checkDeliveryStatus() {
-    const selectedOrderId = document.querySelector('input[name="orderId"]:checked')?.value;
+    const selectedOrderIds = document.querySelectorAll('input[name="orderId"]:checked');
 
-    if (!selectedOrderId) {
+    if (selectedOrderIds.length === 0) {
       alert('확인하고 싶은 주문을 선택하세요.');
       return;
     }
+
+    const selectedOrderId = selectedOrderIds[0].value;
 
     try {
       const response = await fetch(`/orders/${selectedOrderId}/delivery`, {
