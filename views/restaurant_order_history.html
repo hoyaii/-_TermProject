@@ -116,6 +116,24 @@
 
             restaurantSelect.appendChild(option);
         });
+
+        if(restaurantData.length  == 0){
+            alert('운영하고 있는 식당이 존재하지 않습니다.');
+        }
+    }
+
+    async function fetchOrderHistoryData(restaurantId) {
+        try {
+            const response = await fetch(`/restaurants/${restaurantId}/orders`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 
     // Function to dynamically create order history
@@ -134,19 +152,9 @@
 
             orderHistoryContainer.appendChild(orderItem);
         });
-    }
 
-    async function fetchOrderHistoryData(restaurantId) {
-        try {
-            const response = await fetch(`/restaurants/${restaurantId}/orders`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return await response.json();
-        } catch (error) {
-            console.error('Error:', error);
+        if(orderHistoryData.length  == 0){
+            alert('주문 내역이 존재하지 않습니다.');
         }
     }
 

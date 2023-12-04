@@ -127,6 +127,10 @@
 
       restaurantSelect.appendChild(option);
     });
+
+    if(restaurantData.length  == 0){
+      alert('운영하고 있는 식당이 존재하지 않습니다.');
+    }
   }
 
   async function fetchOrderData() {
@@ -140,9 +144,6 @@
       }
 
       const orderData = await response.json();
-
-      // 이 부분을 수정합니다.
-      alert("Order data received: " + JSON.stringify(orderData));
 
       createOrderList(orderData);
     } catch (error) {
@@ -175,6 +176,10 @@
     });
 
     document.getElementById('order-list').classList.remove('hidden');
+
+    if(orderData.length  == 0){
+      alert('주문 내역이 존재하지 않습니다.');
+    }
   }
 
   completeBtn.addEventListener('click', function() {

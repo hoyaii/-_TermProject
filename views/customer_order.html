@@ -116,6 +116,10 @@
 
       checkboxContainer.appendChild(checkboxDiv);
     });
+
+    if(menuData.length  == 0){
+      alert('등록된 메뉴가 존재하지 않습니다.');
+    }
   }
 
   const orderForm = document.getElementById('order-form');

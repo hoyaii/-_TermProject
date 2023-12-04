@@ -110,6 +110,10 @@
 
       checkboxContainer.appendChild(checkboxDiv);
     });
+
+    if(deliveryRequestData.length  == 0){
+      alert('배달 요청이 존재하지 않습니다.');
+    }
   }
 
   async function acceptRequest() {

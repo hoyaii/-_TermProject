@@ -113,6 +113,10 @@
 
       checkboxContainer.appendChild(checkboxDiv);
     });
+
+    if(orderData.length == 0){
+      alert('주문 내역이 존재하지 않습니다.');
+    }
   }
 
   // Function to handle checking delivery status
