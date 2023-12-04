@@ -1,7 +1,7 @@
 const {  } = require('../models');
 const db = require(process.cwd() + '/models');
 
-exports.getDeliveryRequest = async (req, res, next) => {
+exports.getDeliveryRequestByUserId = async (req, res, next) => {
     const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
@@ -17,7 +17,7 @@ exports.getDeliveryRequest = async (req, res, next) => {
     }
 };
 
-exports.getDeliveryHistory = async (req, res, next) => {
+exports.getDeliveryHistoryByUserId = async (req, res, next) => {
     const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
 
     try {
@@ -122,7 +122,7 @@ exports.finishDelivery = async (req, res, next) => {
     }
 };
 
-exports.getDeliveryList = async (req, res, next) => {
+exports.getDeliveryListByUserId = async (req, res, next) => {
     const userId = req.user.user_id; // 세션에서 사용자 ID를 가져옵니다.
 
     try {

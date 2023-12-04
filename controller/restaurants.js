@@ -110,7 +110,7 @@ exports.deleteMenu = async (req, res, next) => {
     }
 };
 
-exports.getOrderMatchedByRestaurantId = async (req, res, next) => {
+exports.getMatchedOrderByRestaurantId = async (req, res, next) => {
     const restaurantId = req.params.restaurantId;
     const orderHistorySql = "SELECT order_id, status, menu_id, order_time FROM Orders WHERE restaurant_id = ? AND status = 'deliveryMatched'";
     const menuNameSql = "SELECT name FROM Menu WHERE menu_id = ?";
@@ -163,7 +163,7 @@ exports.getOrderByRestaurantId = async (req, res, next) => {
     }
 };
 
-exports.updateOrderFinish = async (req, res, next) => {
+exports.finishOrder = async (req, res, next) => {
     const orderId = req.params.orderId;
     const sql = "UPDATE Orders SET status = 'cooked' WHERE order_id = ?";
     try {

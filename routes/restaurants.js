@@ -1,7 +1,7 @@
 const express = require('express');
 const { isLoggedIn } = require('../middlewares');
 const { createRestaurant, getRestaurantByOwnerId, createMenu,getMenu,updateMenu, deleteMenu, getOrderByRestaurantId, updateRestaurant,
-    getOrderMatchedByRestaurantId, updateOrderFinish,
+    getMatchedOrderByRestaurantId, finishOrder,
     getRestaurantByQuery
 } = require('../controller/restaurants');
 
@@ -35,9 +35,9 @@ router.delete('/menus/:menuId', isLoggedIn, deleteMenu)
 router.get('/:restaurantId/orders', isLoggedIn, getOrderByRestaurantId);
 
 // 주문 이력 조회 - 배달 매칭 됨
-router.get('/:restaurantId/orders/matched', isLoggedIn, getOrderMatchedByRestaurantId);
+router.get('/:restaurantId/orders/matched', isLoggedIn, getMatchedOrderByRestaurantId);
 
 // 주문 완료 처리
-router.put('/:orderId/finish', isLoggedIn, updateOrderFinish)
+router.put('/:orderId/finish', isLoggedIn, finishOrder)
 
 module.exports = router;
