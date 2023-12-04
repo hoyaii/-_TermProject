@@ -16,13 +16,11 @@
     }
 
     .main-container {
-      width: 400px;
+      width: 500px;
       padding: 20px;
       border-radius: 4px;
       background-color: white;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-      box-sizing: border-box; /* padding, border를 포함한 크기 지정 */
     }
 
     h2 {
@@ -53,7 +51,10 @@
     }
 
     .order-item label {
-      margin-left: -340px;
+      margin-left: -160px;
+    }
+    .order-item input {
+      margin-left: -170px;
     }
 
     button {
@@ -88,15 +89,14 @@
 
     <div id="order-list" class="hidden">
       <!-- Order list will be dynamically added here -->
-      <button id="complete-btn">완료</button>
     </div>
-
+    <button id="finish-button" class="hidden">완료</button>
   </form>
 </div>
 
 <script>
   const orderListDiv = document.getElementById('order-list');
-  const completeBtn = document.getElementById('complete-btn');
+  const completeBtn = document.getElementById('finish-button');
 
   async function fetchRestaurantData() {
     try {
@@ -118,6 +118,11 @@
 
   // Function to dynamically create restaurant options
   function createRestaurantOptions(restaurantData) {
+    if(restaurantData.length  == 0){
+      alert('운영하고 있는 식당이 존재하지 않습니다.');
+      location.href = '/restaurant_main.html';
+    }
+
     const restaurantSelect = document.getElementById('restaurantId');
 
     restaurantData.forEach(restaurant => {
@@ -127,10 +132,6 @@
 
       restaurantSelect.appendChild(option);
     });
-
-    if(restaurantData.length  == 0){
-      alert('운영하고 있는 식당이 존재하지 않습니다.');
-    }
   }
 
   async function fetchOrderData() {
@@ -153,7 +154,7 @@
 
   // Function to dynamically create order list
   function createOrderList(orderData) {
-    //orderListDiv.innerHTML = ''; // 기존 주문 리스트를 초기화합니다.
+    orderListDiv.innerHTML = ''; // 기존 주문 리스트를 초기화합니다.
 
     orderData.forEach(order => {
       const orderItemDiv = document.createElement('div');
@@ -179,6 +180,9 @@
 
     if(orderData.length  == 0){
       alert('주문 내역이 존재하지 않습니다.');
+    }
+    else{
+      document.getElementById('finish-button').classList.remove('hidden');
     }
   }
 

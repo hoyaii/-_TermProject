@@ -134,6 +134,11 @@
 
   // Function to dynamically create checkboxes based on order data
   function createOrderOptions(orderData) {
+    if(orderData.length  == 0){
+      alert('주문 내역이 존재하지 않습니다.');
+      location.href = '/customer_search_result.html';
+    }
+
     orderData.forEach(order => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -152,10 +157,6 @@
 
       checkboxContainer.appendChild(checkboxDiv);
     });
-
-    if(orderData.length  == 0){
-      alert('주문 내역이 존재하지 않습니다.');
-    }
   }
 
   // Function to show the review form
@@ -178,6 +179,7 @@
   }
 
   const reviewForm = document.getElementById('review-form');
+
   reviewForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 

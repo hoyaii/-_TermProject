@@ -138,6 +138,11 @@
 
     // Function to dynamically create order history
     function createOrderHistory(orderHistoryData) {
+        if(orderHistoryData.length  == 0){
+            alert('주문 내역이 존재하지 않습니다.');
+            location.href = '/restaurant_main.html';
+        }
+
         const orderHistoryContainer = document.querySelector('.order-history');
         orderHistoryContainer.innerHTML = '';
 
@@ -152,10 +157,6 @@
 
             orderHistoryContainer.appendChild(orderItem);
         });
-
-        if(orderHistoryData.length  == 0){
-            alert('주문 내역이 존재하지 않습니다.');
-        }
     }
 
     async function showOrderHistory() {

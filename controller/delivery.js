@@ -127,7 +127,7 @@ exports.getDeliveryListByUserId = async (req, res, next) => {
 
     try {
         // delivery_id, restaurant_id, delivery_address를 구한다
-        let [rows] = await db.query("SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = ?", [userId, "accepted"]);
+        let [rows] = await db.query("SELECT delivery_id, restaurant_id, delivery_address FROM Delivery WHERE delivery_person_id = ? AND status = ?", [userId, "cooked"]);
 
         // 각 배달에 대한 restaurantAddress를 추가한다
         for (let i = 0; i < rows.length; i++) {

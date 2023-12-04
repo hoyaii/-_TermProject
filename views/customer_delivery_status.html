@@ -95,6 +95,11 @@
 
   // Function to dynamically create checkboxes based on order data
   function createOrderOptions(orderData) {
+    if(orderData.length == 0){
+      alert('주문 내역이 존재하지 않습니다.');
+      location.href = '/customer_main.html';
+    }
+    
     orderData.forEach(order => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -113,10 +118,6 @@
 
       checkboxContainer.appendChild(checkboxDiv);
     });
-
-    if(orderData.length == 0){
-      alert('주문 내역이 존재하지 않습니다.');
-    }
   }
 
   // Function to handle checking delivery status

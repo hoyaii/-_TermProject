@@ -39,7 +39,7 @@
       display: flex;
       align-items: center;
     }
-//
+
     input[type="checkbox"] {
       margin-right: 5px;
     }
@@ -98,6 +98,11 @@
 
   // Function to dynamically create checkboxes based on menu data
   function createMenuCheckboxes(menuData) {
+    if(menuData.length  == 0){
+      alert('등록된 메뉴가 존재하지 않습니다.');
+      location.href = '/customer_search_result.html';
+    }
+
     menuData.forEach(menu => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -116,11 +121,6 @@
 
       checkboxContainer.appendChild(checkboxDiv);
     });
-
-    if(menuData.length  == 0){
-      alert('등록된 메뉴가 존재하지 않습니다.');
-      location.href = '/customer_search_result.html';
-    }
   }
 
   const orderForm = document.getElementById('order-form');

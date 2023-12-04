@@ -83,7 +83,8 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const deliveryData = await response.json();
-      createDeliveryCheckboxes(deliveryData.deliveryHistory);
+
+      createDeliveryCheckboxes(deliveryData);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -92,6 +93,11 @@
   window.onload = fetchDeliveryData;
 
   function createDeliveryCheckboxes(deliveryData) {
+    if(deliveryData.length == 0){
+      alert('배달 목록이 존재하지 않습니다.');
+      window.location.href = '/delivery_person_main.html';
+    }
+
     deliveryData.forEach(delivery => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -110,11 +116,6 @@
 
       checkboxContainer.appendChild(checkboxDiv);
     });
-
-    if(deliveryData.length  == 0){
-      alert('완료한 배달 목록이 존재하지 않습니다.');
-      window.location.href = '/delivery_person_main.html';
-    }
   }
 
   finishDeliveryForm.addEventListener('submit', async function(event) {
